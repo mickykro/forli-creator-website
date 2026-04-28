@@ -23,8 +23,7 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-# extracted frames + dropped videos (regenerated locally)
-public/frames/*
-!public/frames/.gitkeep
+# Source videos are heavy and regenerated locally; frames are committed
+# so static deploys (Vercel) have them without re-running extract:frames.
 public/video/*
 !public/video/README.md
