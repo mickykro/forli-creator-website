@@ -1,5 +1,114 @@
 ---
 import T from './T.astro';
+import RadialOrbitalTimeline, { type TimelineItem } from './RadialOrbitalTimeline.astro';
+
+// 6 capabilities Forly ships. Each node is a distinct generation pipeline.
+// Connections show which capabilities pair up: image ↔ image-edit,
+// video ↔ image-to-video, plus carousels/websites that compose the others.
+const processSteps: TimelineItem[] = [
+  {
+    id: 1,
+    iconKey: 'image',
+    he: {
+      title: 'יצירת תמונה',
+      date: '5–10 שניות',
+      content: 'משפט אחד בעברית הופך לתמונה מוכנה לפרסום, עם כיתוב והאשטגים מותאמים לטון של העסק שלכם.',
+    },
+    en: {
+      title: 'Create image',
+      date: '5–10 seconds',
+      content: 'One Hebrew sentence becomes a ready-to-post image, with caption and hashtags matched to your brand voice.',
+    },
+    status: 'completed',
+    relatedIds: [2, 5],
+    progress: 100,
+  },
+  {
+    id: 2,
+    iconKey: 'image-edit',
+    he: {
+      title: 'תמונה לתמונה',
+      date: 'בלי פוטושופ',
+      content: 'שלחו תמונה ובקשה — "תוסיף לי כובע", "תשני את הצבע", "תחליפי רקע" — והפנים שלכם נשארות מזוהות.',
+    },
+    en: {
+      title: 'Image to image',
+      date: 'No Photoshop',
+      content: 'Send a photo and a request — "add a hat", "change the color", "swap the background" — and your face stays recognizable.',
+    },
+    status: 'completed',
+    relatedIds: [1],
+    progress: 96,
+  },
+  {
+    id: 3,
+    iconKey: 'video',
+    he: {
+      title: 'יצירת סרטון',
+      date: '10–15 שניות וידאו',
+      content: 'משפט אחד הופך לסרטון מיני בן 3 שוטים: פתיחה → תפנית → סיום. רציפות פנימית, סגנון לבחירה.',
+    },
+    en: {
+      title: 'Create video',
+      date: '10–15 second clip',
+      content: 'One sentence becomes a 3-shot mini-story: setup → turn → payoff. Internal continuity, tone of your choice.',
+    },
+    status: 'completed',
+    relatedIds: [4],
+    progress: 90,
+  },
+  {
+    id: 4,
+    iconKey: 'video-motion',
+    he: {
+      title: 'תמונה לסרטון',
+      date: 'תנועה בהזמנה',
+      content: 'שלחו תמונה. פורלי שואלת "איזו תנועה?" — והתשובה שלכם הופכת לסרטון 3 שוטים שמעוגן בתמונה המקורית.',
+    },
+    en: {
+      title: 'Image to video',
+      date: 'Motion on demand',
+      content: 'Send an image. Forly asks "what motion?" — your reply becomes a 3-shot video anchored on your photo.',
+    },
+    status: 'in-progress',
+    relatedIds: [3],
+    progress: 75,
+  },
+  {
+    id: 5,
+    iconKey: 'carousel',
+    he: {
+      title: 'קרוסלה',
+      date: 'אינסטגרם',
+      content: '3–5 תמונות מחוברות, מעוצבות לפוסט החלקה — מספרות סיפור אחד, פריים אחר פריים, עם כיתובים מותאמים.',
+    },
+    en: {
+      title: 'Carousel',
+      date: 'Instagram swipe',
+      content: '3–5 connected images designed as a swipe post — they tell one story frame by frame, captions included.',
+    },
+    status: 'in-progress',
+    relatedIds: [1, 6],
+    progress: 60,
+  },
+  {
+    id: 6,
+    iconKey: 'website',
+    he: {
+      title: 'אתר עסק',
+      date: 'דף נחיתה',
+      content: 'דף עסק נקי שנבנה אוטומטית מהפרופיל שלכם ומכל התוכן שיצרתם — מתעדכן בהודעה אחת.',
+    },
+    en: {
+      title: 'Website',
+      date: 'Landing page',
+      content: 'A clean business page built automatically from your profile and the content you\'ve created — updates with a single message.',
+    },
+    status: 'pending',
+    relatedIds: [5, 1, 3],
+    progress: 35,
+  },
+];
 
 const cards = [
   {
@@ -71,6 +180,13 @@ const stats = [
   { value: 100, suffix: '%', he: 'עברית נייטיב', en: 'Hebrew native' },
 ];
 ---
+<RadialOrbitalTimeline
+  items={processSteps}
+  eyebrowHe="היכולות של פורלי"
+  eyebrowEn="What Forly can do"
+  headingHe="שש יכולות. הודעה אחת בעברית."
+  headingEn="Six capabilities. One Hebrew message."
+/>
 <section class="features" id="features">
   <div class="container">
     <header class="features-head" data-reveal-stagger>
@@ -85,6 +201,7 @@ const stats = [
       </p>
     </header>
 
+    
     <div class="grid">
       {cards.map((c, i) => (
         <article class="card" data-card style={`--i:${i}`}>
@@ -110,7 +227,7 @@ const stats = [
     <!-- Letter-by-letter scramble quote — each language gets its own scramble target. -->
     <blockquote class="scramble" data-scramble-block>
       <p class="scramble-text">
-        <span class="l-he" data-scramble>בלי אפליקציה. בלי דשבורד. בלי כלי עיצוב. רק וואטסאפ.</span>
+        <span class="l-he" data-scramble>הכל במקום אחד </span>
         <span class="l-en" data-scramble>No app. No dashboard. No design tools. Just WhatsApp.</span>
       </p>
       <cite><T he="— התזה של פורלי v2" en="— The Forly v2 thesis" /></cite>
@@ -129,13 +246,16 @@ const stats = [
 </section>
 
 <style>
+  /* Light theme — matches the RadialOrbitalTimeline above. Page surface
+     (--surface = #fbf5f8) shows through; soft pink/sage radials add depth
+     without changing the underlying color story. */
   .features {
     position: relative;
     padding: 160px 0 120px;
     background:
-      radial-gradient(800px 600px at 20% 0%, rgba(219, 107, 151, 0.12), transparent 60%),
-      radial-gradient(700px 500px at 80% 100%, rgba(127, 168, 155, 0.08), transparent 60%),
-      var(--aubergine-deep);
+      radial-gradient(800px 600px at 20% 0%, rgba(219, 107, 151, 0.10), transparent 60%),
+      radial-gradient(700px 500px at 80% 100%, rgba(127, 168, 155, 0.06), transparent 60%),
+      var(--surface);
   }
   .features-head {
     text-align: center;
@@ -147,7 +267,7 @@ const stats = [
   .features-title {
     font-size: clamp(36px, 5vw, 64px);
     line-height: 1.05;
-    color: var(--white);
+    color: var(--ink);
   }
   .grad {
     background: linear-gradient(110deg, var(--forli-pink-soft), var(--forli-pink), var(--forli-pink-deep));
@@ -156,7 +276,7 @@ const stats = [
     color: transparent;
   }
   .features-sub {
-    color: rgba(255, 255, 255, 0.65);
+    color: var(--ink-soft);
     font-size: 17px;
     max-width: 560px;
     margin: 0 auto;
@@ -174,10 +294,10 @@ const stats = [
     position: relative;
     border-radius: var(--radius-md);
     padding: 1px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(180deg, rgba(26, 18, 32, 0.06), rgba(26, 18, 32, 0.02));
     overflow: hidden;
     isolation: isolate;
-    transition: transform 0.4s ease;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
   }
   .card-glow {
     position: absolute;
@@ -186,19 +306,22 @@ const stats = [
     pointer-events: none;
     background: radial-gradient(
       280px circle at var(--mx, 50%) var(--my, 50%),
-      rgba(219, 107, 151, 0.35),
+      rgba(219, 107, 151, 0.18),
       transparent 60%
     );
     opacity: 0;
     transition: opacity 0.3s ease;
   }
   .card:hover .card-glow { opacity: 1; }
-  .card:hover { transform: translateY(-4px); }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 40px rgba(26, 18, 32, 0.10);
+  }
 
   .card-content {
     position: relative;
     z-index: 1;
-    background: rgba(26, 18, 32, 0.7);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
     border-radius: calc(var(--radius-md) - 1px);
     padding: 28px 26px 26px;
@@ -212,15 +335,15 @@ const stats = [
     font-size: 11px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--forli-pink);
+    color: var(--forli-pink-deep);
   }
   .card-title {
     font-size: 22px;
-    color: var(--white);
+    color: var(--ink);
     letter-spacing: -0.01em;
   }
   .card-body {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--ink-soft);
     font-size: 15px;
     line-height: 1.55;
     flex: 1;
@@ -232,14 +355,14 @@ const stats = [
     justify-content: space-between;
     align-items: baseline;
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.55);
+    color: var(--ink-soft);
     font-family: var(--font-mono);
     letter-spacing: 0.06em;
   }
-  .meter-value { color: var(--white); font-weight: 600; }
+  .meter-value { color: var(--ink); font-weight: 600; }
   .meter-track {
     height: 4px;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(26, 18, 32, 0.08);
     border-radius: 4px;
     overflow: hidden;
   }
@@ -248,7 +371,7 @@ const stats = [
     width: 0%;
     background: linear-gradient(90deg, var(--forli-pink-soft), var(--forli-pink));
     border-radius: 4px;
-    box-shadow: 0 0 12px rgba(219, 107, 151, 0.6);
+    box-shadow: 0 0 10px rgba(219, 107, 151, 0.45);
   }
 
   .scramble {
@@ -264,14 +387,14 @@ const stats = [
     font-weight: 800;
     line-height: 1.1;
     letter-spacing: -0.02em;
-    color: var(--white);
-    text-shadow: 0 0 60px rgba(219, 107, 151, 0.25);
+    color: var(--ink);
+    text-shadow: 0 0 50px rgba(219, 107, 151, 0.18);
   }
   .scramble-text .ch { display: inline-block; }
   .scramble-text .ch.live { color: var(--forli-pink); }
   .scramble cite {
     font-style: normal;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--ink-soft);
     font-family: var(--font-mono);
     font-size: 12px;
     letter-spacing: 0.18em;
@@ -284,10 +407,11 @@ const stats = [
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
     padding: 36px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--line);
     border-radius: var(--radius-lg);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
-    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 14px 40px rgba(26, 18, 32, 0.06);
   }
   @media (max-width: 740px) { .stats { grid-template-columns: repeat(2, 1fr); } }
   .stat { display: grid; gap: 6px; text-align: center; }
@@ -295,16 +419,16 @@ const stats = [
     font-family: var(--font-display);
     font-size: clamp(36px, 5vw, 56px);
     font-weight: 800;
-    color: var(--white);
+    color: var(--ink);
     letter-spacing: -0.02em;
-    text-shadow: 0 0 30px rgba(219, 107, 151, 0.4);
+    text-shadow: 0 0 28px rgba(219, 107, 151, 0.22);
   }
   .stat-label {
     font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.55);
+    color: var(--ink-soft);
   }
 </style>
 

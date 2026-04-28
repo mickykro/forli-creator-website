@@ -29,6 +29,7 @@ const links = [
 </header>
 
 <style>
+  /* Match the Features section's dark aubergine palette + soft pink/sage radials. */
   .nav {
     position: fixed;
     top: 0;
@@ -36,15 +37,23 @@ const links = [
     right: 0;
     z-index: 100;
     padding: 16px 0;
+    background:
+      radial-gradient(600px 220px at 18% 50%, rgba(219, 107, 151, 0.16), transparent 65%),
+      radial-gradient(500px 200px at 82% 50%, rgba(127, 168, 155, 0.10), transparent 65%),
+      var(--aubergine-deep);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     transform: translateY(0);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, backdrop-filter 0.3s ease;
   }
   .nav[data-state='hidden'] { transform: translateY(-120%); }
   .nav[data-state='scrolled'] {
-    background: rgba(255, 255, 255, 0.78);
+    background:
+      radial-gradient(600px 220px at 18% 50%, rgba(219, 107, 151, 0.16), transparent 65%),
+      radial-gradient(500px 200px at 82% 50%, rgba(127, 168, 155, 0.10), transparent 65%),
+      rgba(26, 18, 32, 0.78);
     backdrop-filter: blur(18px) saturate(140%);
     -webkit-backdrop-filter: blur(18px) saturate(140%);
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
   .nav-inner {
     width: 100%;
@@ -72,18 +81,18 @@ const links = [
     background: radial-gradient(circle at 30% 30%, var(--forli-pink-soft), var(--forli-pink) 60%, var(--forli-pink-deep));
     box-shadow: var(--glow-pink);
   }
-  .brand-name { color: var(--ink); }
+  .brand-name { color: var(--white); }
   .links {
     display: flex;
     gap: 28px;
     font-size: 14px;
-    color: var(--ink-soft);
+    color: rgba(255, 255, 255, 0.72);
   }
   .links a {
     position: relative;
     transition: color 0.2s ease;
   }
-  .links a:hover { color: var(--ink); }
+  .links a:hover { color: var(--white); }
   .links a::after {
     content: '';
     position: absolute;
@@ -104,6 +113,24 @@ const links = [
     gap: 12px;
   }
   .nav-cta { padding: 10px 20px; font-size: 13px; }
+
+  /* Dark-theme override for the lang toggle — the global .lang-toggle rule
+     was designed for the light surface; on the dark Nav it needs inverted
+     border / background / text colors to stay legible. */
+  .nav .lang-toggle {
+    color: rgba(255, 255, 255, 0.72);
+    border-color: rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .nav .lang-toggle:hover {
+    color: var(--white);
+    border-color: var(--forli-pink);
+    background: rgba(255, 255, 255, 0.10);
+  }
+  .nav .lang-toggle .lang-toggle-current {
+    color: var(--forli-pink-soft);
+  }
+
   @media (max-width: 720px) {
     .links { display: none; }
     .lang-toggle { font-size: 10px; padding: 6px 10px; }

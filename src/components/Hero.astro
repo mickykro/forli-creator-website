@@ -16,11 +16,7 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="hero-vignette" aria-hidden="true"></div>
 
-    <!-- Top-left: live frame counter, updated by the scroll-scrub timeline. -->
-    <div class="tech tech-tl">
-      <span class="tech-dot"></span>
-      <span>FRM <span data-frame-num>0001</span> / <span data-frame-total>—</span></span>
-    </div>
+    
     <div class="tech tech-bl">
       <span><T he="גלילה ↓" en="SCROLL ↓" /></span>
     </div>
@@ -336,11 +332,24 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
   .line-2{
     color: var(--pink);
   }
+  /* Soft frosted-glass backdrop so the text reads cleanly even when it sits
+     over the feathered bottom edge of the canvas. Matches the same glass
+     vocabulary used by hero-detail cards and tech overlays. */
   .hero-sub {
-    max-width: 540px;
+    max-width: 560px;
     font-size: clamp(14px, 1.2vw, 17px);
     line-height: 1.55;
-    color: var(--ink-soft);
+    color: var(--ink);
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 6px 20px rgba(26, 18, 32, 0.06);
+  }
+  @media (max-width: 720px) {
+    .hero-sub { padding: 10px 16px; border-radius: 14px; }
   }
   .hero-actions {
     display: flex;
