@@ -1,0 +1,6 @@
+---
+// Inline bilingual text — renders both Hebrew and English spans.
+// CSS in global.css hides the inactive language based on <html lang>.
+const { he, en } = Astro.props as { he: string; en: string };
+---
+<span class="l-he">{he}</span><span class="l-en">{en}</span>

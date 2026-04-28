@@ -1,67 +1,87 @@
 ---
+import T from './T.astro';
+
 const cards = [
   {
-    label: 'Response',
-    title: '24/7 instant reply',
-    body: 'A real WhatsApp message lands within seconds of every missed call — at 2am, on Shabbat, in line at the bank.',
+    label: { he: 'טקסט → תמונה', en: 'Text → Image' },
+    title: { he: 'פוסט ממשפט אחד', en: 'Posts from a sentence' },
+    body: {
+      he: 'כתבו "תעשי לי פוסט לפיצרייה שלי". פורלי מחזירה את התמונה עם כיתוב בעברית והאשטגים — מוכן לפרסום.',
+      en: 'Type "תעשי לי פוסט לפיצרייה שלי". Forly returns the image with a Hebrew caption and hashtags — ready to post.',
+    },
+    metric: 100,
+    metricLabel: { he: 'כיתוב + האשטגים', en: 'Caption + hashtags' },
+  },
+  {
+    label: { he: 'תמונה → תמונה', en: 'Image → Image' },
+    title: { he: 'עריכה בלי פוטושופ', en: 'Edits without Photoshop' },
+    body: {
+      he: 'שלחו תמונה, כתבו "תוסיף לי כובע שמש". פורלי שומרת על הפנים שלכם ומשנה רק את מה שביקשתם.',
+      en: 'Send a photo, write "תוסיף לי כובע שמש". Forly keeps your face recognizable and changes only what you asked for.',
+    },
     metric: 96,
-    metricLabel: 'Replies under 4 sec',
+    metricLabel: { he: 'הפנים נשמרות', en: 'Identity preserved' },
   },
   {
-    label: 'Languages',
-    title: 'Speaks four languages',
-    body: 'Hebrew, English, Arabic, Russian. Forli detects the customer’s language from the first message and answers in kind.',
+    label: { he: 'טקסט → סרטון', en: 'Text → Video' },
+    title: { he: 'סיפור ב-3 שוטים', en: '3-shot mini-stories' },
+    body: {
+      he: 'כל סרטון בנוי כך: פתיחה → תפנית → סיום. פורלי מייצרת את שלושת השוטים בריצה אחת, עם רציפות פנימית.',
+      en: 'Every video follows setup → turn → payoff. Forly generates all three shots in one pass, with internal continuity.',
+    },
     metric: 100,
-    metricLabel: 'Hebrew accuracy',
+    metricLabel: { he: 'מבנה סיפורי', en: 'Story arc shipped' },
   },
   {
-    label: 'Calendar',
-    title: 'Books from your calendar',
-    body: 'Connects to Google Calendar or Calendly, offers real availability, and writes the appointment back.',
-    metric: 88,
-    metricLabel: 'Booking conversion',
+    label: { he: 'תמונה → סרטון', en: 'Image → Video' },
+    title: { he: 'תנועה על התמונה שלכם', en: 'Motion on top of your photo' },
+    body: {
+      he: 'שלחו תמונה. פורלי שואלת "איזו תנועה?" — והתשובה שלכם הופכת לסרטון 3 שוטים שמעוגן בתמונה.',
+      en: 'Send the image. Forly asks "איזו תנועה?" — your reply becomes a 3-shot video anchored on your photo.',
+    },
+    metric: 90,
+    metricLabel: { he: 'זמן יצירת תנועה', en: 'Motion turnaround' },
   },
   {
-    label: 'Voice',
-    title: 'Sounds like you',
-    body: 'Trained on your services, your prices, your hours, your tone. Customers do not feel they hit a bot.',
-    metric: 92,
-    metricLabel: 'Sounds-like-you score',
-  },
-  {
-    label: 'Alerts',
-    title: 'Real-time on your phone',
-    body: 'Every conversation lands in your phone with a full transcript, customer details, and one-tap takeover.',
+    label: { he: 'מערכת סגנונות', en: 'Tone system' },
+    title: { he: '8 שפות ויזואליות', en: '8 visual DNAs' },
+    body: {
+      he: 'יוקרתי · משעשע · קולנועי · אנרגטי · אינטימי · דוקומנטרי · חולמני · נועז. בחרו ברירת מחדל, או החליפו בכל הודעה בעברית.',
+      en: 'Luxurious · playful · cinematic · energetic · intimate · documentary · dreamy · bold. Pick one in your default, or override per message in Hebrew.',
+    },
     metric: 100,
-    metricLabel: 'Conversations logged',
+    metricLabel: { he: 'סגנונות זמינים', en: 'Tones supported' },
   },
   {
-    label: 'Hand-off',
-    title: 'Steps aside on cue',
-    body: 'When the conversation gets personal or complex, Forli tags you in with a clean summary and lets you take it.',
-    metric: 80,
-    metricLabel: 'Auto-handled end-to-end',
+    label: { he: 'ישראל קודם כל', en: 'Israeli first' },
+    title: { he: 'ים-תיכוני בברירת מחדל', en: 'Mediterranean by default' },
+    body: {
+      he: 'כל דמות שנוצרת מקבלת מאפיינים ים-תיכוניים ומזרח-תיכוניים — בנוי לעסקים ישראליים, לא הוצמד אחרי.',
+      en: 'Every generated character has Middle Eastern and Mediterranean features by default — built for Israeli businesses, not retrofitted.',
+    },
+    metric: 100,
+    metricLabel: { he: 'בנוי לישראל', en: 'Built for Israel' },
   },
 ];
 
 const stats = [
-  { value: 1247, suffix: '+', label: 'Calls answered' },
-  { value: 30, suffix: '%', label: 'Avg booking lift' },
-  { value: 4, suffix: ' sec', label: 'Median response' },
-  { value: 6, suffix: '', label: 'Pilot businesses' },
+  { value: 6, suffix: '', he: 'יכולות פעילות', en: 'Capabilities shipping' },
+  { value: 8, suffix: '', he: 'סגנונות ויזואליים', en: 'Visual tones' },
+  { value: 10, suffix: ' s', he: 'זמן יצירת תמונה', en: 'Image turnaround' },
+  { value: 100, suffix: '%', he: 'עברית נייטיב', en: 'Hebrew native' },
 ];
 ---
 <section class="features" id="features">
   <div class="container">
     <header class="features-head" data-reveal-stagger>
-      <p class="eyebrow" data-reveal>Why Forli</p>
+      <p class="eyebrow" data-reveal><T he="מה פורלי יוצרת" en="What Forly makes" /></p>
       <h2 class="features-title" data-reveal>
-        The <span class="grad">receptionist</span> every business<br />
-        wishes they could afford.
+        <span class="l-he">סטודיו <span class="grad">יצירתי</span><br />שחי בצ׳אט שלכם.</span>
+        <span class="l-en">A <span class="grad">creative studio</span><br />that lives in your chat.</span>
       </h2>
       <p class="features-sub" data-reveal>
-        Six features that turn missed calls into booked customers — without hiring,
-        without scripts, without changing the way you work.
+        <span class="l-he">שש יכולות, רחוקות הודעה אחת בעברית — נוצרות על ידי פורלי, מוחזרות ישר לוואטסאפ.</span>
+        <span class="l-en">Six capabilities, one Hebrew message away — generated by Forly, delivered straight back into WhatsApp.</span>
       </p>
     </header>
 
@@ -70,12 +90,12 @@ const stats = [
         <article class="card" data-card style={`--i:${i}`}>
           <div class="card-glow" data-card-glow></div>
           <div class="card-content">
-            <p class="card-label">{c.label}</p>
-            <h3 class="card-title">{c.title}</h3>
-            <p class="card-body">{c.body}</p>
+            <p class="card-label"><T he={c.label.he} en={c.label.en} /></p>
+            <h3 class="card-title"><T he={c.title.he} en={c.title.en} /></h3>
+            <p class="card-body"><T he={c.body.he} en={c.body.en} /></p>
             <div class="card-meter">
               <div class="meter-row">
-                <span class="meter-label">{c.metricLabel}</span>
+                <span class="meter-label"><T he={c.metricLabel.he} en={c.metricLabel.en} /></span>
                 <span class="meter-value" data-meter-value data-target={c.metric}>0%</span>
               </div>
               <div class="meter-track">
@@ -87,10 +107,13 @@ const stats = [
       ))}
     </div>
 
-    <!-- Letter-by-letter scramble quote -->
+    <!-- Letter-by-letter scramble quote — each language gets its own scramble target. -->
     <blockquote class="scramble" data-scramble-block>
-      <p class="scramble-text" data-scramble>Voicemail is dead. WhatsApp answers. Forli is on the line.</p>
-      <cite>— The new default for Israeli SMBs</cite>
+      <p class="scramble-text">
+        <span class="l-he" data-scramble>בלי אפליקציה. בלי דשבורד. בלי כלי עיצוב. רק וואטסאפ.</span>
+        <span class="l-en" data-scramble>No app. No dashboard. No design tools. Just WhatsApp.</span>
+      </p>
+      <cite><T he="— התזה של פורלי v2" en="— The Forly v2 thesis" /></cite>
     </blockquote>
 
     <!-- Counter strip -->
@@ -98,7 +121,7 @@ const stats = [
       {stats.map((s) => (
         <li class="stat">
           <span class="stat-num" data-counter data-target={s.value} data-suffix={s.suffix}>0</span>
-          <span class="stat-label">{s.label}</span>
+          <span class="stat-label"><T he={s.he} en={s.en} /></span>
         </li>
       ))}
     </ul>
@@ -349,11 +372,10 @@ const stats = [
     });
   }
 
-  // Letter-by-letter scramble reveal
-  const scrambleEl = document.querySelector<HTMLElement>('[data-scramble]');
-  if (scrambleEl) {
+  // Letter-by-letter scramble reveal — applied independently to each language.
+  const chars = '!<>-_\\/[]{}—=+*^?#________';
+  document.querySelectorAll<HTMLElement>('[data-scramble]').forEach((scrambleEl) => {
     const original = scrambleEl.textContent ?? '';
-    const chars = '!<>-_\\/[]{}—=+*^?#________';
     scrambleEl.innerHTML = original
       .split('')
       .map((c) => `<span class="ch" data-c="${c.replace(/"/g, '&quot;')}">${c === ' ' ? '&nbsp;' : c}</span>`)
@@ -387,7 +409,7 @@ const stats = [
         });
       },
     });
-  }
+  });
 
   // Counter strip
   gsap.utils.toArray<HTMLElement>('[data-counter]').forEach((el) => {

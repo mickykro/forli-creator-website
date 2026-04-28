@@ -1,4 +1,4 @@
-/* Forli — design tokens & base styles */
+/* Forly — design tokens & base styles */
 :root {
   --forli-pink: #db6b97;
   --forli-pink-soft: #f4a3bf;
@@ -10,6 +10,13 @@
   --sage: #7fa89b;
   --muted: #5a4f65;
   --white: #ffffff;
+  /* Light theme surfaces & ink — warm rose-tinted off-white that matches
+     the animation's ambient background so the canvas blends seamlessly. */
+  --surface: #fbf5f8;
+  --surface-soft: #f3edf0;
+  --ink: #1a1220;
+  --ink-soft: #5a4f65;
+  --line: rgba(26, 18, 32, 0.08);
 
   --glow-pink: 0 0 32px rgba(219, 107, 151, 0.55), 0 0 80px rgba(219, 107, 151, 0.25);
   --glow-pink-strong: 0 0 24px rgba(219, 107, 151, 0.9), 0 0 56px rgba(219, 107, 151, 0.55), 0 0 120px rgba(219, 107, 151, 0.3);
@@ -30,8 +37,8 @@
 }
 
 html, body {
-  background: var(--aubergine-deep);
-  color: var(--white);
+  background: var(--surface);
+  color: var(--ink);
   font-family: var(--font-body);
   font-size: 17px;
   line-height: 1.55;
@@ -42,9 +49,9 @@ html, body {
 
 body {
   background:
-    radial-gradient(1200px 800px at 80% -10%, rgba(219, 107, 151, 0.18), transparent 60%),
-    radial-gradient(1000px 700px at -10% 30%, rgba(127, 168, 155, 0.12), transparent 55%),
-    var(--aubergine-deep);
+    radial-gradient(1200px 800px at 80% -10%, rgba(219, 107, 151, 0.10), transparent 60%),
+    radial-gradient(1000px 700px at -10% 30%, rgba(127, 168, 155, 0.06), transparent 55%),
+    var(--surface);
   min-height: 100vh;
 }
 
@@ -106,15 +113,16 @@ img, canvas { display: block; max-width: 100%; }
 }
 
 .btn-ghost {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--white);
+  border: 1px solid var(--line);
+  background: rgba(26, 18, 32, 0.03);
+  color: var(--ink);
   backdrop-filter: blur(10px);
 }
 
 .btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(26, 18, 32, 0.06);
   border-color: var(--forli-pink);
+  color: var(--forli-pink-deep);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -122,4 +130,47 @@ img, canvas { display: block; max-width: 100%; }
     animation-duration: 0.001s !important;
     transition-duration: 0.001s !important;
   }
+}
+
+/* Bilingual text: hide whichever language is not active.
+   <html lang="he"> hides .l-en, <html lang="en"> hides .l-he. */
+html[lang="he"] .l-en,
+html[lang="en"] .l-he {
+  display: none !important;
+}
+
+/* RTL niceties */
+html[lang="he"] {
+  font-family: 'Heebo', 'Inter', system-ui, sans-serif;
+}
+html[lang="he"] .eyebrow {
+  letter-spacing: 0.08em;
+}
+
+/* Language toggle pill */
+.lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.lang-toggle:hover {
+  color: var(--ink);
+  border-color: var(--forli-pink);
+  background: rgba(255, 255, 255, 0.9);
+}
+.lang-toggle .lang-toggle-current {
+  color: var(--forli-pink-deep);
+  font-weight: 600;
 }

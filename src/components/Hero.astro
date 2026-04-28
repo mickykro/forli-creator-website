@@ -2,74 +2,129 @@
 // Hero — pinned canvas with GSAP ScrollTrigger frame scrubbing.
 // Frames live in /public/frames/ and are produced by `npm run extract:frames`.
 // The script reads /frames/manifest.json at runtime to know how many frames exist.
+import T from './T.astro';
+import WhatsAppInput from './WhatsAppInput.astro';
+import WhatsAppMessage from './WhatsAppMessage.astro';
 ---
 <section class="hero" id="top" data-hero>
   <div class="hero-pin" data-hero-pin>
+    <!-- Horizontal halo: a circular pink gradient masked to its horizontal axis only -->
+    <div class="hero-halo" aria-hidden="true"></div>
     <canvas class="hero-canvas" data-hero-canvas aria-hidden="true"></canvas>
 
     <!-- Ambient pink wash that rides on top of the canvas -->
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="hero-vignette" aria-hidden="true"></div>
 
-    <!-- Technical corner overlays -->
+    <!-- Top-left: live frame counter, updated by the scroll-scrub timeline. -->
     <div class="tech tech-tl">
       <span class="tech-dot"></span>
       <span>FRM <span data-frame-num>0001</span> / <span data-frame-total>—</span></span>
     </div>
-    <div class="tech tech-tr">
-      <span>FORLI · A1.0 · TLV</span>
-      <span class="tech-dot live"></span>
-    </div>
     <div class="tech tech-bl">
-      <span>SCROLL ↓</span>
+      <span><T he="גלילה ↓" en="SCROLL ↓" /></span>
     </div>
     <div class="tech tech-br">
-      <span>WHATSAPP API · 24/7</span>
+      <span><T he="וואטסאפ נייטיב · 24/7" en="WHATSAPP NATIVE · 24/7" /></span>
     </div>
 
-    <!-- Hero copy stack -->
-    <div class="hero-copy" data-hero-copy>
-      <p class="eyebrow" data-hero-line>Forli · Private beta · 2026</p>
+    <!-- Hero copy: title above the canvas, text below it -->
+    <div class="hero-top">
       <h1 class="hero-title" data-hero-line>
-        <span class="line line-1" data-hero-title-line>Never miss a</span>
-        <span class="line line-2" data-hero-title-line>customer call</span>
-        <span class="line line-3" data-hero-title-line>again.</span>
+        <span class="line line-1" data-hero-title-line><T he="כתבו לפורלי." en="Message Forly." /></span>
+        <span class="line line-2" data-hero-title-line><T he="קבלו תוכן." en="Get content." /></span>
+        <span class="line line-3" data-hero-title-line><T he="בוואטסאפ." en="In WhatsApp." /></span>
       </h1>
+    </div>
+    <div class="hero-bottom">
       <p class="hero-sub" data-hero-line>
-        Forli answers your customers on WhatsApp the second a call goes unanswered —
-        in Hebrew, in your voice, around the clock.
+        <span class="l-he">שלחו הודעה בעברית. מקבלים תמונה, סרטון, קרוסלה או אתר — ישר בצ׳אט. בלי אפליקציה. בלי דשבורד.</span>
+        <span class="l-en">Send a Hebrew message. Get back the image, video, carousel, or website — right in your chat. No app. No dashboard.</span>
       </p>
       <div class="hero-actions" data-hero-line>
-        <a href="#cta" class="btn btn-primary">Join the private beta</a>
-        <a href="#features" class="btn btn-ghost">See how it works ↓</a>
+        <a href="#cta" class="btn btn-primary"><T he="הצטרפו לבטא הפרטית" en="Join the private beta" /></a>
+        <a href="#features" class="btn btn-ghost"><T he="ראו מה היא יוצרת ↓" en="See what it makes ↓" /></a>
       </div>
     </div>
 
     <!-- Mid-scroll tagline that fades over the frames -->
     <div class="hero-mid" data-hero-mid aria-hidden="true">
-      <p class="eyebrow">Always on</p>
-      <h2 class="mid-title">Voicemail is dead.<br/>WhatsApp answers.</h2>
+      <p class="eyebrow"><T he="בלי אפליקציה. בלי דשבורד." en="No app. No dashboard." /></p>
+      <h2 class="mid-title">
+        <span class="l-he">רק הודעה בעברית.<br/>פורלי עושה את השאר.</span>
+        <span class="l-en">Just a Hebrew message.<br/>Forly does the rest.</span>
+      </h2>
     </div>
+
+    <!-- WhatsApp input bubble — visible during frames 21-41 (above the animation) -->
+    <div class="hero-msg" data-hero-msg aria-hidden="true">
+      <WhatsAppInput he="תייצרי לי פרסומת לעסק" en="Make me an ad for my business" />
+    </div>
+
+    <!-- WhatsApp confirmation message (incoming chat bubble) — frame 81 to the end -->
+    <div class="hero-msg-out" data-hero-msg-out aria-hidden="true">
+      <WhatsAppMessage
+        he="הפרסומת נוצרה בהצלחה ✨"
+        en="Your ad is ready ✨"
+        time="14:03"
+        variant="incoming"
+      />
+    </div>
+
+    <!-- Persistent side rails — what the user sends, what Forly returns -->
+    <aside class="side side-left" data-side-left aria-hidden="true">
+      <p class="eyebrow"><T he="אתם כותבים" en="You write" /></p>
+      <div class="bubble bubble-in">
+        <span class="bubble-meta">14:02 · <T he="וואטסאפ" en="WhatsApp" /></span>
+        <p class="bubble-text" dir="rtl">תעשי לי פוסט לפיצרייה שלי 🍕</p>
+      </div>
+      <ul class="chips">
+        <li><T he="עברית" en="Hebrew" /></li>
+        <li><T he="חופשי" en="Free-form" /></li>
+        <li><T he="הודעה אחת" en="1 message" /></li>
+      </ul>
+    </aside>
+
+    <aside class="side side-right" data-side-right aria-hidden="true">
+      <p class="eyebrow"><T he="פורלי מחזירה" en="Forly returns" /></p>
+      <div class="bubble bubble-out">
+        <span class="bubble-meta">14:02 · <T he="6 שניות" en="6s" /></span>
+        <p class="bubble-text" dir="rtl">פיצה חמה מתוך התנור, מוצרלה נמתחת — מי בא לטעום? 🔥</p>
+        <p class="bubble-tags">#פיצה #טבריה #ארוחת_ערב</p>
+      </div>
+      <ul class="chips">
+        <li><T he="תמונה" en="Image" /></li>
+        <li><T he="כיתוב" en="Caption" /></li>
+        <li><T he="האשטגים" en="Hashtags" /></li>
+      </ul>
+    </aside>
 
     <!-- End-of-scroll product detail rails -->
     <aside class="hero-detail hero-detail-left" data-hero-detail-left>
-      <p class="eyebrow">Product</p>
-      <h3>Forli A1</h3>
+      <p class="eyebrow"><T he="המוצר" en="Product" /></p>
+      <h3><T he="פורלי v2" en="Forly v2" /></h3>
       <ul>
-        <li><span>Channel</span><b>WhatsApp Business</b></li>
-        <li><span>Languages</span><b>HE · EN · AR · RU</b></li>
-        <li><span>Response</span><b>&lt; 4 sec</b></li>
+        <li><span><T he="ערוץ" en="Channel" /></span><b><T he="וואטסאפ" en="WhatsApp" /></b></li>
+        <li><span><T he="עברית" en="Hebrew" /></span><b><T he="נייטיב, ראשי" en="Native, first" /></b></li>
+        <li><span><T he="הצטרפות" en="Onboard" /></span><b><T he="3 שאלות" en="3 questions" /></b></li>
       </ul>
     </aside>
     <aside class="hero-detail hero-detail-right" data-hero-detail-right>
-      <p class="eyebrow">Specs</p>
-      <h3>Built for SMBs</h3>
+      <p class="eyebrow"><T he="הפלט" en="Output" /></p>
+      <h3><T he="לעסקים קטנים" en="Built for SMBs" /></h3>
       <ul>
-        <li><span>Setup</span><b>15 min</b></li>
-        <li><span>Calendar</span><b>Calendly · Google</b></li>
-        <li><span>Pricing</span><b>From ₪199 / mo</b></li>
+        <li><span><T he="תמונה" en="Image" /></span><b><T he="כ-6 שניות" en="~6 sec" /></b></li>
+        <li><span><T he="סרטון" en="Video" /></span><b><T he="3 שוטים" en="3-shot story" /></b></li>
+        <li><span><T he="סגנונות" en="Tones" /></span><b><T he="8 סגנונות" en="8 styles" /></b></li>
       </ul>
     </aside>
+
+    <!-- Frame preload progress (auto-hides when done) -->
+    <div class="hero-loader" data-hero-loader role="status" aria-live="polite">
+      <span class="hero-loader-label"><T he="טוען סצנה" en="Loading scene" /></span>
+      <span class="hero-loader-track"><span class="hero-loader-bar" data-hero-loader-bar></span></span>
+      <span class="hero-loader-pct" data-hero-loader-pct>0%</span>
+    </div>
   </div>
 </section>
 
@@ -81,16 +136,82 @@
   .hero-pin {
     position: relative;
     width: 100%;
+    /* Use dvh so the pin fits the *visible* mobile viewport (excluding the
+       browser chrome / URL bar). With plain 100vh on mobile, the pin is
+       taller than the visible area and the bottom content sits below
+       the fold — that's why the buttons disappeared on mobile. */
     height: 100vh;
+    height: 100dvh;
     overflow: hidden;
-    background: var(--aubergine-deep);
+    background: var(--surface);
   }
   .hero-canvas {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+    /* Animation centered horizontally, shifted 10% down on the Y axis (50% → 60%). */
+    top: 60%;
+    left: 50%;
+    /* 50% of the visible viewport height, width derived from the source frame
+       ratio. min() guards narrow viewports so the canvas never overflows.
+       vh declared first as a fallback — if a browser fails to parse the dvh
+       declaration, CSS falls back to vh instead of leaving height undefined
+       (which would collapse the canvas to its default ~150px and hide it). */
+    height: min(50vh, calc(86vw * 1396 / 1480));
+    height: min(50dvh, calc(86vw * 1396 / 1480));
+    aspect-ratio: 1480 / 1396;
+    width: auto;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    /* Feather the rectangular edge so the character blends into the page —
+       the canvas's near-white frame background never butts up against the
+       page's tint as a visible rectangle. */
+    -webkit-mask-image: radial-gradient(120% 110% at 50% 50%, #000 62%, transparent 96%);
+    mask-image: radial-gradient(120% 110% at 50% 50%, #000 62%, transparent 96%);
+  }
+
+  /* Horizontal pink halo behind the animation.
+     Source: a circular radial gradient centered on the canvas.
+     Mask:   a vertical linear-gradient that's only opaque in a thin band
+             through the middle — so only the gradient's horizontal axis
+             (its left/right lobes) is visible. The top + bottom of the
+             circle are clipped away. */
+  .hero-halo {
+    position: absolute;
     z-index: 1;
+    /* Anchor to the same center as the canvas (60% Y, 50% X) */
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Wider than the viewport so the horizontal lobes spill past the canvas */
+    width: min(1260vw, 2900px);
+    height: min(1140vh, 2900px);
+    pointer-events: none;
+    /* background: radial-gradient(
+      circle at 50% 50%,
+      rgba(244, 240, 242, 1) 0%,
+      /* rgba(219, 107, 151, 0.25) 20%, 
+       rgba(244, 240, 242, 1) 72%,
+        rgba(219, 107, 151, 0.25) 86%,
+       /* rgba(244, 240, 242, 1) 92% 
+    ); */
+    /* Visible band: 25%–75% of halo height (50% opaque) so the visible
+       horizontal halo is taller than the animation as well as wider. */
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 25%,
+      #000 50%,
+      transparent 75%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 25%,
+      #000 50%,
+      transparent 75%,
+      transparent 100%
+    );
+    filter: blur(36px);
   }
   .hero-glow {
     position: absolute;
@@ -98,9 +219,7 @@
     z-index: 2;
     pointer-events: none;
     background:
-      radial-gradient(60% 50% at 50% 60%, rgba(219, 107, 151, 0.18), transparent 70%),
-      radial-gradient(80% 60% at 50% 100%, rgba(26, 18, 32, 0.6), transparent 70%);
-    mix-blend-mode: screen;
+      radial-gradient(60% 50% at 50% 60%, rgba(219, 107, 151, 0.10), transparent 70%);
   }
   .hero-vignette {
     position: absolute;
@@ -108,7 +227,7 @@
     z-index: 2;
     pointer-events: none;
     background:
-      linear-gradient(180deg, rgba(26, 18, 32, 0.55) 0%, rgba(26, 18, 32, 0) 18%, rgba(26, 18, 32, 0) 70%, rgba(26, 18, 32, 0.85) 100%);
+      linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 16%, rgba(255, 255, 255, 0) 70%, rgba(255, 255, 255, 0.92) 100%);
   }
 
   /* Tech overlay labels */
@@ -122,12 +241,12 @@
     font-size: 11px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.55);
+    color: var(--ink-soft);
     padding: 10px 14px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--line);
     border-radius: 8px;
-    background: rgba(26, 18, 32, 0.35);
-    backdrop-filter: blur(6px);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
   }
   .tech-tl { top: 96px; left: 24px; }
   .tech-tr { top: 96px; right: 24px; }
@@ -147,47 +266,81 @@
   }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
-  .hero-copy {
+  /* Title sits above the canvas, anchored to the top of the pin and
+     extending down to just above the canvas top edge.
+     Canvas is at top: 60% with height 50dvh → its top edge sits at 35dvh.
+     We span 35dvh and align to flex-end so the title hugs the canvas. */
+  .hero-top {
     position: absolute;
     z-index: 6;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 35dvh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
     text-align: center;
-    padding: 0 24px;
-    gap: 22px;
+    padding: 92px 24px 8px;
+    gap: 10px;
   }
-  .hero-copy .eyebrow {
-    color: rgba(255, 255, 255, 0.6);
+  /* Sub + actions sit below the canvas. min-height (instead of fixed) lets
+     the block grow UPWARD on short / mobile viewports so the buttons never
+     clip — the overflow goes into the canvas's feathered bottom edge, which
+     is already transparent and reads as page background. */
+  .hero-bottom {
+    position: absolute;
+    z-index: 6;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    min-height: 25dvh;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    padding: 18px 24px 56px;
+    gap: 14px;
+  }
+  @media (max-width: 720px) {
+    .hero-bottom { padding: 14px 20px 32px; gap: 10px; }
+    .hero-actions { width: 100%; flex-direction: column; gap: 8px; }
+    .hero-actions .btn { width: 100%; max-width: 320px; }
+  }
+  .hero-top .eyebrow {
+    color: var(--forli-pink-deep);
   }
   .hero-title {
-    font-size: clamp(48px, 9vw, 128px);
+    font-size: clamp(28px, 4.2vw, 56px);
     font-weight: 900;
-    letter-spacing: -0.04em;
-    line-height: 0.95;
-    color: var(--white);
-    text-shadow:
-      0 0 28px rgba(219, 107, 151, 0.55),
-      0 0 70px rgba(219, 107, 151, 0.35),
-      0 0 130px rgba(219, 107, 151, 0.2);
+    letter-spacing: -0.035em;
+    line-height: 0.98;
+    color: var(--pink);
+    text-shadow: 0 0 34px rgba(219, 107, 151, 0.18);
   }
   .hero-title .line {
     display: block;
     will-change: transform, opacity;
   }
+  /* Line 2: solid pink. */
   .hero-title .line-2 {
-    background: linear-gradient(110deg, var(--forli-pink-soft) 0%, var(--forli-pink) 50%, var(--forli-pink-deep) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--forli-pink);
+  }
+  /* Line 3: 1.2× the title size, sized relative to the inherited font-size. */
+  .hero-title .line-3 {
+    font-size: 1.2em;
+  }
+  .line-2{
+    color: var(--pink);
   }
   .hero-sub {
-    max-width: 560px;
-    font-size: clamp(15px, 1.4vw, 18px);
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.78);
+    max-width: 540px;
+    font-size: clamp(14px, 1.2vw, 17px);
+    line-height: 1.55;
+    color: var(--ink-soft);
   }
   .hero-actions {
     display: flex;
@@ -196,83 +349,265 @@
     justify-content: center;
   }
 
+  /* Mid-scroll tagline mirrors .hero-top so it also hugs the canvas. */
   .hero-mid {
     position: absolute;
-    z-index: 4;
-    inset: 0;
+    z-index: 6;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 35dvh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
     text-align: center;
     pointer-events: none;
     opacity: 0;
-    padding: 0 24px;
+    padding: 92px 24px 8px;
+    gap: 8px;
   }
-  .hero-mid .eyebrow { color: var(--forli-pink); margin-bottom: 14px; }
+  .hero-mid .eyebrow { color: var(--forli-pink-deep); margin-bottom: 4px; }
   .mid-title {
-    font-size: clamp(40px, 7vw, 96px);
+    font-size: clamp(26px, 3.6vw, 48px);
     font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1;
-    color: var(--white);
-    text-shadow: 0 0 50px rgba(219, 107, 151, 0.5);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: var(--ink);
+    text-shadow: 0 0 50px rgba(219, 107, 151, 0.22);
+  }
+
+  /* Positioning wrappers for the WhatsAppInput component. The component owns
+     its own visual styles — these rules only place it in the hero and gate
+     its visibility for the scroll-driven fade in/out.
+       .hero-msg     → ABOVE the animation (frames 21-41)
+       .hero-msg-out → BELOW the animation (frame 81 to end) */
+  .hero-msg,
+  .hero-msg-out {
+    position: absolute;
+    z-index: 7;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(540px, 86vw);
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+  .hero-msg     { top: 18vh; top: 18dvh; }
+  .hero-msg-out { bottom: 8vh; bottom: 8dvh; }
+  @media (max-width: 720px) {
+    .hero-msg,
+    .hero-msg-out { width: min(94vw, 480px); }
+    .hero-msg     { top: 14vh; top: 14dvh; }
+    .hero-msg-out { bottom: 12vh; bottom: 12dvh; }
+  }
+
+  /* Persistent side rails (visible during most of the scroll) */
+  .side {
+    position: absolute;
+    z-index: 5;
+    top: 19%;
+    width: 268px;
+    display: grid;
+    gap: 12px;
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  .side .eyebrow {
+    color: var(--forli-pink-deep);
+    margin-left: 4px;
+  }
+  .side-left { left: 4vw; }
+  .side-right { right: 4vw; }
+  .bubble {
+    border-radius: 18px;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 24px rgba(26, 18, 32, 0.06);
+    display: grid;
+    gap: 8px;
+  }
+  .bubble-in  { border-bottom-left-radius: 6px; }
+  .bubble-out {
+    border-bottom-right-radius: 6px;
+    background: linear-gradient(180deg, rgba(244, 163, 191, 0.16), rgba(219, 107, 151, 0.10));
+    border-color: rgba(219, 107, 151, 0.28);
+  }
+  .bubble-meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .bubble-text {
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .bubble-tags {
+    font-size: 12.5px;
+    color: var(--forli-pink-deep);
+    font-weight: 500;
+  }
+  .chips {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 4px;
+  }
+  .chips li {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 5px 9px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--ink-soft);
   }
 
   .hero-detail {
     position: absolute;
     z-index: 5;
-    bottom: 14%;
-    width: 240px;
-    padding: 18px 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    bottom: 7%;
+    width: 268px;
+    padding: 16px 18px;
+    border: 1px solid var(--line);
     border-radius: var(--radius-md);
-    background: rgba(26, 18, 32, 0.45);
-    backdrop-filter: blur(14px);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 24px rgba(26, 18, 32, 0.06);
     opacity: 0;
   }
-  .hero-detail-left { left: 5vw; }
-  .hero-detail-right { right: 5vw; }
+  .hero-detail-left { left: 4vw; }
+  .hero-detail-right { right: 4vw; }
   .hero-detail h3 {
-    font-size: 22px;
-    margin: 6px 0 12px;
+    font-size: 20px;
+    margin: 4px 0 10px;
+    color: var(--ink);
   }
-  .hero-detail ul { list-style: none; display: grid; gap: 8px; }
+  .hero-detail ul { list-style: none; display: grid; gap: 6px; }
   .hero-detail li {
     display: flex;
     justify-content: space-between;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
-    padding: 4px 0;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    padding: 3px 0;
+    border-bottom: 1px dashed var(--line);
   }
   .hero-detail li:last-child { border-bottom: none; }
-  .hero-detail b { color: var(--white); font-weight: 600; }
+  .hero-detail b { color: var(--ink); font-weight: 600; text-align: right; }
 
+  /* Frame preload progress bar */
+  .hero-loader {
+    position: absolute;
+    z-index: 7;
+    left: 50%;
+    bottom: 90px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(8px);
+    border-radius: 999px;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .hero-loader[data-state='done'] {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+    pointer-events: none;
+  }
+  .hero-loader-track {
+    display: inline-block;
+    width: 120px;
+    height: 3px;
+    background: rgba(26, 18, 32, 0.08);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .hero-loader-bar {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--forli-pink-soft), var(--forli-pink), var(--forli-pink-deep));
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.25s ease;
+    box-shadow: 0 0 12px rgba(219, 107, 151, 0.6);
+  }
+  .hero-loader-pct {
+    min-width: 38px;
+    text-align: right;
+    color: var(--ink);
+  }
+
+  @media (max-width: 1100px) {
+    .side { display: none; }
+  }
   @media (max-width: 900px) {
     .tech-tl, .tech-tr { font-size: 10px; padding: 8px 10px; }
     .tech-bl, .tech-br { display: none; }
     .hero-detail { display: none; }
+    .hero-loader { bottom: 70px; }
   }
 </style>
 
 <script>
   import { gsap } from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import Lenis from 'lenis';
   gsap.registerPlugin(ScrollTrigger);
 
   type Manifest = { count: number; ext: string; pad: number; prefix: string };
+
+  // ── Lenis smooth scroll, driven by GSAP's RAF so ScrollTrigger stays in sync ──
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduceMotion && !(window as any).__lenis) {
+    const lenis = new Lenis({
+      duration: 1.15,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 1.4,
+    });
+    (window as any).__lenis = lenis;
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
 
   const hero = document.querySelector<HTMLElement>('[data-hero]');
   const pin = document.querySelector<HTMLElement>('[data-hero-pin]');
   const canvas = document.querySelector<HTMLCanvasElement>('[data-hero-canvas]');
   const frameNum = document.querySelector<HTMLElement>('[data-frame-num]');
   const frameTotal = document.querySelector<HTMLElement>('[data-frame-total]');
+  const loader = document.querySelector<HTMLElement>('[data-hero-loader]');
+  const loaderBar = document.querySelector<HTMLElement>('[data-hero-loader-bar]');
+  const loaderPct = document.querySelector<HTMLElement>('[data-hero-loader-pct]');
   const titleLines = gsap.utils.toArray<HTMLElement>('[data-hero-title-line]');
   const heroLines = gsap.utils.toArray<HTMLElement>('[data-hero-line]');
   const heroMid = document.querySelector<HTMLElement>('[data-hero-mid]');
+  const heroMsg = document.querySelector<HTMLElement>('[data-hero-msg]');
+  const heroMsgOut = document.querySelector<HTMLElement>('[data-hero-msg-out]');
   const heroLeft = document.querySelector<HTMLElement>('[data-hero-detail-left]');
   const heroRight = document.querySelector<HTMLElement>('[data-hero-detail-right]');
+  const sideLeft = document.querySelector<HTMLElement>('[data-side-left]');
+  const sideRight = document.querySelector<HTMLElement>('[data-side-right]');
 
   if (!hero || !pin || !canvas) {
     console.warn('[hero] missing required DOM');
@@ -281,28 +616,61 @@
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     const sizeCanvas = () => {
-      const w = pin.clientWidth;
-      const h = pin.clientHeight;
+      // CSS drives the on-screen size (50vh × source aspect, centered).
+      // We only set the pixel buffer to match the rendered size × dpr.
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      if (w === 0 || h === 0) return;
       canvas.width = Math.floor(w * dpr);
       canvas.height = Math.floor(h * dpr);
-      canvas.style.width = `${w}px`;
-      canvas.style.height = `${h}px`;
     };
 
-    const drawFrame = (img: HTMLImageElement) => {
-      if (!ctx || !img.complete || img.naturalWidth === 0) return;
+    const isReady = (img: HTMLImageElement | undefined): img is HTMLImageElement =>
+      !!img && img.complete && img.naturalWidth > 0;
+
+    const paintFrame = (img: HTMLImageElement, alpha = 1) => {
+      if (!ctx) return;
       const cw = canvas.width;
       const ch = canvas.height;
       const iw = img.naturalWidth;
       const ih = img.naturalHeight;
-      const scale = Math.max(cw / iw, ch / ih);
+      // contain: fit the whole frame inside the canvas, letterbox the rest.
+      const scale = Math.min(cw / iw, ch / ih);
       const dw = iw * scale;
       const dh = ih * scale;
       const dx = (cw - dw) / 2;
       const dy = (ch - dh) / 2;
-      ctx.fillStyle = '#1a1220';
-      ctx.fillRect(0, 0, cw, ch);
+      ctx.globalAlpha = alpha;
       ctx.drawImage(img, dx, dy, dw, dh);
+      ctx.globalAlpha = 1;
+    };
+
+    // Render at fractional frame f by drawing floor(f) and crossfading ceil(f) on top.
+    const drawAt = (f: number) => {
+      if (!ctx) return;
+      const last = state.images.length - 1;
+      const fc = Math.max(0, Math.min(last, f));
+      const i0 = Math.floor(fc);
+      const i1 = Math.min(last, i0 + 1);
+      const t = fc - i0;
+      const a = state.images[i0];
+      const b = state.images[i1];
+      const fallback = isReady(a) ? a : isReady(b) ? b : findNearestReady(i0);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      if (!fallback) return;
+      paintFrame(isReady(a) ? a : fallback, 1);
+      if (t > 0 && isReady(b) && b !== a) paintFrame(b, t);
+    };
+
+    const findNearestReady = (idx: number): HTMLImageElement | null => {
+      for (let r = 0; r < state.images.length; r++) {
+        const lo = state.images[idx - r];
+        if (isReady(lo)) return lo;
+        const hi = state.images[idx + r];
+        if (isReady(hi)) return hi;
+      }
+      return null;
     };
 
     const drawPlaceholder = () => {
@@ -310,12 +678,11 @@
       const cw = canvas.width;
       const ch = canvas.height;
       const grad = ctx.createRadialGradient(cw / 2, ch / 2, 0, cw / 2, ch / 2, Math.max(cw, ch) / 1.3);
-      grad.addColorStop(0, '#3a2540');
-      grad.addColorStop(0.5, '#231828');
-      grad.addColorStop(1, '#120a18');
+      grad.addColorStop(0, '#fdf8fb');
+      grad.addColorStop(1, '#fbf5f8');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, cw, ch);
-      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      ctx.fillStyle = 'rgba(26, 18, 32, 0.35)';
       ctx.font = `${14 * dpr}px ui-monospace, Menlo, monospace`;
       ctx.textAlign = 'center';
       ctx.fillText(
@@ -329,8 +696,8 @@
     drawPlaceholder();
     window.addEventListener('resize', () => {
       sizeCanvas();
-      const f = state.images[state.current];
-      if (f) drawFrame(f); else drawPlaceholder();
+      if (state.images.length) drawAt(state.current);
+      else drawPlaceholder();
     });
 
     const state = {
@@ -341,13 +708,18 @@
 
     const buildHeroTimeline = (frameCount: number) => {
       const proxy = { f: 0 };
-      // Hero entrance — lines slide up on load
-      gsap.from(heroLines, {
+      // Hero entrance — animate the WRAPPERS (.hero-top / .hero-bottom),
+      // not the same elements the scrub timeline targets. This keeps the
+      // scrub's fromTo start state authoritative for the title elements,
+      // so reverse-scrolling always restores the title cleanly.
+      const heroTopEl = document.querySelector<HTMLElement>('.hero-top');
+      const heroBottomEl = document.querySelector<HTMLElement>('.hero-bottom');
+      gsap.from([heroTopEl, heroBottomEl].filter(Boolean) as HTMLElement[], {
         y: 40,
         opacity: 0,
         duration: 0.9,
         ease: 'power3.out',
-        stagger: 0.08,
+        stagger: 0.12,
         delay: 0.15,
       });
 
@@ -357,23 +729,28 @@
           trigger: hero,
           start: 'top top',
           // Long pin so the frame scrub feels meaningful (~3 viewports)
-          end: '+=3000',
+          end: '+=3200',
           pin: pin,
-          scrub: 0.6,
+          scrub: 1,
           anticipatePin: 1,
+          invalidateOnRefresh: true,
         },
       });
 
-      // 0 → 1 : copy exits in three directions while frames scrub
-      tl.to(titleLines[0], { x: '-60vw', opacity: 0, ease: 'power2.in' }, 0)
-        .to(titleLines[1], { scale: 2.2, opacity: 0, ease: 'power2.in' }, 0)
-        .to(titleLines[2], { x: '60vw', opacity: 0, ease: 'power2.in' }, 0)
-        .to(
+      // 0 → 1 : copy exits in three directions while frames scrub.
+      // Use fromTo with explicit start state so reverse-scroll always returns
+      // the title to its natural visible state — independent of any earlier
+      // entrance tween or ScrollTrigger.refresh() invalidation.
+      tl.fromTo(titleLines[0], { x: 0, opacity: 1 }, { x: '-60vw', opacity: 0, ease: 'power2.in' }, 0)
+        .fromTo(titleLines[1], { scale: 1, opacity: 1 }, { scale: 2.2, opacity: 0, ease: 'power2.in' }, 0)
+        .fromTo(titleLines[2], { x: 0, opacity: 1 }, { x: '60vw', opacity: 0, ease: 'power2.in' }, 0)
+        .fromTo(
           heroLines.filter((el) => !titleLines.includes(el)),
+          { y: 0, opacity: 1 },
           { y: -40, opacity: 0, ease: 'power2.in', stagger: 0.04 },
           0,
         )
-        // Frame scrub runs the full pinned distance
+        // Frame scrub runs the full pinned distance with sub-frame interpolation
         .to(
           proxy,
           {
@@ -381,22 +758,106 @@
             ease: 'none',
             duration: 3,
             onUpdate: () => {
-              const idx = Math.round(proxy.f);
-              if (idx === state.current) return;
-              state.current = idx;
-              const img = state.images[idx];
-              if (img) drawFrame(img);
-              if (frameNum) frameNum.textContent = String(idx + 1).padStart(4, '0');
+              state.current = proxy.f;
+              drawAt(proxy.f);
+              if (frameNum) frameNum.textContent = String(Math.round(proxy.f) + 1).padStart(4, '0');
             },
           },
           0,
         )
-        // Mid-scroll tagline fades in then out
-        .fromTo(heroMid, { opacity: 0, y: 30 }, { opacity: 1, y: 0, ease: 'power2.out' }, 1.0)
-        .to(heroMid, { opacity: 0, y: -30, ease: 'power2.in' }, 1.9)
+        // Side rails (you write / Forly returns) fade in shortly after copy exits
+        // and stay visible through the rest of the scroll.
+        .fromTo(sideLeft, { opacity: 0, x: -50, y: 10 }, { opacity: 1, x: 0, y: 0, ease: 'power3.out' }, 0.55)
+        .fromTo(sideRight, { opacity: 0, x: 50, y: 10 }, { opacity: 1, x: 0, y: 0, ease: 'power3.out' }, 0.7)
+        // WhatsApp message bubble — visible during frames 21-41.
+        // Frame N (1-indexed) → timeline position (N-1) * 0.03.
+        //   Frame 21 → 0.60 (fade-in starts)
+        //   Frame 41 → 1.20 (fade-out completes)
+        .fromTo(
+          heroMsg,
+          { opacity: 0, y: 16, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1, ease: 'power2.out', duration: 0.06 },
+          0.6,
+        )
+        .to(
+          heroMsg,
+          { opacity: 0, y: -10, scale: 0.98, ease: 'power2.in', duration: 0.06 },
+          1.14,
+        )
+        // Mid-scroll tagline — visible during frames 48-78.
+        //   Frame 48 → 1.41 (fade-in starts)
+        //   Frame 78 → 2.31 (fade-out completes)
+        .fromTo(
+          heroMid,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, ease: 'power2.out', duration: 0.2 },
+          1.41,
+        )
+        .to(
+          heroMid,
+          { opacity: 0, y: -30, ease: 'power2.in', duration: 0.2 },
+          2.11,
+        )
         // End-of-scroll product detail rails
-        .fromTo(heroLeft, { opacity: 0, x: -40 }, { opacity: 1, x: 0, ease: 'power3.out' }, 2.4)
-        .fromTo(heroRight, { opacity: 0, x: 40 }, { opacity: 1, x: 0, ease: 'power3.out' }, 2.4);
+        .fromTo(heroLeft, { opacity: 0, y: 30 }, { opacity: 1, y: 0, ease: 'power3.out' }, 2.4)
+        .fromTo(heroRight, { opacity: 0, y: 30 }, { opacity: 1, y: 0, ease: 'power3.out' }, 2.4)
+        // WhatsApp confirmation bubble — visible from frame 81 to the end.
+        //   Frame 81 → 2.40 (fade-in starts). Stays visible through the end of the scrub.
+        .fromTo(
+          heroMsgOut,
+          { opacity: 0, y: 16, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1, ease: 'power2.out', duration: 0.06 },
+          2.4,
+        );
+    };
+
+    // Decode an image off-thread when supported, fall back to onload.
+    const decodeImage = (url: string): Promise<HTMLImageElement> =>
+      new Promise((resolve) => {
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = url;
+        const done = () => resolve(img);
+        if ('decode' in img && typeof img.decode === 'function') {
+          img.decode().then(done).catch(done);
+        } else {
+          img.onload = done;
+          img.onerror = done;
+        }
+      });
+
+    // Decode N urls concurrently with a bounded queue.
+    const decodePool = async (
+      urls: string[],
+      indices: number[],
+      concurrency: number,
+      onProgress: (loaded: number) => void,
+    ) => {
+      let cursor = 0;
+      let loaded = 0;
+      const total = indices.length;
+      const worker = async () => {
+        while (cursor < total) {
+          const myCursor = cursor++;
+          const idx = indices[myCursor];
+          const img = await decodeImage(urls[idx]);
+          state.images[idx] = img;
+          loaded++;
+          onProgress(loaded);
+        }
+      };
+      await Promise.all(Array.from({ length: concurrency }, worker));
+    };
+
+    const setLoader = (loaded: number, total: number) => {
+      const pct = total > 0 ? Math.round((loaded / total) * 100) : 0;
+      if (loaderBar) loaderBar.style.transform = `scaleX(${loaded / Math.max(1, total)})`;
+      if (loaderPct) loaderPct.textContent = `${pct}%`;
+    };
+
+    const hideLoader = () => {
+      if (!loader) return;
+      loader.dataset.state = 'done';
     };
 
     const loadFrames = async () => {
@@ -408,32 +869,47 @@
         if (frameTotal) frameTotal.textContent = String(manifest.count).padStart(4, '0');
 
         const urls: string[] = [];
-        for (let i = 1; i <= manifest.count; i++) {
-          const num = String(i).padStart(manifest.pad, '0');
+        for (let i = 0; i < manifest.count; i++) {
+          const num = String(i + 1).padStart(manifest.pad, '0');
           urls.push(`/frames/${manifest.prefix}${num}.${manifest.ext}`);
         }
 
-        // Preload first frame, then build timeline, then preload the rest.
-        const first = new Image();
-        first.src = urls[0];
-        await new Promise<void>((resolve) => {
-          first.onload = () => resolve();
-          first.onerror = () => resolve();
-        });
+        // Phase 1: decode the first frame so the canvas isn't a placeholder.
+        const first = await decodeImage(urls[0]);
         state.images[0] = first;
-        drawFrame(first);
+        drawAt(0);
 
-        // Eager preload remaining (browser will throttle)
-        for (let i = 1; i < urls.length; i++) {
-          const img = new Image();
-          img.src = urls[i];
-          state.images[i] = img;
-        }
+        // Phase 2: decode a head batch (~25% or 60 frames, whichever is smaller)
+        // before we let scroll start scrubbing — this prevents black flashes.
+        const headSize = Math.min(60, Math.max(12, Math.floor(manifest.count * 0.25)));
+        const headIndices: number[] = [];
+        for (let i = 1; i < headSize; i++) headIndices.push(i);
+        let loadedCount = 1;
+        setLoader(loadedCount, manifest.count);
+        await decodePool(urls, headIndices, 8, (n) => {
+          loadedCount = 1 + n;
+          setLoader(loadedCount, manifest.count);
+        });
 
+        // Phase 3: build the scroll timeline now that we have a usable head.
         buildHeroTimeline(manifest.count);
+        ScrollTrigger.refresh();
+
+        // Phase 4: decode the rest in the background, lower concurrency.
+        const tailIndices: number[] = [];
+        for (let i = headSize; i < manifest.count; i++) tailIndices.push(i);
+        decodePool(urls, tailIndices, 6, (n) => {
+          loadedCount = headSize + n;
+          setLoader(loadedCount, manifest.count);
+          if (loadedCount >= manifest.count) hideLoader();
+        }).then(() => hideLoader());
+
+        // If head completed everything (small video), still hide the loader.
+        if (manifest.count <= headSize) hideLoader();
       } catch (err) {
         console.warn('[hero] no frames manifest yet — running with placeholder.', err);
         if (frameTotal) frameTotal.textContent = '----';
+        hideLoader();
         // Still build the timeline so scroll behavior is testable.
         buildHeroTimeline(1);
       }

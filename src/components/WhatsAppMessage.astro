@@ -1,0 +1,138 @@
+---
+// WhatsApp-style chat message bubble. Reusable, location-agnostic.
+//
+// Props
+//   he      – Hebrew message text (required)
+//   en      – English message text (optional; falls back to he)
+//   time    – timestamp string shown inside the bubble, e.g. "14:03" (optional)
+//   variant – 'incoming' (white, anchored to inline-start)
+//             'outgoing' (green, anchored to inline-end)  default: 'incoming'
+import T from './T.astro';
+
+const {
+  he,
+  en,
+  time = '',
+  variant = 'incoming',
+} = Astro.props as {
+  he: string;
+  en?: string;
+  time?: string;
+  variant?: 'incoming' | 'outgoing';
+};
+---
+<div class:list={['wa-msg', `wa-msg--${variant}`]} role="presentation">
+  <div class="wa-msg-bubble">
+    <span class="wa-msg-text">
+      {en ? <T he={he} en={en} /> : he}
+    </span>
+    {time && (
+      <span class="wa-msg-meta">
+        <span class="wa-msg-time">{time}</span>
+        {variant === 'outgoing' && (
+          <svg class="wa-msg-check" viewBox="0 0 18 18" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M17.394 5.035l-.57-.444a.434.434 0 0 0-.609.076l-6.39 8.198a.38.38 0 0 1-.578.039l-.427-.388a.381.381 0 0 0-.578.038l-.451.576a.497.497 0 0 0 .043.645l1.575 1.51a.38.38 0 0 0 .577-.039l7.483-9.602a.436.436 0 0 0-.075-.609zm-4.892 0l-.57-.444a.434.434 0 0 0-.609.076l-6.39 8.198a.38.38 0 0 1-.577.039L2.614 9.708a.435.435 0 0 0-.614.05l-.451.576a.435.435 0 0 0 .049.614l3.273 2.94a.38.38 0 0 0 .578-.038l7.482-9.602a.436.436 0 0 0-.075-.609z"
+            />
+          </svg>
+        )}
+      </span>
+    )}
+  </div>
+</div>
+
+<style>
+  .wa-msg {
+    display: flex;
+    width: 100%;
+    font-family: 'Heebo', 'Inter', system-ui, sans-serif;
+  }
+  /* Logical alignment so incoming/outgoing flip correctly in RTL pages.
+     LTR: incoming → left, outgoing → right. RTL: incoming → right, outgoing → left. */
+  .wa-msg--incoming { justify-content: flex-start; }
+  .wa-msg--outgoing { justify-content: flex-end; }
+
+  .wa-msg-bubble {
+    position: relative;
+    max-width: 78%;
+    padding: 7px 12px 6px;
+    border-radius: 7.5px;
+    box-shadow: 0 1px 0.5px rgba(11, 20, 26, 0.13);
+    display: inline-flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  /* Top-start corner flattened to suggest a tail-attachment point. */
+  .wa-msg--incoming .wa-msg-bubble {
+    background: #ffffff;
+    border-start-start-radius: 0;
+  }
+  .wa-msg--outgoing .wa-msg-bubble {
+    background: #d9fdd3;
+    border-start-end-radius: 0;
+  }
+
+  /* Optional triangular tail. Drawn as a CSS triangle hooked off the
+     top-inline-start corner. Uses logical properties so it sits on the
+     right side in RTL pages without extra rules. */
+  .wa-msg--incoming .wa-msg-bubble::before,
+  .wa-msg--outgoing .wa-msg-bubble::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+  }
+  /* Incoming tail (white) */
+  .wa-msg--incoming .wa-msg-bubble::before {
+    inset-inline-start: -7px;
+    border-width: 0 7px 8px 0;
+    border-color: transparent #ffffff transparent transparent;
+  }
+  html[dir='rtl'] .wa-msg--incoming .wa-msg-bubble::before {
+    border-width: 0 0 8px 7px;
+    border-color: transparent transparent transparent #ffffff;
+  }
+  /* Outgoing tail (green) */
+  .wa-msg--outgoing .wa-msg-bubble::before {
+    inset-inline-end: -7px;
+    border-width: 0 0 8px 7px;
+    border-color: transparent transparent transparent #d9fdd3;
+  }
+  html[dir='rtl'] .wa-msg--outgoing .wa-msg-bubble::before {
+    border-width: 0 7px 8px 0;
+    border-color: transparent #d9fdd3 transparent transparent;
+  }
+
+  .wa-msg-text {
+    color: #111b21;
+    font-size: 15.5px;
+    line-height: 1.35;
+    white-space: pre-wrap;
+  }
+  .wa-msg-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    margin-inline-start: auto;
+    font-size: 11px;
+    color: #667781;
+    line-height: 1;
+    align-self: flex-end;
+    flex: none;
+  }
+  .wa-msg-time { white-space: nowrap; }
+  .wa-msg-check {
+    width: 16px;
+    height: 12px;
+    color: #53bdeb;
+  }
+
+  @media (max-width: 720px) {
+    .wa-msg-text { font-size: 14.5px; }
+    .wa-msg-bubble { max-width: 86%; }
+  }
+</style>

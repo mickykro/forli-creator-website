@@ -1,21 +1,30 @@
 ---
+import T from './T.astro';
+
 const links = [
-  { href: '#features', label: 'Features' },
-  { href: '#how', label: 'How it works' },
-  { href: '#industries', label: 'Industries' },
-  { href: '#cta', label: 'Join beta' },
+  { href: '#features', he: 'יכולות', en: 'Capabilities' },
+  { href: '#features', he: 'המערכת', en: 'The stack' },
+  { href: '#cta', he: 'הצטרפו לבטא', en: 'Join beta' },
 ];
 ---
 <header class="nav" data-nav>
   <div class="nav-inner">
-    <a href="#top" class="brand" aria-label="Forli home">
+    <a href="#top" class="brand" aria-label="Forly home">
       <span class="brand-mark" aria-hidden="true"></span>
-      <span class="brand-name">FORLI</span>
+      <span class="brand-name">FORLY</span>
     </a>
     <nav class="links" aria-label="Primary">
-      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+      {links.map((l) => <a href={l.href}><T he={l.he} en={l.en} /></a>)}
     </nav>
-    <a href="#cta" class="btn btn-primary nav-cta">Try free</a>
+    <div class="nav-actions">
+      <button type="button" class="lang-toggle" data-lang-toggle aria-label="Toggle language">
+        <span class="l-he"><span class="lang-toggle-current">עב</span> · EN</span>
+        <span class="l-en">HE · <span class="lang-toggle-current">EN</span></span>
+      </button>
+      <a href="#cta" class="btn btn-primary nav-cta">
+        <T he="נסו בחינם" en="Try free" />
+      </a>
+    </div>
   </div>
 </header>
 
@@ -32,10 +41,10 @@ const links = [
   }
   .nav[data-state='hidden'] { transform: translateY(-120%); }
   .nav[data-state='scrolled'] {
-    background: rgba(26, 18, 32, 0.55);
+    background: rgba(255, 255, 255, 0.78);
     backdrop-filter: blur(18px) saturate(140%);
     -webkit-backdrop-filter: blur(18px) saturate(140%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--line);
   }
   .nav-inner {
     width: 100%;
@@ -63,34 +72,41 @@ const links = [
     background: radial-gradient(circle at 30% 30%, var(--forli-pink-soft), var(--forli-pink) 60%, var(--forli-pink-deep));
     box-shadow: var(--glow-pink);
   }
-  .brand-name { color: var(--white); }
+  .brand-name { color: var(--ink); }
   .links {
     display: flex;
     gap: 28px;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--ink-soft);
   }
   .links a {
     position: relative;
     transition: color 0.2s ease;
   }
-  .links a:hover { color: var(--white); }
+  .links a:hover { color: var(--ink); }
   .links a::after {
     content: '';
     position: absolute;
-    left: 0;
-    right: 0;
+    inset-inline-start: 0;
+    inset-inline-end: 0;
     bottom: -6px;
     height: 1px;
     background: var(--forli-pink);
     transform: scaleX(0);
-    transform-origin: left;
+    transform-origin: var(--underline-origin, left);
     transition: transform 0.3s ease;
   }
+  html[dir='rtl'] .links a::after { --underline-origin: right; }
   .links a:hover::after { transform: scaleX(1); }
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
   .nav-cta { padding: 10px 20px; font-size: 13px; }
   @media (max-width: 720px) {
     .links { display: none; }
+    .lang-toggle { font-size: 10px; padding: 6px 10px; }
   }
 </style>
 
@@ -113,4 +129,24 @@ const links = [
       }
     }, { passive: true });
   }
+
+  // Language toggle — flip <html lang/dir>, persist, swap title + description.
+  const w = window as unknown as {
+    __forlyLangTitles?: Record<string, string>;
+    __forlyLangDescs?: Record<string, string>;
+  };
+  document.querySelectorAll<HTMLElement>('[data-lang-toggle]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const html = document.documentElement;
+      const next = html.lang === 'he' ? 'en' : 'he';
+      html.lang = next;
+      html.dir = next === 'he' ? 'rtl' : 'ltr';
+      try { localStorage.setItem('forly-lang', next); } catch {}
+      const titles = w.__forlyLangTitles;
+      const descs = w.__forlyLangDescs;
+      if (titles && titles[next]) document.title = titles[next];
+      const meta = document.querySelector('meta[name="description"]');
+      if (meta && descs && descs[next]) meta.setAttribute('content', descs[next]);
+    });
+  });
 </script>

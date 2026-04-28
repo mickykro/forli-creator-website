@@ -7,17 +7,17 @@ interface Props {
 }
 
 const {
-  title = 'Forli — Never miss a customer call again',
-  description = 'Forli is the AI assistant that answers your customers on WhatsApp the second a call is missed. In Hebrew, around the clock, in your voice.',
+  title = 'פורלי v2 — סטודיו תוכן AI בוואטסאפ',
+  description = 'פורלי הופכת הודעות וואטסאפ בעברית לתמונות, סרטונים, קרוסלות ואתרים — נוצרים ונשלחים ישר חזרה לצ׳אט שלכם.',
 } = Astro.props;
 ---
 <!doctype html>
-<html lang="en">
+<html lang="he" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#1a1220" />
+    <meta name="theme-color" content="#fbf5f8" />
     <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,6 +25,31 @@ const {
       href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
+    <!-- Apply stored language preference before body paints — no FOUC. -->
+    <script is:inline>
+      (function () {
+        var TITLES = {
+          he: 'פורלי v2 — סטודיו תוכן AI בוואטסאפ',
+          en: 'Forly v2 — A WhatsApp-native AI content studio'
+        };
+        var DESCS = {
+          he: 'פורלי הופכת הודעות וואטסאפ בעברית לתמונות, סרטונים, קרוסלות ואתרים — נוצרים ונשלחים ישר חזרה לצ׳אט שלכם.',
+          en: 'Forly turns Hebrew WhatsApp messages into images, videos, carousels, and websites — generated and delivered straight back into your chat.'
+        };
+        try {
+          var stored = localStorage.getItem('forly-lang');
+          var lang = stored === 'en' ? 'en' : 'he';
+          var html = document.documentElement;
+          html.lang = lang;
+          html.dir = lang === 'he' ? 'rtl' : 'ltr';
+          document.title = TITLES[lang];
+          var meta = document.querySelector('meta[name="description"]');
+          if (meta) meta.setAttribute('content', DESCS[lang]);
+          window.__forlyLangTitles = TITLES;
+          window.__forlyLangDescs = DESCS;
+        } catch (e) { /* localStorage unavailable — keep server default */ }
+      })();
+    </script>
   </head>
   <body>
     <slot />
