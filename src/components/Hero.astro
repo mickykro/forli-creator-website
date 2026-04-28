@@ -1,0 +1,444 @@
+---
+// Hero — pinned canvas with GSAP ScrollTrigger frame scrubbing.
+// Frames live in /public/frames/ and are produced by `npm run extract:frames`.
+// The script reads /frames/manifest.json at runtime to know how many frames exist.
+---
+<section class="hero" id="top" data-hero>
+  <div class="hero-pin" data-hero-pin>
+    <canvas class="hero-canvas" data-hero-canvas aria-hidden="true"></canvas>
+
+    <!-- Ambient pink wash that rides on top of the canvas -->
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-vignette" aria-hidden="true"></div>
+
+    <!-- Technical corner overlays -->
+    <div class="tech tech-tl">
+      <span class="tech-dot"></span>
+      <span>FRM <span data-frame-num>0001</span> / <span data-frame-total>—</span></span>
+    </div>
+    <div class="tech tech-tr">
+      <span>FORLI · A1.0 · TLV</span>
+      <span class="tech-dot live"></span>
+    </div>
+    <div class="tech tech-bl">
+      <span>SCROLL ↓</span>
+    </div>
+    <div class="tech tech-br">
+      <span>WHATSAPP API · 24/7</span>
+    </div>
+
+    <!-- Hero copy stack -->
+    <div class="hero-copy" data-hero-copy>
+      <p class="eyebrow" data-hero-line>Forli · Private beta · 2026</p>
+      <h1 class="hero-title" data-hero-line>
+        <span class="line line-1" data-hero-title-line>Never miss a</span>
+        <span class="line line-2" data-hero-title-line>customer call</span>
+        <span class="line line-3" data-hero-title-line>again.</span>
+      </h1>
+      <p class="hero-sub" data-hero-line>
+        Forli answers your customers on WhatsApp the second a call goes unanswered —
+        in Hebrew, in your voice, around the clock.
+      </p>
+      <div class="hero-actions" data-hero-line>
+        <a href="#cta" class="btn btn-primary">Join the private beta</a>
+        <a href="#features" class="btn btn-ghost">See how it works ↓</a>
+      </div>
+    </div>
+
+    <!-- Mid-scroll tagline that fades over the frames -->
+    <div class="hero-mid" data-hero-mid aria-hidden="true">
+      <p class="eyebrow">Always on</p>
+      <h2 class="mid-title">Voicemail is dead.<br/>WhatsApp answers.</h2>
+    </div>
+
+    <!-- End-of-scroll product detail rails -->
+    <aside class="hero-detail hero-detail-left" data-hero-detail-left>
+      <p class="eyebrow">Product</p>
+      <h3>Forli A1</h3>
+      <ul>
+        <li><span>Channel</span><b>WhatsApp Business</b></li>
+        <li><span>Languages</span><b>HE · EN · AR · RU</b></li>
+        <li><span>Response</span><b>&lt; 4 sec</b></li>
+      </ul>
+    </aside>
+    <aside class="hero-detail hero-detail-right" data-hero-detail-right>
+      <p class="eyebrow">Specs</p>
+      <h3>Built for SMBs</h3>
+      <ul>
+        <li><span>Setup</span><b>15 min</b></li>
+        <li><span>Calendar</span><b>Calendly · Google</b></li>
+        <li><span>Pricing</span><b>From ₪199 / mo</b></li>
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    width: 100%;
+  }
+  .hero-pin {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--aubergine-deep);
+  }
+  .hero-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  .hero-glow {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      radial-gradient(60% 50% at 50% 60%, rgba(219, 107, 151, 0.18), transparent 70%),
+      radial-gradient(80% 60% at 50% 100%, rgba(26, 18, 32, 0.6), transparent 70%);
+    mix-blend-mode: screen;
+  }
+  .hero-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(26, 18, 32, 0.55) 0%, rgba(26, 18, 32, 0) 18%, rgba(26, 18, 32, 0) 70%, rgba(26, 18, 32, 0.85) 100%);
+  }
+
+  /* Tech overlay labels */
+  .tech {
+    position: absolute;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    padding: 10px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: rgba(26, 18, 32, 0.35);
+    backdrop-filter: blur(6px);
+  }
+  .tech-tl { top: 96px; left: 24px; }
+  .tech-tr { top: 96px; right: 24px; }
+  .tech-bl { bottom: 32px; left: 24px; }
+  .tech-br { bottom: 32px; right: 24px; }
+  .tech-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--forli-pink);
+    box-shadow: 0 0 10px var(--forli-pink);
+  }
+  .tech-dot.live {
+    background: var(--sage);
+    box-shadow: 0 0 10px var(--sage);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  .hero-copy {
+    position: absolute;
+    z-index: 6;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 24px;
+    gap: 22px;
+  }
+  .hero-copy .eyebrow {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .hero-title {
+    font-size: clamp(48px, 9vw, 128px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    color: var(--white);
+    text-shadow:
+      0 0 28px rgba(219, 107, 151, 0.55),
+      0 0 70px rgba(219, 107, 151, 0.35),
+      0 0 130px rgba(219, 107, 151, 0.2);
+  }
+  .hero-title .line {
+    display: block;
+    will-change: transform, opacity;
+  }
+  .hero-title .line-2 {
+    background: linear-gradient(110deg, var(--forli-pink-soft) 0%, var(--forli-pink) 50%, var(--forli-pink-deep) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero-sub {
+    max-width: 560px;
+    font-size: clamp(15px, 1.4vw, 18px);
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.78);
+  }
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero-mid {
+    position: absolute;
+    z-index: 4;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    padding: 0 24px;
+  }
+  .hero-mid .eyebrow { color: var(--forli-pink); margin-bottom: 14px; }
+  .mid-title {
+    font-size: clamp(40px, 7vw, 96px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--white);
+    text-shadow: 0 0 50px rgba(219, 107, 151, 0.5);
+  }
+
+  .hero-detail {
+    position: absolute;
+    z-index: 5;
+    bottom: 14%;
+    width: 240px;
+    padding: 18px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    background: rgba(26, 18, 32, 0.45);
+    backdrop-filter: blur(14px);
+    opacity: 0;
+  }
+  .hero-detail-left { left: 5vw; }
+  .hero-detail-right { right: 5vw; }
+  .hero-detail h3 {
+    font-size: 22px;
+    margin: 6px 0 12px;
+  }
+  .hero-detail ul { list-style: none; display: grid; gap: 8px; }
+  .hero-detail li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 4px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+  }
+  .hero-detail li:last-child { border-bottom: none; }
+  .hero-detail b { color: var(--white); font-weight: 600; }
+
+  @media (max-width: 900px) {
+    .tech-tl, .tech-tr { font-size: 10px; padding: 8px 10px; }
+    .tech-bl, .tech-br { display: none; }
+    .hero-detail { display: none; }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  type Manifest = { count: number; ext: string; pad: number; prefix: string };
+
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  const pin = document.querySelector<HTMLElement>('[data-hero-pin]');
+  const canvas = document.querySelector<HTMLCanvasElement>('[data-hero-canvas]');
+  const frameNum = document.querySelector<HTMLElement>('[data-frame-num]');
+  const frameTotal = document.querySelector<HTMLElement>('[data-frame-total]');
+  const titleLines = gsap.utils.toArray<HTMLElement>('[data-hero-title-line]');
+  const heroLines = gsap.utils.toArray<HTMLElement>('[data-hero-line]');
+  const heroMid = document.querySelector<HTMLElement>('[data-hero-mid]');
+  const heroLeft = document.querySelector<HTMLElement>('[data-hero-detail-left]');
+  const heroRight = document.querySelector<HTMLElement>('[data-hero-detail-right]');
+
+  if (!hero || !pin || !canvas) {
+    console.warn('[hero] missing required DOM');
+  } else {
+    const ctx = canvas.getContext('2d', { alpha: false });
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    const sizeCanvas = () => {
+      const w = pin.clientWidth;
+      const h = pin.clientHeight;
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+    };
+
+    const drawFrame = (img: HTMLImageElement) => {
+      if (!ctx || !img.complete || img.naturalWidth === 0) return;
+      const cw = canvas.width;
+      const ch = canvas.height;
+      const iw = img.naturalWidth;
+      const ih = img.naturalHeight;
+      const scale = Math.max(cw / iw, ch / ih);
+      const dw = iw * scale;
+      const dh = ih * scale;
+      const dx = (cw - dw) / 2;
+      const dy = (ch - dh) / 2;
+      ctx.fillStyle = '#1a1220';
+      ctx.fillRect(0, 0, cw, ch);
+      ctx.drawImage(img, dx, dy, dw, dh);
+    };
+
+    const drawPlaceholder = () => {
+      if (!ctx) return;
+      const cw = canvas.width;
+      const ch = canvas.height;
+      const grad = ctx.createRadialGradient(cw / 2, ch / 2, 0, cw / 2, ch / 2, Math.max(cw, ch) / 1.3);
+      grad.addColorStop(0, '#3a2540');
+      grad.addColorStop(0.5, '#231828');
+      grad.addColorStop(1, '#120a18');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, cw, ch);
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      ctx.font = `${14 * dpr}px ui-monospace, Menlo, monospace`;
+      ctx.textAlign = 'center';
+      ctx.fillText(
+        'Drop your MP4 in /public/video/  →  npm run extract:frames',
+        cw / 2,
+        ch / 2,
+      );
+    };
+
+    sizeCanvas();
+    drawPlaceholder();
+    window.addEventListener('resize', () => {
+      sizeCanvas();
+      const f = state.images[state.current];
+      if (f) drawFrame(f); else drawPlaceholder();
+    });
+
+    const state = {
+      current: 0,
+      images: [] as HTMLImageElement[],
+      manifest: null as Manifest | null,
+    };
+
+    const buildHeroTimeline = (frameCount: number) => {
+      const proxy = { f: 0 };
+      // Hero entrance — lines slide up on load
+      gsap.from(heroLines, {
+        y: 40,
+        opacity: 0,
+        duration: 0.9,
+        ease: 'power3.out',
+        stagger: 0.08,
+        delay: 0.15,
+      });
+
+      // Master scrubbed timeline pinned to the hero section
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: hero,
+          start: 'top top',
+          // Long pin so the frame scrub feels meaningful (~3 viewports)
+          end: '+=3000',
+          pin: pin,
+          scrub: 0.6,
+          anticipatePin: 1,
+        },
+      });
+
+      // 0 → 1 : copy exits in three directions while frames scrub
+      tl.to(titleLines[0], { x: '-60vw', opacity: 0, ease: 'power2.in' }, 0)
+        .to(titleLines[1], { scale: 2.2, opacity: 0, ease: 'power2.in' }, 0)
+        .to(titleLines[2], { x: '60vw', opacity: 0, ease: 'power2.in' }, 0)
+        .to(
+          heroLines.filter((el) => !titleLines.includes(el)),
+          { y: -40, opacity: 0, ease: 'power2.in', stagger: 0.04 },
+          0,
+        )
+        // Frame scrub runs the full pinned distance
+        .to(
+          proxy,
+          {
+            f: Math.max(0, frameCount - 1),
+            ease: 'none',
+            duration: 3,
+            onUpdate: () => {
+              const idx = Math.round(proxy.f);
+              if (idx === state.current) return;
+              state.current = idx;
+              const img = state.images[idx];
+              if (img) drawFrame(img);
+              if (frameNum) frameNum.textContent = String(idx + 1).padStart(4, '0');
+            },
+          },
+          0,
+        )
+        // Mid-scroll tagline fades in then out
+        .fromTo(heroMid, { opacity: 0, y: 30 }, { opacity: 1, y: 0, ease: 'power2.out' }, 1.0)
+        .to(heroMid, { opacity: 0, y: -30, ease: 'power2.in' }, 1.9)
+        // End-of-scroll product detail rails
+        .fromTo(heroLeft, { opacity: 0, x: -40 }, { opacity: 1, x: 0, ease: 'power3.out' }, 2.4)
+        .fromTo(heroRight, { opacity: 0, x: 40 }, { opacity: 1, x: 0, ease: 'power3.out' }, 2.4);
+    };
+
+    const loadFrames = async () => {
+      try {
+        const res = await fetch('/frames/manifest.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('manifest missing');
+        const manifest = (await res.json()) as Manifest;
+        state.manifest = manifest;
+        if (frameTotal) frameTotal.textContent = String(manifest.count).padStart(4, '0');
+
+        const urls: string[] = [];
+        for (let i = 1; i <= manifest.count; i++) {
+          const num = String(i).padStart(manifest.pad, '0');
+          urls.push(`/frames/${manifest.prefix}${num}.${manifest.ext}`);
+        }
+
+        // Preload first frame, then build timeline, then preload the rest.
+        const first = new Image();
+        first.src = urls[0];
+        await new Promise<void>((resolve) => {
+          first.onload = () => resolve();
+          first.onerror = () => resolve();
+        });
+        state.images[0] = first;
+        drawFrame(first);
+
+        // Eager preload remaining (browser will throttle)
+        for (let i = 1; i < urls.length; i++) {
+          const img = new Image();
+          img.src = urls[i];
+          state.images[i] = img;
+        }
+
+        buildHeroTimeline(manifest.count);
+      } catch (err) {
+        console.warn('[hero] no frames manifest yet — running with placeholder.', err);
+        if (frameTotal) frameTotal.textContent = '----';
+        // Still build the timeline so scroll behavior is testable.
+        buildHeroTimeline(1);
+      }
+    };
+
+    loadFrames();
+  }
+</script>

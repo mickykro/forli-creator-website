@@ -1,0 +1,116 @@
+---
+const links = [
+  { href: '#features', label: 'Features' },
+  { href: '#how', label: 'How it works' },
+  { href: '#industries', label: 'Industries' },
+  { href: '#cta', label: 'Join beta' },
+];
+---
+<header class="nav" data-nav>
+  <div class="nav-inner">
+    <a href="#top" class="brand" aria-label="Forli home">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">FORLI</span>
+    </a>
+    <nav class="links" aria-label="Primary">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+    <a href="#cta" class="btn btn-primary nav-cta">Try free</a>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 16px 0;
+    transform: translateY(0);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, backdrop-filter 0.3s ease;
+  }
+  .nav[data-state='hidden'] { transform: translateY(-120%); }
+  .nav[data-state='scrolled'] {
+    background: rgba(26, 18, 32, 0.55);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .nav-inner {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    font-size: 14px;
+  }
+  .brand-mark {
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: radial-gradient(circle at 30% 30%, var(--forli-pink-soft), var(--forli-pink) 60%, var(--forli-pink-deep));
+    box-shadow: var(--glow-pink);
+  }
+  .brand-name { color: var(--white); }
+  .links {
+    display: flex;
+    gap: 28px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.75);
+  }
+  .links a {
+    position: relative;
+    transition: color 0.2s ease;
+  }
+  .links a:hover { color: var(--white); }
+  .links a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 1px;
+    background: var(--forli-pink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .links a:hover::after { transform: scaleX(1); }
+  .nav-cta { padding: 10px 20px; font-size: 13px; }
+  @media (max-width: 720px) {
+    .links { display: none; }
+  }
+</style>
+
+<script>
+  const nav = document.querySelector('[data-nav]') as HTMLElement | null;
+  if (nav) {
+    let last = 0;
+    let ticking = false;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (y > 40) nav.dataset.state = y > last && y > 240 ? 'hidden' : 'scrolled';
+      else nav.dataset.state = '';
+      last = y;
+      ticking = false;
+    };
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(onScroll);
+        ticking = true;
+      }
+    }, { passive: true });
+  }
+</script>
