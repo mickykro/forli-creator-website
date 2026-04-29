@@ -4,8 +4,19 @@ import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
 import Features from '../components/Features.astro';
 import CTA from '../components/CTA.astro';
+import { SITE_URL } from '../brand';
+
+// WebSite schema lets search engines surface a sitelinks search box and
+// strengthens the brand entity for GEO/AI overview answers.
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Forly — פורלי',
+  url: SITE_URL,
+  inLanguage: ['he', 'en'],
+};
 ---
-<Base>
+<Base bilingual={true} schema={websiteSchema}>
   <Nav />
   <Hero />
   <Features />
