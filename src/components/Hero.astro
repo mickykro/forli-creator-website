@@ -17,6 +17,15 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
     <div class="hero-vignette" aria-hidden="true"></div>
 
     
+    <!-- Live frame counter — script writes [data-frame-num] / [data-frame-total]
+         on every scrub tick (frameNum at line ~775, frameTotal at line ~881). -->
+    <div class="tech tech-tr frame-hud" aria-hidden="true">
+      <span class="tech-dot"></span>
+      <span class="frame-hud-label"><T he="פריים" en="FRAME" /></span>
+      <span class="frame-hud-num" data-frame-num>0001</span>
+      <span class="frame-hud-sep">/</span>
+      <span class="frame-hud-total" data-frame-total>----</span>
+    </div>
     <div class="tech tech-bl">
       <span><T he="גלילה ↓" en="SCROLL ↓" /></span>
     </div>
@@ -255,6 +264,18 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
     background: var(--forli-pink);
     box-shadow: 0 0 10px var(--forli-pink);
   }
+
+  /* Frame counter HUD — uses the same .tech overlay shell with a tabular-num
+     layout so digits don't shift width as the counter ticks. */
+  .frame-hud {
+    gap: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .frame-hud .tech-dot { animation: pulse 1.6s ease-in-out infinite; }
+  .frame-hud-label { color: var(--ink-soft); }
+  .frame-hud-num { color: var(--forli-pink-deep); font-weight: 700; }
+  .frame-hud-sep { color: rgba(26, 18, 32, 0.25); }
+  .frame-hud-total { color: var(--ink-soft); }
   .tech-dot.live {
     background: var(--sage);
     box-shadow: 0 0 10px var(--sage);
@@ -384,6 +405,9 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
     line-height: 1.1;
     color: var(--ink);
     text-shadow: 0 0 50px rgba(219, 107, 151, 0.22);
+  }
+  @media (max-width: 720px) {
+    .hero-mid { padding-bottom: 32px; }
   }
 
   /* Positioning wrappers for the WhatsAppInput component. The component owns
@@ -732,6 +756,16 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
         delay: 0.15,
       });
 
+      // Story-beat frames mapped to ScrollTrigger progress (0–1):
+      //   Frame 23  → 0.26  (after WhatsApp input bubble appears)
+      //   Frame 60  → 0.59  (mid-tagline showing)
+      //   Frame 84  → 0.83  (confirmation bubble visible)
+      //   Frame 101 → 1.00  (end of the pinned scrub)
+      // Skip enforcement for prefers-reduced-motion users (they free-scroll).
+      const reduceMotion = typeof window !== 'undefined' &&
+        window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+      const snapPoints = [0.26, 0.59, 1.0];
+
       // Master scrubbed timeline pinned to the hero section
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -745,6 +779,130 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
           invalidateOnRefresh: true,
         },
       });
+
+      // Forced stepping: hijack wheel + touchend so every gesture lands on a
+      // milestone. The user cannot stop between snap points — any scroll input
+      // triggers a programmatic Lenis scrollTo() with `lock: true`, which makes
+      // Lenis ignore all further user input until the animation completes.
+      if (!reduceMotion) {
+        type LenisLike = {
+          scrollTo: (y: number, opts?: Record<string, unknown>) => void;
+          stop: () => void;
+          start: () => void;
+        };
+        const lenis = (window as { __lenis?: LenisLike }).__lenis;
+        let stepLock = false;
+        let unlockTimer: number | null = null;
+        const STEP_EPS = 0.01;
+        // Per-segment animation duration in seconds. Each entry is the time
+        // to traverse ONE milestone hop. Edit any value to change the feel:
+        //   higher = slower / more deliberate, lower = snappier.
+        // Order: index 0 = first hop (start → frame 23), 1 = 23 → 60,
+        //        2 = 60 → 84, 3 = 84 → 101. Same value applies in reverse.
+        const SEGMENT_DURATIONS = [
+          1.7, // 0   → 0.26  (start → frame 23)
+          1.7, // 0.26 → 0.59 (frame 23 → 60)
+          1.7, // 0.83 → 1.0  (frame 84 → 101)
+        ];
+        const FALLBACK_STEP_DURATION = 0.7;
+        // Slack at the pin boundary — `isActive` flips false the instant scroll
+        // reaches `end`, which would let scroll-up at the last milestone leak
+        // through. Buffer covers the boundary on both ends.
+        const PIN_SLACK = 4;
+
+        const inPinRange = () => {
+          const st = tl.scrollTrigger;
+          if (!st) return false;
+          const y = window.scrollY;
+          return y >= st.start - PIN_SLACK && y <= st.end + PIN_SLACK;
+        };
+
+        const stepTo = (progress: number, duration: number) => {
+          const st = tl.scrollTrigger;
+          if (!st) return;
+          const targetY = st.start + (st.end - st.start) * progress;
+          stepLock = true;
+          if (unlockTimer) clearTimeout(unlockTimer);
+          if (lenis) {
+            // `lock: true` is the key — Lenis ignores all wheel/touch input
+            // for the duration of this scroll. Without it, in-progress Lenis
+            // smooth-scroll inertia can override our programmatic target,
+            // which is what was letting the user "park" between milestones.
+            // `force: true` ensures it runs even if Lenis was stopped.
+            lenis.scrollTo(targetY, {
+              duration,
+              easing: (t: number) => 1 - Math.pow(1 - t, 3),
+              lock: true,
+              force: true,
+            });
+          } else {
+            window.scrollTo({ top: targetY, behavior: 'smooth' });
+          }
+          unlockTimer = window.setTimeout(() => { stepLock = false; }, duration * 1000 + 80);
+        };
+
+        const stepInDirection = (dir: 1 | -1): boolean => {
+          const st = tl.scrollTrigger;
+          if (!st) return false;
+          const progress = Math.max(0, Math.min(1, st.progress));
+          // Find target snap point and the segment index being traversed.
+          //   Forward step  → segment index = target index in snapPoints
+          //   Backward step → segment index = target index + 1
+          // (segment k covers the gap from snapPoints[k-1] to snapPoints[k],
+          // with snapPoints[-1] treated as the implicit start at progress 0).
+          let targetIdx = -1;
+          if (dir > 0) {
+            targetIdx = snapPoints.findIndex((p) => p > progress + STEP_EPS);
+          } else {
+            for (let i = snapPoints.length - 1; i >= 0; i--) {
+              if (snapPoints[i] < progress - STEP_EPS) { targetIdx = i; break; }
+            }
+          }
+          if (targetIdx === -1) return false;
+          const target = snapPoints[targetIdx];
+          const segIdx = dir > 0 ? targetIdx : targetIdx + 1;
+          const duration = SEGMENT_DURATIONS[segIdx] ?? FALLBACK_STEP_DURATION;
+          if (!stepLock) stepTo(target, duration);
+          return true;
+        };
+
+        const onWheelHijack = (e: WheelEvent) => {
+          if (!inPinRange()) return;
+          // No delta threshold — even tiny trackpad scroll-ups must engage.
+          if (e.deltaY === 0) return;
+          const dir: 1 | -1 = e.deltaY > 0 ? 1 : -1;
+          // Only consume the event if a milestone exists in that direction.
+          // Otherwise let it bubble so the user can exit the pin.
+          const st = tl.scrollTrigger;
+          if (!st) return;
+          const progress = Math.max(0, Math.min(1, st.progress));
+          const hasTarget = dir > 0
+            ? snapPoints.some((p) => p > progress + STEP_EPS)
+            : snapPoints.some((p) => p < progress - STEP_EPS);
+          if (!hasTarget) return;
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          stepInDirection(dir);
+        };
+
+        let touchStartY = 0;
+        const onTouchStartHijack = (e: TouchEvent) => {
+          touchStartY = e.touches[0]?.clientY ?? 0;
+        };
+        const onTouchEndHijack = (e: TouchEvent) => {
+          if (!inPinRange()) return;
+          const endY = e.changedTouches[0]?.clientY ?? touchStartY;
+          const dy = touchStartY - endY;
+          if (Math.abs(dy) < 24) return;
+          const dir: 1 | -1 = dy > 0 ? 1 : -1;
+          stepInDirection(dir);
+        };
+
+        window.addEventListener('wheel', onWheelHijack, { passive: false, capture: true });
+        window.addEventListener('touchstart', onTouchStartHijack, { passive: true });
+        window.addEventListener('touchend', onTouchEndHijack, { passive: true });
+      }
 
       // 0 → 1 : copy exits in three directions while frames scrub.
       // Use fromTo with explicit start state so reverse-scroll always returns

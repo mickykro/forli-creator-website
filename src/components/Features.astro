@@ -173,11 +173,20 @@ const cards = [
   },
 ];
 
-const stats = [
-  { value: 6, suffix: '', he: 'יכולות פעילות', en: 'Capabilities shipping' },
-  { value: 8, suffix: '', he: 'סגנונות ויזואליים', en: 'Visual tones' },
-  { value: 10, suffix: ' s', he: 'זמן יצירת תמונה', en: 'Image turnaround' },
-  { value: 100, suffix: '%', he: 'עברית נייטיב', en: 'Hebrew native' },
+type StatAccent = 'pink' | 'violet' | 'amber' | 'sage';
+type StatIcon = 'spark' | 'palette' | 'clock' | 'globe';
+const stats: {
+  value: number;
+  suffix: string;
+  accent: StatAccent;
+  icon: StatIcon;
+  he: string;
+  en: string;
+}[] = [
+  { value: 6, suffix: '', accent: 'pink', icon: 'spark', he: 'יכולות פעילות', en: 'Capabilities shipping' },
+  { value: 8, suffix: '', accent: 'violet', icon: 'palette', he: 'סגנונות ויזואליים', en: 'Visual tones' },
+  { value: 10, suffix: ' s', accent: 'amber', icon: 'clock', he: 'זמן יצירת תמונה', en: 'Image turnaround' },
+  { value: 100, suffix: '%', accent: 'sage', icon: 'globe', he: 'עברית נייטיב', en: 'Hebrew native' },
 ];
 ---
 <RadialOrbitalTimeline
@@ -233,10 +242,41 @@ const stats = [
       <cite><T he="— התזה של פורלי v2" en="— The Forly v2 thesis" /></cite>
     </blockquote>
 
-    <!-- Counter strip -->
+    <!-- Counter strip — four accent-coded cards. Each stat owns a color,
+         an icon, and a gradient numeral; hover lifts with a colored glow. -->
     <ul class="stats" data-stats>
       {stats.map((s) => (
-        <li class="stat">
+        <li class:list={['stat', `stat--${s.accent}`]}>
+          <span class="stat-icon" aria-hidden="true">
+            {s.icon === 'spark' && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3l1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7L12 3z" />
+                <path d="M19 4l.6 1.7L21 6.3l-1.4.6L19 8.6l-.6-1.7L17 6.3l1.4-.6z" />
+              </svg>
+            )}
+            {s.icon === 'palette' && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 21a9 9 0 110-18 9 9 0 015 16.4c-1.2.8-2.6.4-2.6-1 0-1.5 1.4-1.7 1.4-3 0-1-.9-1.6-2-1.6h-1.5a2 2 0 01-2-2c0-1.4.9-2.4-.3-3.3" />
+                <circle cx="7.5" cy="11" r="1" fill="currentColor" />
+                <circle cx="11" cy="7.5" r="1" fill="currentColor" />
+                <circle cx="15.5" cy="8.5" r="1" fill="currentColor" />
+              </svg>
+            )}
+            {s.icon === 'clock' && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5l3.5 2" />
+              </svg>
+            )}
+            {s.icon === 'globe' && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M3 12h18" />
+                <path d="M12 3a14 14 0 010 18" />
+                <path d="M12 3a14 14 0 000 18" />
+              </svg>
+            )}
+          </span>
           <span class="stat-num" data-counter data-target={s.value} data-suffix={s.suffix}>0</span>
           <span class="stat-label"><T he={s.he} en={s.en} /></span>
         </li>
@@ -401,27 +441,95 @@ const stats = [
     text-transform: uppercase;
   }
 
+  /* Stats — four accent-coded cards. Each card owns a hue via --accent
+     custom property and renders an icon, gradient numeral, and label. */
   .stats {
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-    padding: 36px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    padding: 0;
+    margin: 0;
+    max-width: 720px;
+    margin-inline: auto;
+  }
+
+  .stat {
+    --accent: var(--forli-pink);
+    --accent-soft: rgba(219, 107, 151, 0.12);
+    --accent-glow: rgba(219, 107, 151, 0.28);
+    --accent-ink: #6e1a3e;
+    position: relative;
+    padding: 30px 22px 24px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     border: 1px solid var(--line);
     border-radius: var(--radius-lg);
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 14px 40px rgba(26, 18, 32, 0.06);
+    display: grid;
+    gap: 12px;
+    justify-items: center;
+    text-align: center;
+    overflow: hidden;
+    isolation: isolate;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
   }
-  @media (max-width: 740px) { .stats { grid-template-columns: repeat(2, 1fr); } }
-  .stat { display: grid; gap: 6px; text-align: center; }
+  /* Per-accent tokens. Picked so each hue stays in the warm/Mediterranean
+     family and reads as professional rather than gaudy on the rose surface. */
+  .stat--pink   { --accent: #db6b97; --accent-soft: rgba(219, 107, 151, 0.14); --accent-glow: rgba(219, 107, 151, 0.30); --accent-ink: #6e1a3e; }
+  .stat--violet { --accent: #8b6bbd; --accent-soft: rgba(139, 107, 189, 0.14); --accent-glow: rgba(139, 107, 189, 0.30); --accent-ink: #3d2a66; }
+  .stat--amber  { --accent: #d49a4f; --accent-soft: rgba(212, 154, 79, 0.16); --accent-glow: rgba(212, 154, 79, 0.32); --accent-ink: #6b4310; }
+  .stat--sage   { --accent: #6d9a8b; --accent-soft: rgba(127, 168, 155, 0.18); --accent-glow: rgba(127, 168, 155, 0.32); --accent-ink: #2c4a3f; }
+
+  /* Top accent stripe */
+  .stat::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+  /* Soft radial wash that hints at the card hue without overwhelming */
+  .stat::after {
+    content: '';
+    position: absolute;
+    inset: -40% -30% auto -30%;
+    height: 75%;
+    background: radial-gradient(closest-side, var(--accent-soft), transparent 70%);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .stat:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    box-shadow: 0 14px 38px var(--accent-glow);
+  }
+
+  .stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid color-mix(in oklab, var(--accent) 25%, transparent);
+  }
+  .stat-icon svg { width: 20px; height: 20px; }
+
   .stat-num {
     font-family: var(--font-display);
-    font-size: clamp(36px, 5vw, 56px);
+    font-size: clamp(36px, 5vw, 52px);
     font-weight: 800;
-    color: var(--ink);
     letter-spacing: -0.02em;
-    text-shadow: 0 0 28px rgba(219, 107, 151, 0.22);
+    line-height: 1;
+    background: linear-gradient(160deg, var(--accent) 0%, var(--accent-ink) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 4px 14px var(--accent-glow));
   }
   .stat-label {
     font-family: var(--font-mono);
