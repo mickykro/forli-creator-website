@@ -76,7 +76,7 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
       />
     </div>
 
-    <!-- Persistent side rails — what the user sends, what Forly returns -->
+    <!-- Persistent side rails — commented out per design.
     <aside class="side side-left" data-side-left aria-hidden="true">
       <p class="eyebrow"><T he="אתם כותבים" en="You write" /></p>
       <div class="bubble bubble-in">
@@ -103,6 +103,8 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
         <li><T he="האשטגים" en="Hashtags" /></li>
       </ul>
     </aside>
+    -->
+
 
     <!-- End-of-scroll product detail rails -->
     <aside class="hero-detail hero-detail-left" data-hero-detail-left>
@@ -932,10 +934,9 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
           },
           0,
         )
-        // Side rails (you write / Forly returns) fade in shortly after copy exits
-        // and stay visible through the rest of the scroll.
-        .fromTo(sideLeft, { opacity: 0, x: -50, y: 10 }, { opacity: 1, x: 0, y: 0, ease: 'power3.out' }, 0.55)
-        .fromTo(sideRight, { opacity: 0, x: 50, y: 10 }, { opacity: 1, x: 0, y: 0, ease: 'power3.out' }, 0.7)
+        // Side rails (you write / Forly returns) — commented out per design.
+        // .fromTo(sideLeft, { opacity: 0, x: -50, y: 10 }, { opacity: 1, x: 0, y: 0, ease: 'power3.out' }, 0.55)
+        // .fromTo(sideRight, { opacity: 0, x: 50, y: 10 }, { opacity: 1, x: 0, y: 0, ease: 'power3.out' }, 0.7)
         // WhatsApp message bubble — visible during frames 21-41.
         // Frame N (1-indexed) → timeline position (N-1) * 0.03.
         //   Frame 21 → 0.60 (fade-in starts)
