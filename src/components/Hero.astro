@@ -47,7 +47,7 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
         <span class="l-en">Send a Hebrew message. Get back the image, video, carousel, or website — right in your chat. No app. No dashboard.</span>
       </p>
       <div class="hero-actions" data-hero-line>
-        <a href="#cta" class="btn btn-primary"><T he="הצטרפו לבטא הפרטית" en="Join the private beta" /></a>
+        <a href="#cta" class="btn btn-primary"><T he="התחילו ליצור תוכן עם פורלי" en="Join the private beta" /></a>
         <a href="#features" class="btn btn-ghost"><T he="ראו מה היא יוצרת ↓" en="See what it makes ↓" /></a>
       </div>
     </div>
@@ -63,14 +63,17 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
 
     <!-- WhatsApp input bubble — visible during frames 21-41 (above the animation) -->
     <div class="hero-msg" data-hero-msg aria-hidden="true">
-      <WhatsAppInput he="תייצרי לי פרסומת לעסק" en="Make me an ad for my business" />
+      <WhatsAppInput
+        he="תעשי לי פוסט להחלקת קרטין שאני מציעה השבוע, סטייל קליל וקיצי"
+        en="Make me a post for the keratin straightening I'm offering this week, light summery style"
+      />
     </div>
 
     <!-- WhatsApp confirmation message (incoming chat bubble) — frame 81 to the end -->
     <div class="hero-msg-out" data-hero-msg-out aria-hidden="true">
       <WhatsAppMessage
-        he="הפרסומת נוצרה בהצלחה ✨"
-        en="Your ad is ready ✨"
+        he="הפוסט שלך מוכן ✨"
+        en="Your post is ready ✨"
         time="14:03"
         variant="incoming"
       />
@@ -81,7 +84,7 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
       <p class="eyebrow"><T he="אתם כותבים" en="You write" /></p>
       <div class="bubble bubble-in">
         <span class="bubble-meta">14:02 · <T he="וואטסאפ" en="WhatsApp" /></span>
-        <p class="bubble-text" dir="rtl">תעשי לי פוסט לפיצרייה שלי 🍕</p>
+        <p class="bubble-text" dir="rtl">תעשי לי פוסט להחלקת קרטין שאני מציעה השבוע, סטייל קליל וקיצי 💇‍♀️</p>
       </div>
       <ul class="chips">
         <li><T he="עברית" en="Hebrew" /></li>
@@ -94,11 +97,11 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
       <p class="eyebrow"><T he="פורלי מחזירה" en="Forly returns" /></p>
       <div class="bubble bubble-out">
         <span class="bubble-meta">14:02 · <T he="6 שניות" en="6s" /></span>
-        <p class="bubble-text" dir="rtl">פיצה חמה מתוך התנור, מוצרלה נמתחת — מי בא לטעום? 🔥</p>
-        <p class="bubble-tags">#פיצה #טבריה #ארוחת_ערב</p>
+        <p class="bubble-text" dir="rtl">הלחות ניצחה אותך הקיץ? לא השנה. החלקת קרטין מקצועית — השבוע בלבד במחיר השקה. שיער חלק שזז יפה, נראה טבעי ומחזיק חודשים ✨</p>
+        <p class="bubble-tags">#החלקתקרטין #שיערחלק #מבצעהשקה</p>
       </div>
       <ul class="chips">
-        <li><T he="תמונה" en="Image" /></li>
+        <li><T he="קרוסלה" en="Carousel" /></li>
         <li><T he="כיתוב" en="Caption" /></li>
         <li><T he="האשטגים" en="Hashtags" /></li>
       </ul>

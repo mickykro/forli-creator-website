@@ -179,15 +179,6 @@ const STATUS_LABEL = {
           <p class="rot-card-body">
             <T he={item.he.content} en={item.en.content} />
           </p>
-          <div class="rot-card-bar">
-            <div class="rot-card-bar-row">
-              <span><T he="התקדמות" en="Progress" /></span>
-              <span class="rot-card-bar-pct">{item.progress}%</span>
-            </div>
-            <div class="rot-card-bar-track">
-              <div class="rot-card-bar-fill" style={`width:${item.progress}%`}></div>
-            </div>
-          </div>
           {item.relatedIds.length > 0 && (
             <div class="rot-card-related">
               <p class="rot-card-related-head">
@@ -478,37 +469,6 @@ const STATUS_LABEL = {
     color: var(--ink-soft);
     margin-bottom: 14px;
   }
-  .rot-card-bar {
-    border-top: 1px dashed var(--line);
-    padding-top: 12px;
-  }
-  .rot-card-bar-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 11px;
-    color: var(--ink-soft);
-    font-family: var(--font-mono);
-    letter-spacing: 0.06em;
-    margin-bottom: 6px;
-  }
-  .rot-card-bar-pct {
-    color: var(--ink);
-    font-weight: 600;
-  }
-  .rot-card-bar-track {
-    height: 4px;
-    background: rgba(26, 18, 32, 0.08);
-    border-radius: 999px;
-    overflow: hidden;
-  }
-  .rot-card-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--forli-pink-soft), var(--forli-pink));
-    border-radius: 999px;
-    box-shadow: 0 0 10px rgba(219, 107, 151, 0.5);
-  }
-
   .rot-card-related {
     border-top: 1px dashed var(--line);
     margin-top: 12px;

@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
+import CarouselPreview from '../components/CarouselPreview.astro';
 import Features from '../components/Features.astro';
 import CTA from '../components/CTA.astro';
 import { SITE_URL } from '../brand';
@@ -19,6 +20,7 @@ const websiteSchema = {
 <Base bilingual={true} schema={websiteSchema}>
   <Nav />
   <Hero />
+  <CarouselPreview />
   <Features />
   <CTA />
 </Base>

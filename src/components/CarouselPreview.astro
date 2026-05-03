@@ -1,0 +1,275 @@
+---
+// Side-by-side preview of the keratin carousel — the deliverable that
+// matches the request in the Hero section's WhatsApp bubble.
+import T from './T.astro';
+
+const slides = [
+  { src: '/keratin-carousel/slide-01.png', alt: { he: 'הוק: הלחות ניצחה אותך הקיץ?', en: 'Hook: Did the humidity beat you this summer?' } },
+  { src: '/keratin-carousel/slide-02.png', alt: { he: 'מבצע השקה — החלקת קרטין', en: 'Launch offer — keratin straightening' } },
+  { src: '/keratin-carousel/slide-03.png', alt: { he: 'התוצאה — שיער חלק וטבעי', en: 'Result — smooth, natural hair' } },
+  { src: '/keratin-carousel/slide-04.png', alt: { he: 'מקומות אחרונים השבוע', en: 'Last spots this week' } },
+  { src: '/keratin-carousel/slide-05.png', alt: { he: 'CTA — שלחי "קרטין" בהודעה', en: 'CTA — DM "keratin"' } },
+];
+---
+<section class="cp-section" id="carousel-preview" aria-labelledby="cp-heading">
+  <header class="cp-head">
+    <p class="eyebrow">
+      <T he="הפלט המלא ·30 שניות" en="Full output · 6 seconds" />
+    </p>
+    <h2 id="cp-heading" class="cp-title">
+      <span class="l-he">זה מה שפורלי החזירה.</span>
+      <span class="l-en">This is what Forly returned.</span>
+    </h2>
+    <p class="cp-sub">
+      <span class="l-he">קרוסלה של 5 סלייידים — מוכנה להעלאה לאינסטגרם. החליקי בין הסלייידים.</span>
+      <span class="l-en">A 5-slide carousel — ready to post to Instagram. Swipe between slides.</span>
+    </p>
+  </header>
+
+  <p class="cp-swipe-hint" aria-hidden="true">
+    <span class="l-he">החליקי שמאלה לעוד סלייידים →</span>
+    <span class="l-en">← Swipe for more slides</span>
+  </p>
+
+  <div class="cp-rail" role="list">
+    {slides.map((slide, i) => (
+      <figure class="cp-card" role="listitem" style={`--i: ${i}`}>
+        <span class="cp-num">{String(i + 1).padStart(2, '0')}</span>
+        <img
+          src={slide.src}
+          alt={slide.alt.en}
+          width="540"
+          height="540"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+    ))}
+  </div>
+
+  <div class="cp-dots" aria-hidden="true">
+    {slides.map((_, i) => <span class="cp-dot" data-i={i}></span>)}
+  </div>
+
+  <footer class="cp-foot">
+    <p class="cp-caption" dir="rtl">
+      <span class="l-he">
+        <strong>הלחות ניצחה אותך הקיץ? לא השנה 💕</strong><br/>
+        החלקת קרטין מקצועית — השבוע בלבד במחיר השקה. שיער חלק, זורם וטבעי שמחזיק חודשים — בלי פריזז, בלי בלגן, רק קיץ קליל.<br/>
+        מקומות אחרונים — שלחי "קרטין" בהודעה ✨
+      </span>
+      <span class="l-en">
+        <strong>Did the humidity beat you this summer? Not this year 💕</strong><br/>
+        Professional keratin straightening — launch price, this week only. Smooth, flowing, natural hair that holds for months — no frizz, no chaos, just an effortless summer.<br/>
+        Last spots — DM "keratin" ✨
+      </span>
+    </p>
+    <p class="cp-tags">#החלקתקרטין&nbsp; #שיערחלק&nbsp; #מבצעהשקה&nbsp; #קיץ2026&nbsp; #ביוטי</p>
+  </footer>
+</section>
+
+<style>
+  .cp-section {
+    position: relative;
+    background: linear-gradient(180deg, var(--bg, #fff) 0%, #fef6ef 100%);
+  }
+
+  .cp-head {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 48px;
+    display: grid;
+    gap: 12px;
+  }
+  .cp-title {
+    font-size: clamp(28px, 4vw, 48px);
+    line-height: 1.1;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .cp-sub {
+    font-size: clamp(15px, 1.6vw, 17px);
+    color: var(--ink-soft);
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  /* Side-by-side rail. Wide screens: 5 in a row. Narrow: horizontal scroll. */
+  .cp-rail {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: clamp(12px, 1.5vw, 20px);
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 8px;
+  }
+
+  .cp-card {
+    position: relative;
+    margin: 0;
+    border-radius: var(--radius-md, 16px);
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--line, rgba(26, 18, 32, 0.08));
+    box-shadow: 0 12px 32px rgba(26, 18, 32, 0.08);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+                box-shadow 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    aspect-ratio: 1 / 1;
+  }
+  .cp-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(219, 107, 151, 0.18);
+  }
+  .cp-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .cp-num {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--ink, #1a1220);
+    border-radius: 999px;
+    backdrop-filter: blur(4px);
+    z-index: 2;
+    font-weight: 700;
+  }
+
+  .cp-foot {
+    max-width: 720px;
+    margin: 48px auto 0;
+    padding: 24px 28px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid var(--line, rgba(26, 18, 32, 0.08));
+    border-radius: var(--radius-md, 16px);
+    backdrop-filter: blur(8px);
+  }
+  .cp-caption {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink, #1a1220);
+    margin: 0 0 12px;
+  }
+  .cp-caption strong { font-weight: 700; }
+  .cp-tags {
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--forli-pink, #db6b97);
+    margin: 0;
+    direction: ltr;
+    text-align: center;
+  }
+
+  /* Swipe hint + dot indicators — desktop hides them, mobile uses them */
+  .cp-swipe-hint {
+    display: none;
+    text-align: center;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--forli-pink, #db6b97);
+    margin: 0 auto 12px;
+    opacity: 0.85;
+  }
+  .cp-dots {
+    display: none;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .cp-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(219, 107, 151, 0.25);
+    transition: background 0.25s, transform 0.25s;
+  }
+  .cp-dot.is-active {
+    background: var(--forli-pink, #db6b97);
+    transform: scale(1.4);
+  }
+
+  /* Tablet & smaller — horizontal scroll-snap, cards fill viewport */
+  @media (max-width: 1024px) {
+    .cp-section {
+      padding: clamp(48px, 8vw, 80px) 0 clamp(40px, 7vw, 64px);
+    }
+    .cp-head {
+      padding: 0 24px;
+      margin-bottom: 28px;
+    }
+    .cp-swipe-hint,
+    .cp-dots { display: flex; }
+    .cp-swipe-hint { display: block; }
+
+    .cp-rail {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: 62%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 4px 16% 20px;
+      gap: 16px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .cp-rail::-webkit-scrollbar { display: none; }
+    .cp-card { scroll-snap-align: center; }
+    .cp-card:hover { transform: none; box-shadow: 0 12px 32px rgba(26, 18, 32, 0.08); }
+
+    .cp-foot {
+      margin: 28px 16px 0;
+      padding: 18px 20px;
+    }
+    .cp-caption { font-size: 14px; line-height: 1.6; }
+    .cp-tags { font-size: 11px; }
+  }
+
+  @media (max-width: 640px) {
+    .cp-rail {
+      grid-auto-columns: 82%;
+      padding: 4px 9% 20px;
+    }
+    .cp-num { font-size: 10px; padding: 3px 7px; }
+  }
+</style>
+
+<script>
+  // Active-dot tracking on mobile — uses IntersectionObserver against the
+  // scroll rail so the indicator follows whichever card is centered.
+  const rail = document.querySelector<HTMLElement>('.cp-rail');
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('.cp-card'));
+  const dots = Array.from(document.querySelectorAll<HTMLElement>('.cp-dot'));
+  if (rail && cards.length && dots.length === cards.length) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Pick the most-visible card; mark the matching dot active
+        let best: { idx: number; ratio: number } | null = null;
+        for (const entry of entries) {
+          const idx = cards.indexOf(entry.target as HTMLElement);
+          if (idx === -1) continue;
+          if (!best || entry.intersectionRatio > best.ratio) {
+            best = { idx, ratio: entry.intersectionRatio };
+          }
+        }
+        if (best && best.ratio > 0.5) {
+          dots.forEach((d, i) => d.classList.toggle('is-active', i === best!.idx));
+        }
+      },
+      { root: rail, threshold: [0.4, 0.6, 0.8] }
+    );
+    cards.forEach((c) => observer.observe(c));
+    // Seed first dot active
+    dots[0]?.classList.add('is-active');
+  }
+</script>

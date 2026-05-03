@@ -14,5 +14,5 @@ export const BUSINESS = {
 };
 
 export const WHATSAPP_URL = `https://wa.me/${BUSINESS.whatsappE164}`;
-export const WHATSAPP_HELLO_URL = `${WHATSAPP_URL}?text=${encodeURIComponent('היי, אני רוצה להצטרף לבטא של פורלי')}`;
+export const WHATSAPP_HELLO_URL = `${WHATSAPP_URL}?text=${encodeURIComponent('היי, אני רוצה להצטרף לפורלי')}`;
 export const WHATSAPP_QUESTION_URL = `${WHATSAPP_URL}?text=${encodeURIComponent('היי, יש לי שאלה לגבי פורלי')}`;
