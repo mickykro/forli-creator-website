@@ -3,7 +3,9 @@
     "allow": [
       "Bash(npm install *)",
       "Bash(npm run *)",
-      "Bash(echo \"PID=$!\")"
+      "Bash(echo \"PID=$!\")",
+      "mcp__7191a33f-e62a-4668-b2be-9ec663ab123f__search_projects",
+      "mcp__7191a33f-e62a-4668-b2be-9ec663ab123f__search_folders"
     ]
   }
 }
