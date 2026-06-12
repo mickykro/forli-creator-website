@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "extract:frames": "node scripts/extract-frames.mjs"
+    "extract:frames": "node scripts/extract-frames.mjs && npm run frames:transparent",
+    "frames:transparent": "python3 scripts/remove-frame-bg.py"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.106.2",
