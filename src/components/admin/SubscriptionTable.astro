@@ -1,0 +1,262 @@
+---
+/**
+ * Subscription Table Component
+ * Displays subscription records with status badges and actions
+ */
+interface Subscription {
+  id: string;
+  user_id: string;
+  user_name?: string;
+  user_phone?: string;
+  tier_id: string;
+  tier_name?: string;
+  status: string;
+  start_date: string;
+  next_billing_date?: string;
+  expires_at?: string;
+  cancelled_at?: string;
+}
+
+interface Props {
+  subscriptions: Subscription[];
+  showActions?: boolean;
+}
+
+const { subscriptions, showActions = true } = Astro.props;
+
+function formatDate(dateStr: string | undefined): string {
+  if (!dateStr) return '-';
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+function getStatusBadge(status: string): { class: string; label: string } {
+  switch (status) {
+    case 'active':
+      return { class: 'badge-success', label: 'Active' };
+    case 'cancelled':
+      return { class: 'badge-warning', label: 'Cancelled' };
+    case 'expired':
+      return { class: 'badge-danger', label: 'Expired' };
+    case 'suspended':
+      return { class: 'badge-danger', label: 'Suspended' };
+    default:
+      return { class: 'badge-neutral', label: status };
+  }
+}
+
+function getTierBadge(tier: string): string {
+  switch (tier) {
+    case 'starter':
+      return 'badge-info';
+    case 'growth':
+      return 'badge-success';
+    case 'pro':
+      return 'badge-warning';
+    default:
+      return 'badge-neutral';
+  }
+}
+---
+
+<div class="subscription-table-wrapper">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Tier</th>
+        <th>Status</th>
+        <th>Start Date</th>
+        <th>Next Billing</th>
+        {showActions && <th>Actions</th>}
+      </tr>
+    </thead>
+    <tbody>
+      {subscriptions.length === 0 ? (
+        <tr>
+          <td colspan={showActions ? 6 : 5}>
+            <div class="empty-state">
+              <p class="empty-state-title">No subscriptions found</p>
+              <p>Try adjusting your filters</p>
+            </div>
+          </td>
+        </tr>
+      ) : (
+        subscriptions.map((sub) => {
+          const status = getStatusBadge(sub.status);
+          return (
+            <tr data-subscription-id={sub.id}>
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar">
+                    {(sub.user_name || 'U').charAt(0).toUpperCase()}
+                  </div>
+                  <div class="user-info">
+                    <span class="user-name">{sub.user_name || 'Unknown'}</span>
+                    {sub.user_phone && <span class="user-phone">{sub.user_phone}</span>}
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class:list={['badge', getTierBadge(sub.tier_id)]}>
+                  {sub.tier_name || sub.tier_id}
+                </span>
+              </td>
+              <td>
+                <span class:list={['badge', status.class]}>{status.label}</span>
+              </td>
+              <td class="date-cell">{formatDate(sub.start_date)}</td>
+              <td class="date-cell">
+                {sub.status === 'active' ? formatDate(sub.next_billing_date) : '-'}
+              </td>
+              {showActions && (
+                <td>
+                  <div class="actions-dropdown">
+                    <button class="admin-btn admin-btn-sm admin-btn-secondary actions-trigger" data-sub-id={sub.id}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="19" cy="12" r="1" />
+                        <circle cx="5" cy="12" r="1" />
+                      </svg>
+                    </button>
+                    <div class="actions-menu" data-menu-for={sub.id}>
+                      <a href={`/admin/users/${sub.user_id}`} class="actions-menu-item">View User</a>
+                      {sub.status === 'active' && (
+                        <>
+                          <button class="actions-menu-item extend-btn" data-sub-id={sub.id}>Extend 30 Days</button>
+                          <button class="actions-menu-item change-tier-btn" data-sub-id={sub.id}>Change Tier</button>
+                          <button class="actions-menu-item danger cancel-btn" data-sub-id={sub.id}>Cancel</button>
+                        </>
+                      )}
+                      {sub.status === 'cancelled' && (
+                        <button class="actions-menu-item reactivate-btn" data-sub-id={sub.id}>Reactivate</button>
+                      )}
+                    </div>
+                  </div>
+                </td>
+              )}
+            </tr>
+          );
+        })
+      )}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .subscription-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .user-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--admin-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .user-name {
+    font-weight: 500;
+  }
+
+  .user-phone {
+    font-size: 12px;
+    color: var(--admin-text-muted);
+    font-family: var(--font-mono, monospace);
+  }
+
+  .date-cell {
+    white-space: nowrap;
+    color: var(--admin-text-muted);
+  }
+
+  .actions-dropdown {
+    position: relative;
+  }
+
+  .actions-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    min-width: 150px;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    box-shadow: var(--admin-shadow-md);
+    z-index: 50;
+    display: none;
+  }
+
+  .actions-menu.open {
+    display: block;
+  }
+</style>
+
+<script>
+  // Toggle action menus
+  document.querySelectorAll('.actions-trigger').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const subId = (btn as HTMLElement).dataset.subId;
+      const menu = document.querySelector(`[data-menu-for="${subId}"]`);
+
+      document.querySelectorAll('.actions-menu.open').forEach((m) => {
+        if (m !== menu) m.classList.remove('open');
+      });
+
+      menu?.classList.toggle('open');
+    });
+  });
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.actions-menu.open').forEach((m) => {
+      m.classList.remove('open');
+    });
+  });
+
+  // Action handlers
+  document.querySelectorAll('.cancel-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const subId = (btn as HTMLElement).dataset.subId;
+      if (confirm('Are you sure you want to cancel this subscription?')) {
+        window.dispatchEvent(new CustomEvent('admin:cancel-subscription', { detail: { subscriptionId: subId } }));
+      }
+    });
+  });
+
+  document.querySelectorAll('.extend-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const subId = (btn as HTMLElement).dataset.subId;
+      window.dispatchEvent(new CustomEvent('admin:extend-subscription', { detail: { subscriptionId: subId } }));
+    });
+  });
+
+  document.querySelectorAll('.change-tier-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const subId = (btn as HTMLElement).dataset.subId;
+      window.dispatchEvent(new CustomEvent('admin:change-tier', { detail: { subscriptionId: subId } }));
+    });
+  });
+</script>

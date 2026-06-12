@@ -1,0 +1,379 @@
+---
+/**
+ * Usage Analytics Page
+ * Usage statistics and charts by action type
+ */
+import Dashboard from '../../layouts/Dashboard.astro';
+import UsageChart from '../../components/admin/UsageChart.astro';
+import { CREDIT_COSTS } from '../../brand';
+---
+
+<Dashboard title="Usage" activeNav="usage">
+  <!-- Period Selector -->
+  <div class="period-selector">
+    <button class="period-btn active" data-period="7d">7 Days</button>
+    <button class="period-btn" data-period="30d">30 Days</button>
+    <button class="period-btn" data-period="90d">90 Days</button>
+  </div>
+
+  <!-- Usage Summary Cards -->
+  <div class="usage-summary" id="usageSummary">
+    <div class="summary-card">
+      <div class="summary-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <path d="m21 15-5-5L5 21"/>
+        </svg>
+      </div>
+      <div class="summary-content">
+        <span class="summary-label">Images</span>
+        <span class="summary-value" id="imagesCount">0</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="2" width="20" height="20" rx="2"/>
+          <path d="m10 8 6 4-6 4V8z"/>
+        </svg>
+      </div>
+      <div class="summary-content">
+        <span class="summary-label">Videos</span>
+        <span class="summary-value" id="videosCount">0</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <path d="M10 4v16"/>
+          <path d="M2 12h20"/>
+        </svg>
+      </div>
+      <div class="summary-content">
+        <span class="summary-label">Carousels</span>
+        <span class="summary-value" id="carouselsCount">0</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+      </div>
+      <div class="summary-content">
+        <span class="summary-label">Consultations</span>
+        <span class="summary-value" id="consultationsCount">0</span>
+      </div>
+    </div>
+    <div class="summary-card highlight">
+      <div class="summary-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 6v12"/>
+          <path d="M6 12h12"/>
+        </svg>
+      </div>
+      <div class="summary-content">
+        <span class="summary-label">Total Credits Used</span>
+        <span class="summary-value" id="totalCreditsUsed">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="admin-grid admin-grid-2">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Usage Over Time</h3>
+      </div>
+      <UsageChart id="usageTimeChart" chartType="line" />
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Usage by Type</h3>
+      </div>
+      <UsageChart id="usageTypeChart" chartType="doughnut" height={260} />
+    </div>
+  </div>
+
+  <!-- Top Users Table -->
+  <div class="card" style="margin-top: 24px;">
+    <div class="card-header">
+      <h3 class="card-title">Top Users by Usage</h3>
+    </div>
+    <table class="admin-table" id="topUsersTable">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Images</th>
+          <th>Videos</th>
+          <th>Carousels</th>
+          <th>Total Credits</th>
+          <th>Last Active</th>
+        </tr>
+      </thead>
+      <tbody id="topUsersTableBody">
+        <tr>
+          <td colspan="6" style="text-align: center; color: var(--admin-text-muted); padding: 48px;">
+            <div class="loading-spinner" style="margin: 0 auto;"></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</Dashboard>
+
+<style>
+  .period-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .period-btn {
+    padding: 8px 16px;
+    border-radius: var(--admin-radius);
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    color: var(--admin-text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .period-btn:hover {
+    background: var(--admin-bg);
+    color: var(--admin-text);
+  }
+
+  .period-btn.active {
+    background: var(--admin-primary);
+    border-color: var(--admin-primary);
+    color: white;
+  }
+
+  .usage-summary {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .summary-card {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius-lg);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .summary-card.highlight {
+    background: linear-gradient(135deg, rgba(219, 107, 151, 0.05), rgba(219, 107, 151, 0.1));
+    border-color: rgba(219, 107, 151, 0.3);
+  }
+
+  .summary-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--admin-bg);
+    border-radius: 12px;
+    color: var(--admin-primary);
+  }
+
+  .summary-card.highlight .summary-icon {
+    background: rgba(219, 107, 151, 0.15);
+  }
+
+  .summary-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .summary-label {
+    font-size: 13px;
+    color: var(--admin-text-muted);
+  }
+
+  .summary-value {
+    font-size: 24px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .user-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--admin-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  @media (max-width: 1200px) {
+    .usage-summary {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .usage-summary {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .summary-card:last-child {
+      grid-column: span 2;
+    }
+  }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  let currentPeriod = '7d';
+
+  async function loadUsageData() {
+    try {
+      const response = await fetch(`/api/admin/usage?period=${currentPeriod}`);
+      if (!response.ok) throw new Error('Failed to load usage data');
+
+      const data = await response.json();
+      updateSummary(data.summary || {});
+      updateCharts(data);
+      updateTopUsers(data.topUsers || []);
+    } catch (error) {
+      console.error('Error loading usage data:', error);
+    }
+  }
+
+  function updateSummary(summary: Record<string, number>) {
+    document.getElementById('imagesCount')!.textContent = (summary.images || 0).toLocaleString();
+    document.getElementById('videosCount')!.textContent = (summary.videos || 0).toLocaleString();
+    document.getElementById('carouselsCount')!.textContent = (summary.carousels || 0).toLocaleString();
+    document.getElementById('consultationsCount')!.textContent = (summary.consultations || 0).toLocaleString();
+    document.getElementById('totalCreditsUsed')!.textContent = formatCredits(summary.totalCredits || 0);
+  }
+
+  function updateCharts(data: Record<string, unknown>) {
+    // Initialize or update time series chart
+    if (window.createAdminChart) {
+      const timeLabels = (data.timeSeries as Array<{ date: string }> || []).map((d) => formatDateLabel(d.date));
+      const timeData = (data.timeSeries as Array<{ total: number }> || []).map((d) => d.total / 100);
+
+      window.createAdminChart('usageTimeChart', 'line', {
+        labels: timeLabels.length > 0 ? timeLabels : ['No data'],
+        datasets: [{
+          label: 'Credits Used',
+          data: timeData.length > 0 ? timeData : [0],
+          borderColor: window.chartColors.primary,
+          backgroundColor: window.chartColors.primaryLight,
+          tension: 0.3,
+          fill: true,
+        }],
+      });
+
+      // Usage by type chart
+      const typeData = data.byType as Record<string, number> || {};
+      window.createAdminChart('usageTypeChart', 'doughnut', {
+        labels: ['Images', 'Videos', 'Carousels', 'Consultations'],
+        datasets: [{
+          data: [
+            typeData.standard_image || 0,
+            (typeData.standard_video || 0) + (typeData.premium_video || 0),
+            typeData.carousel || 0,
+            typeData.text_consultation || 0,
+          ],
+          backgroundColor: window.chartColors.palette,
+          borderWidth: 0,
+        }],
+      });
+    }
+  }
+
+  function updateTopUsers(users: Array<Record<string, unknown>>) {
+    const tbody = document.getElementById('topUsersTableBody');
+    if (!tbody) return;
+
+    if (users.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6">
+            <div class="empty-state">
+              <p class="empty-state-title">No usage data</p>
+              <p>No user activity in this period</p>
+            </div>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = users.map((u) => `
+      <tr>
+        <td>
+          <div class="user-cell">
+            <div class="user-avatar">${((u.display_name as string) || 'U').charAt(0).toUpperCase()}</div>
+            <a href="/admin/users/${u.user_id}" style="font-weight: 500; color: var(--admin-primary); text-decoration: none;">
+              ${u.display_name || 'Unknown'}
+            </a>
+          </div>
+        </td>
+        <td style="font-variant-numeric: tabular-nums;">${u.images || 0}</td>
+        <td style="font-variant-numeric: tabular-nums;">${u.videos || 0}</td>
+        <td style="font-variant-numeric: tabular-nums;">${u.carousels || 0}</td>
+        <td style="font-weight: 600; font-variant-numeric: tabular-nums;">${formatCredits(u.total_credits as number)}</td>
+        <td style="color: var(--admin-text-muted);">${formatDate(u.last_active as string)}</td>
+      </tr>
+    `).join('');
+  }
+
+  function formatCredits(credits: number): string {
+    return (credits / 100).toLocaleString();
+  }
+
+  function formatDate(dateStr: string): string {
+    if (!dateStr) return '-';
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    });
+  }
+
+  function formatDateLabel(dateStr: string): string {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    });
+  }
+
+  // Period selector
+  document.querySelectorAll('.period-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.period-btn').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentPeriod = (btn as HTMLElement).dataset.period || '7d';
+      loadUsageData();
+    });
+  });
+
+  // Initial load
+  loadUsageData();
+</script>

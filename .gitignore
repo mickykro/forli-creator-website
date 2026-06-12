@@ -27,3 +27,4 @@ pnpm-debug.log*
 # so static deploys (Vercel) have them without re-running extract:frames.
 public/video/*
 !public/video/README.md
+.env

@@ -1,0 +1,230 @@
+---
+/**
+ * User Table Component
+ * Displays a searchable, filterable table of users
+ */
+interface User {
+  id: string;
+  phone_number?: string;
+  display_name?: string;
+  credits_balance?: number;
+  subscription_tier?: string;
+  subscription_status?: string;
+  created_at: string;
+}
+
+interface Props {
+  users: User[];
+  showActions?: boolean;
+}
+
+const { users, showActions = true } = Astro.props;
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+function formatCredits(credits: number | undefined): string {
+  if (credits === undefined) return '-';
+  return (credits / 100).toLocaleString();
+}
+
+function getStatusBadge(status: string | undefined): { class: string; label: string } {
+  switch (status) {
+    case 'active':
+      return { class: 'badge-success', label: 'Active' };
+    case 'trial':
+      return { class: 'badge-info', label: 'Trial' };
+    case 'cancelled':
+      return { class: 'badge-warning', label: 'Cancelled' };
+    case 'expired':
+      return { class: 'badge-danger', label: 'Expired' };
+    default:
+      return { class: 'badge-neutral', label: 'None' };
+  }
+}
+---
+
+<div class="user-table-wrapper">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Phone</th>
+        <th>Credits</th>
+        <th>Subscription</th>
+        <th>Status</th>
+        <th>Joined</th>
+        {showActions && <th>Actions</th>}
+      </tr>
+    </thead>
+    <tbody>
+      {users.length === 0 ? (
+        <tr>
+          <td colspan={showActions ? 7 : 6}>
+            <div class="empty-state">
+              <p class="empty-state-title">No users found</p>
+              <p>Try adjusting your search or filters</p>
+            </div>
+          </td>
+        </tr>
+      ) : (
+        users.map((user) => {
+          const status = getStatusBadge(user.subscription_status);
+          return (
+            <tr data-user-id={user.id}>
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar">
+                    {(user.display_name || 'U').charAt(0).toUpperCase()}
+                  </div>
+                  <span class="user-name">{user.display_name || 'Unknown'}</span>
+                </div>
+              </td>
+              <td class="phone-cell">{user.phone_number || '-'}</td>
+              <td class="credits-cell">{formatCredits(user.credits_balance)}</td>
+              <td>
+                <span class:list={['badge', user.subscription_tier ? 'badge-info' : 'badge-neutral']}>
+                  {user.subscription_tier || 'None'}
+                </span>
+              </td>
+              <td>
+                <span class:list={['badge', status.class]}>{status.label}</span>
+              </td>
+              <td class="date-cell">{formatDate(user.created_at)}</td>
+              {showActions && (
+                <td>
+                  <div class="actions-dropdown">
+                    <button class="admin-btn admin-btn-sm admin-btn-secondary actions-trigger" data-user-id={user.id}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="19" cy="12" r="1" />
+                        <circle cx="5" cy="12" r="1" />
+                      </svg>
+                    </button>
+                    <div class="actions-menu" data-menu-for={user.id}>
+                      <a href={`/admin/users/${user.id}`} class="actions-menu-item">View Details</a>
+                      <button class="actions-menu-item add-credits-btn" data-user-id={user.id}>Add Credits</button>
+                      <button class="actions-menu-item danger ban-user-btn" data-user-id={user.id}>Ban User</button>
+                    </div>
+                  </div>
+                </td>
+              )}
+            </tr>
+          );
+        })
+      )}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .user-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .user-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--admin-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .user-name {
+    font-weight: 500;
+  }
+
+  .phone-cell {
+    font-family: var(--font-mono, monospace);
+    font-size: 13px;
+  }
+
+  .credits-cell {
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+
+  .date-cell {
+    white-space: nowrap;
+    color: var(--admin-text-muted);
+  }
+
+  .actions-dropdown {
+    position: relative;
+  }
+
+  .actions-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    min-width: 150px;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    box-shadow: var(--admin-shadow-md);
+    z-index: 50;
+    display: none;
+  }
+
+  .actions-menu.open {
+    display: block;
+  }
+</style>
+
+<script>
+  // Toggle action menus
+  document.querySelectorAll('.actions-trigger').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const userId = (btn as HTMLElement).dataset.userId;
+      const menu = document.querySelector(`[data-menu-for="${userId}"]`);
+
+      // Close other menus
+      document.querySelectorAll('.actions-menu.open').forEach((m) => {
+        if (m !== menu) m.classList.remove('open');
+      });
+
+      menu?.classList.toggle('open');
+    });
+  });
+
+  // Close menus on outside click
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.actions-menu.open').forEach((m) => {
+      m.classList.remove('open');
+    });
+  });
+
+  // Action handlers
+  document.querySelectorAll('.add-credits-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const userId = (btn as HTMLElement).dataset.userId;
+      window.dispatchEvent(new CustomEvent('admin:add-credits', { detail: { userId } }));
+    });
+  });
+
+  document.querySelectorAll('.ban-user-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const userId = (btn as HTMLElement).dataset.userId;
+      if (confirm('Are you sure you want to ban this user?')) {
+        window.dispatchEvent(new CustomEvent('admin:ban-user', { detail: { userId } }));
+      }
+    });
+  });
+</script>

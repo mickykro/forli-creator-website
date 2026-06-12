@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "cardcom-payment-gateway": {
+      "source": "skills-il/tax-and-finance",
+      "sourceType": "github",
+      "computedHash": "ebd250dbfadfd4e96879368e34ede0fbbde98686a56deb70f7e815e254b4bb3b"
+    }
+  }
+}

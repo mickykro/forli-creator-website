@@ -1,0 +1,132 @@
+---
+/**
+ * Usage Chart Component
+ * Renders charts using Chart.js
+ */
+interface Props {
+  id: string;
+  chartType?: 'line' | 'bar' | 'pie' | 'doughnut';
+  height?: number;
+}
+
+const { id, chartType = 'line', height = 300 } = Astro.props;
+---
+
+<div class="chart-wrapper" style={`height: ${height}px`}>
+  <canvas id={id}></canvas>
+</div>
+
+<style>
+  .chart-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  .chart-wrapper canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+</style>
+
+<script define:vars={{ id, chartType }}>
+  // Chart.js configuration helper
+  window.createAdminChart = function (canvasId, type, data, options = {}) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return null;
+
+    const defaultOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            padding: 20,
+            usePointStyle: true,
+            font: {
+              family: 'Inter, sans-serif',
+              size: 12,
+            },
+          },
+        },
+        tooltip: {
+          backgroundColor: '#1e293b',
+          titleFont: {
+            family: 'Inter, sans-serif',
+            size: 13,
+          },
+          bodyFont: {
+            family: 'Inter, sans-serif',
+            size: 12,
+          },
+          padding: 12,
+          cornerRadius: 8,
+        },
+      },
+      scales: type === 'pie' || type === 'doughnut' ? {} : {
+        x: {
+          grid: {
+            display: false,
+          },
+          ticks: {
+            font: {
+              family: 'Inter, sans-serif',
+              size: 11,
+            },
+            color: '#64748b',
+          },
+        },
+        y: {
+          grid: {
+            color: '#e2e8f0',
+          },
+          ticks: {
+            font: {
+              family: 'Inter, sans-serif',
+              size: 11,
+            },
+            color: '#64748b',
+          },
+        },
+      },
+    };
+
+    return new Chart(ctx, {
+      type: type,
+      data: data,
+      options: { ...defaultOptions, ...options },
+    });
+  };
+
+  // Color palette for charts
+  window.chartColors = {
+    primary: 'rgb(219, 107, 151)',
+    primaryLight: 'rgba(219, 107, 151, 0.2)',
+    success: 'rgb(34, 197, 94)',
+    successLight: 'rgba(34, 197, 94, 0.2)',
+    warning: 'rgb(245, 158, 11)',
+    warningLight: 'rgba(245, 158, 11, 0.2)',
+    info: 'rgb(59, 130, 246)',
+    infoLight: 'rgba(59, 130, 246, 0.2)',
+    danger: 'rgb(239, 68, 68)',
+    dangerLight: 'rgba(239, 68, 68, 0.2)',
+    gray: 'rgb(100, 116, 139)',
+    grayLight: 'rgba(100, 116, 139, 0.2)',
+    palette: [
+      'rgb(219, 107, 151)',
+      'rgb(59, 130, 246)',
+      'rgb(34, 197, 94)',
+      'rgb(245, 158, 11)',
+      'rgb(139, 92, 246)',
+      'rgb(236, 72, 153)',
+    ],
+    paletteLight: [
+      'rgba(219, 107, 151, 0.7)',
+      'rgba(59, 130, 246, 0.7)',
+      'rgba(34, 197, 94, 0.7)',
+      'rgba(245, 158, 11, 0.7)',
+      'rgba(139, 92, 246, 0.7)',
+      'rgba(236, 72, 153, 0.7)',
+    ],
+  };
+</script>
