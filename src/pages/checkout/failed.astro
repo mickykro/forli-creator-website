@@ -1,0 +1,181 @@
+---
+import Base from '../../layouts/Base.astro';
+import T from '../../components/T.astro';
+import { WHATSAPP_QUESTION_URL } from '../../brand';
+
+const url = new URL(Astro.request.url);
+const reason = url.searchParams.get('reason') || '';
+---
+
+<Base
+  title="התשלום נכשל — Forly | Payment Failed"
+  description="אופס, משהו השתבש"
+  bilingual={true}
+>
+  <main class="failed-page">
+    <div class="container">
+      <div class="failed-card">
+        <div class="x-mark">
+          <svg viewBox="0 0 52 52">
+            <circle class="x-circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="x-line x-line-1" d="M16,16 l20,20"/>
+            <path class="x-line x-line-2" d="M16,36 l20,-20"/>
+          </svg>
+        </div>
+
+        <h1 class="title">
+          <span class="l-he">התשלום נכשל</span>
+          <span class="l-en">Payment Failed</span>
+        </h1>
+
+        {reason && (
+          <p class="reason">
+            <span class="l-he">{reason}</span>
+            <span class="l-en">{reason}</span>
+          </p>
+        )}
+
+        <p class="message">
+          <span class="l-he">
+            לא חוייבת. נסה שוב או פנה אלינו לעזרה.
+          </span>
+          <span class="l-en">
+            You weren't charged. Try again or contact us for help.
+          </span>
+        </p>
+
+        <div class="actions">
+          <a href="/pricing" class="btn btn-primary btn-lg">
+            <span class="l-he">נסה שוב</span>
+            <span class="l-en">Try Again</span>
+          </a>
+          <a href={WHATSAPP_QUESTION_URL} class="btn btn-ghost" target="_blank" rel="noopener noreferrer">
+            <span class="l-he">צור קשר לעזרה</span>
+            <span class="l-en">Contact Support</span>
+          </a>
+        </div>
+
+        <div class="info-box">
+          <p>
+            <span class="l-he">
+              <strong>סיבות נפוצות:</strong> פרטי כרטיס שגויים, יתרה לא מספקת, בעיית תקשורת
+            </span>
+            <span class="l-en">
+              <strong>Common reasons:</strong> Incorrect card details, insufficient funds, connection issue
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .failed-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: radial-gradient(50% 50% at 50% 50%, rgba(219, 107, 151, 0.08), transparent),
+                var(--surface);
+  }
+
+  .failed-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 32px rgba(26, 18, 32, 0.08);
+    padding: 64px 48px;
+    max-width: 500px;
+    text-align: center;
+  }
+
+  .x-mark {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 32px;
+  }
+
+  .x-circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 2;
+    stroke-miterlimit: 10;
+    stroke: #dc2626;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+  }
+
+  .x-line {
+    stroke-dasharray: 28;
+    stroke-dashoffset: 28;
+    stroke-width: 3;
+    stroke: #dc2626;
+    stroke-linecap: round;
+  }
+
+  .x-line-1 {
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.4s forwards;
+  }
+
+  .x-line-2 {
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
+  }
+
+  @keyframes stroke {
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+
+  .reason {
+    font-size: 14px;
+    color: #dc2626;
+    font-weight: 600;
+    margin-bottom: 12px;
+    padding: 8px 16px;
+    background: #fef2f2;
+    border-radius: var(--radius-sm);
+    display: inline-block;
+  }
+
+  .message {
+    font-size: 16px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 40px;
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .btn-lg {
+    padding: 16px 32px;
+    font-size: 16px;
+  }
+
+  .info-box {
+    background: var(--surface-soft);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-align: start;
+  }
+
+  @media (max-width: 480px) {
+    .failed-card {
+      padding: 48px 32px;
+    }
+  }
+</style>

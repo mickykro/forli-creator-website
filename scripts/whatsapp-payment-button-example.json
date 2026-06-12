@@ -1,0 +1,20 @@
+{
+  "messaging_product": "whatsapp",
+  "to": "972542045280",
+  "type": "interactive",
+  "interactive": {
+    "type": "button",
+    "body": {
+      "text": "היי! כדי להשלים את הרכישה של חבילת הקרדיטים שלך, לחץ על הכפתור למטה 👇"
+    },
+    "action": {
+      "buttons": [
+        {
+          "type": "url",
+          "url": "https://secure.cardcom.solutions/External/lowProfileClearing/1000.aspx?LowProfileCode=2267affd-5d50-46f0-afce-754e32f7dbe4",
+          "text": "💳 לתשלום מאובטח"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,110 @@
+---
+import T from '../T.astro';
+
+interface Props {
+  id: string;
+  nameHe: string;
+  nameEn: string;
+  credits: number;
+  price: number;
+}
+
+const { id, nameHe, nameEn, credits, price } = Astro.props;
+
+const displayCredits = credits / 100;
+const pricePerCredit = (price / displayCredits).toFixed(2);
+const ctaUrl = `/checkout/login?product=credit_pack_${id}`;
+---
+
+<article class="credit-pack" data-credit-pack>
+  <div class="pack-header">
+    <h3 class="pack-name">
+      <span class="l-he">{nameHe}</span>
+      <span class="l-en">{nameEn}</span>
+    </h3>
+    <div class="pack-credits">
+      <span class="credits-num">{displayCredits.toLocaleString()}</span>
+      <span class="credits-label"><T he="קרדיטים" en="credits" /></span>
+    </div>
+  </div>
+
+  <div class="pack-body">
+    <div class="pack-price">
+      <span class="price">₪{price}</span>
+    </div>
+    <p class="price-per-credit">
+      <T he={`₪${pricePerCredit} לקרדיט`} en={`₪${pricePerCredit}/credit`} />
+    </p>
+    <a href={ctaUrl} target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">
+      <T he="רכישה בוואטסאפ" en="Buy via WhatsApp" />
+    </a>
+  </div>
+</article>
+
+<style>
+  .credit-pack {
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .credit-pack:hover {
+    transform: translateY(-2px);
+    border-color: rgba(219, 107, 151, 0.3);
+    box-shadow: 0 8px 24px rgba(26, 18, 32, 0.06);
+  }
+
+  .pack-header {
+    text-align: center;
+  }
+  .pack-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .pack-credits {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 4px;
+  }
+  .credits-num {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--forli-pink-deep);
+  }
+  .credits-label {
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .pack-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .pack-price {
+    text-align: center;
+  }
+  .price {
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--ink);
+  }
+  .price-per-credit {
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+  }
+
+  .btn-sm {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+</style>

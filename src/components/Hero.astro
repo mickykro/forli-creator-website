@@ -19,13 +19,13 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
     
     <!-- Live frame counter — script writes [data-frame-num] / [data-frame-total]
          on every scrub tick (frameNum at line ~775, frameTotal at line ~881). -->
-      <!-- <div class="tech tech-tr frame-hud" aria-hidden="true">
+      <div class="tech tech-tr frame-hud" aria-hidden="true">
         <span class="tech-dot"></span>
         <span class="frame-hud-label"><T he="פריים" en="FRAME" /></span>
         <span class="frame-hud-num" data-frame-num>0001</span>
         <span class="frame-hud-sep">/</span>
         <span class="frame-hud-total" data-frame-total>----</span>
-      </div> -->
+      </div>
     <div class="tech tech-bl">
       <span><T he="גלילה ↓" en="SCROLL ↓" /></span>
     </div>
@@ -151,7 +151,7 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
     height: 100vh;
     height: 100dvh;
     overflow: hidden;
-    background: var(--surface);
+    background: var(--white);
   }
   .hero-canvas {
     position: absolute;
@@ -767,7 +767,7 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
       // Skip enforcement for prefers-reduced-motion users (they free-scroll).
       const reduceMotion = typeof window !== 'undefined' &&
         window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-      const snapPoints = [0.26, 0.59, 1.0];
+      const snapPoints = [0.36, 0.59, 1.0];
 
       // Master scrubbed timeline pinned to the hero section
       const tl = gsap.timeline({

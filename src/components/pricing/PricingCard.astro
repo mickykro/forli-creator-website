@@ -1,0 +1,220 @@
+---
+import T from '../T.astro';
+
+interface Props {
+  id: 'starter' | 'growth' | 'pro';
+  nameHe: string;
+  nameEn: string;
+  creditsMonthly: number;
+  priceMonthly: number;
+  priceAnnual: number;
+  launchPromo?: {
+    priceMonthly: number;
+    duration: string;
+  };
+  isPopular?: boolean;
+  features: { he: string; en: string }[];
+}
+
+const { id, nameHe, nameEn, creditsMonthly, priceMonthly, priceAnnual, launchPromo, isPopular, features } = Astro.props;
+
+const displayCredits = creditsMonthly / 100;
+const ctaUrl = `/checkout/login?product=subscription_${id}_monthly`;
+---
+
+<article class:list={['pricing-card', { popular: isPopular, 'has-promo': !!launchPromo }]} data-pricing-card>
+  {launchPromo && (
+    <div class="promo-badge">
+      <T he={`מבצע השקה · ${launchPromo.duration}`} en={`Launch promo · First 2 months`} />
+    </div>
+  )}
+  {isPopular && (
+    <div class="popular-badge">
+      <T he="הכי פופולרי" en="Most popular" />
+    </div>
+  )}
+
+  <header class="card-header">
+    <h3 class="tier-name">
+      <span class="l-he">{nameHe}</span>
+      <span class="l-en">{nameEn}</span>
+    </h3>
+    <p class="credits">
+      <span class="credits-num">{displayCredits.toLocaleString()}</span>
+      <span class="credits-label"><T he="קרדיטים לחודש" en="credits/month" /></span>
+    </p>
+  </header>
+
+  <div class="pricing-body">
+    <div class="price-block">
+      {launchPromo ? (
+        <div class="price-promo">
+          <span class="price-old">₪{priceMonthly}</span>
+          <span class="price-current">₪{launchPromo.priceMonthly}</span>
+          <span class="price-period"><T he="/חודש" en="/mo" /></span>
+        </div>
+      ) : (
+        <div class="price-regular">
+          <span class="price-current">₪{priceMonthly}</span>
+          <span class="price-period"><T he="/חודש" en="/mo" /></span>
+        </div>
+      )}
+      <p class="price-annual">
+        <T he={`או ₪${priceAnnual} לשנה (חודשיים חינם)`} en={`or ₪${priceAnnual}/year (2 months free)`} />
+      </p>
+    </div>
+
+    <ul class="features">
+      {features.map((f) => (
+        <li>
+          <span class="check" aria-hidden="true">✓</span>
+          <T he={f.he} en={f.en} />
+        </li>
+      ))}
+    </ul>
+
+    <a href={ctaUrl} target="_blank" rel="noopener noreferrer" class:list={['btn', isPopular ? 'btn-primary' : 'btn-ghost']}>
+      <T he="התחל עכשיו" en="Get started" />
+    </a>
+  </div>
+</article>
+
+<style>
+  .pricing-card {
+    position: relative;
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .pricing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(26, 18, 32, 0.08);
+  }
+  .pricing-card.popular {
+    border-color: var(--forli-pink);
+    box-shadow: 0 8px 32px rgba(219, 107, 151, 0.15);
+    background: linear-gradient(180deg, rgba(244, 163, 191, 0.06), var(--surface-soft) 40%);
+  }
+  .pricing-card.has-promo {
+    border-color: rgba(127, 168, 155, 0.5);
+  }
+
+  .promo-badge,
+  .popular-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .promo-badge {
+    background: var(--sage);
+    color: var(--white);
+  }
+  .popular-badge {
+    background: var(--forli-pink);
+    color: var(--white);
+  }
+
+  .card-header {
+    text-align: center;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .tier-name {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .credits {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px;
+  }
+  .credits-num {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--forli-pink-deep);
+  }
+  .credits-label {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .pricing-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+  }
+
+  .price-block {
+    text-align: center;
+  }
+  .price-promo,
+  .price-regular {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px;
+  }
+  .price-old {
+    font-size: 18px;
+    color: var(--ink-soft);
+    text-decoration: line-through;
+  }
+  .price-current {
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--ink);
+  }
+  .price-period {
+    font-size: 16px;
+    color: var(--ink-soft);
+  }
+  .price-annual {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .features {
+    list-style: none;
+    display: grid;
+    gap: 10px;
+    flex: 1;
+  }
+  .features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .check {
+    color: var(--sage);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .pricing-card .btn {
+    width: 100%;
+    text-align: center;
+    margin-top: auto;
+  }
+</style>
