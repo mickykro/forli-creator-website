@@ -28,3 +28,4 @@ pnpm-debug.log*
 public/video/*
 !public/video/README.md
 .env
+.vercel
