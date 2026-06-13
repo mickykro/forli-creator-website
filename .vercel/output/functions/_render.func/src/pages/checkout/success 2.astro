@@ -1,0 +1,153 @@
+---
+import Base from '../../layouts/Base.astro';
+import T from '../../components/T.astro';
+import { WHATSAPP_URL } from '../../brand';
+---
+
+<Base
+  title="תשלום בוצע בהצלחה! — Forly | Payment Successful"
+  description="התשלום שלך בוצע בהצלחה"
+  bilingual={true}
+>
+  <main class="success-page">
+    <div class="container">
+      <div class="success-card">
+        <div class="checkmark">
+          <svg viewBox="0 0 52 52">
+            <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+          </svg>
+        </div>
+
+        <h1 class="title">
+          <span class="l-he">התשלום בוצע בהצלחה!</span>
+          <span class="l-en">Payment Successful!</span>
+        </h1>
+
+        <p class="message">
+          <span class="l-he">
+            הקרדיטים שלך יתווספו תוך מספר דקות.<br />
+            תוכל להתחיל ליצור תוכן מיד בוואטסאפ.
+          </span>
+          <span class="l-en">
+            Your credits will be added within a few minutes.<br />
+            You can start creating content right away on WhatsApp.
+          </span>
+        </p>
+
+        <div class="actions">
+          <a href={WHATSAPP_URL} class="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
+            <span class="l-he">פתח וואטסאפ</span>
+            <span class="l-en">Open WhatsApp</span>
+          </a>
+          <a href="/" class="btn btn-ghost">
+            <span class="l-he">חזור לדף הבית</span>
+            <span class="l-en">Back to Home</span>
+          </a>
+        </div>
+
+        <div class="info-box">
+          <p>
+            <span class="l-he">
+              <strong>צריך עזרה?</strong> פנה אלינו בוואטסאפ ונעזור לך מיד.
+            </span>
+            <span class="l-en">
+              <strong>Need help?</strong> Contact us on WhatsApp and we'll help you right away.
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .success-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: radial-gradient(50% 50% at 50% 50%, rgba(127, 168, 155, 0.12), transparent),
+                var(--surface);
+  }
+
+  .success-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 32px rgba(26, 18, 32, 0.08);
+    padding: 64px 48px;
+    max-width: 500px;
+    text-align: center;
+  }
+
+  .checkmark {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 32px;
+  }
+
+  .checkmark-circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 2;
+    stroke-miterlimit: 10;
+    stroke: var(--sage);
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+  }
+
+  .checkmark-check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    stroke-width: 3;
+    stroke: var(--sage);
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.4s forwards;
+  }
+
+  @keyframes stroke {
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+
+  .message {
+    font-size: 16px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 40px;
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .btn-lg {
+    padding: 16px 32px;
+    font-size: 16px;
+  }
+
+  .info-box {
+    background: var(--surface-soft);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 480px) {
+    .success-card {
+      padding: 48px 32px;
+    }
+  }
+</style>

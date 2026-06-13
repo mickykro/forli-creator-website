@@ -1,0 +1,158 @@
+---
+/**
+ * Pagination Component
+ * Page navigation with prev/next and page numbers
+ */
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  totalItems?: number;
+  pageSize?: number;
+  id?: string;
+}
+
+const { currentPage, totalPages, totalItems, pageSize = 10, id = 'pagination' } = Astro.props;
+
+// Calculate page numbers to show
+function getPageNumbers(current: number, total: number): (number | 'ellipsis')[] {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+
+  const pages: (number | 'ellipsis')[] = [];
+
+  if (current <= 3) {
+    pages.push(1, 2, 3, 4, 'ellipsis', total);
+  } else if (current >= total - 2) {
+    pages.push(1, 'ellipsis', total - 3, total - 2, total - 1, total);
+  } else {
+    pages.push(1, 'ellipsis', current - 1, current, current + 1, 'ellipsis', total);
+  }
+
+  return pages;
+}
+
+const pageNumbers = getPageNumbers(currentPage, totalPages);
+const showingFrom = totalItems ? (currentPage - 1) * pageSize + 1 : 0;
+const showingTo = totalItems ? Math.min(currentPage * pageSize, totalItems) : 0;
+---
+
+<div class="pagination" id={id} data-current={currentPage} data-total={totalPages}>
+  {totalItems !== undefined && (
+    <div class="pagination-info">
+      Showing {showingFrom} to {showingTo} of {totalItems.toLocaleString()} results
+    </div>
+  )}
+
+  <div class="pagination-controls">
+    <button
+      class="pagination-btn prev-btn"
+      disabled={currentPage <= 1}
+      data-page={currentPage - 1}
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15 18 9 12 15 6" />
+      </svg>
+    </button>
+
+    {pageNumbers.map((page) =>
+      page === 'ellipsis' ? (
+        <span class="pagination-ellipsis">...</span>
+      ) : (
+        <button
+          class:list={['pagination-btn', { active: page === currentPage }]}
+          data-page={page}
+        >
+          {page}
+        </button>
+      )
+    )}
+
+    <button
+      class="pagination-btn next-btn"
+      disabled={currentPage >= totalPages}
+      data-page={currentPage + 1}
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+    border-top: 1px solid var(--admin-border);
+    margin-top: 16px;
+  }
+
+  .pagination-info {
+    font-size: 13px;
+    color: var(--admin-text-muted);
+  }
+
+  .pagination-controls {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .pagination-btn {
+    min-width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--admin-radius);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    color: var(--admin-text);
+    transition: all 0.15s ease;
+  }
+
+  .pagination-btn:hover:not(:disabled):not(.active) {
+    background: var(--admin-bg);
+  }
+
+  .pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .pagination-btn.active {
+    background: var(--admin-primary);
+    border-color: var(--admin-primary);
+    color: white;
+  }
+
+  .pagination-ellipsis {
+    padding: 0 8px;
+    color: var(--admin-text-muted);
+  }
+
+  @media (max-width: 640px) {
+    .pagination {
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+</style>
+
+<script define:vars={{ id }}>
+  const pagination = document.getElementById(id);
+
+  pagination?.querySelectorAll('.pagination-btn[data-page]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if ((btn as HTMLButtonElement).disabled) return;
+      const page = Number((btn as HTMLElement).dataset.page);
+      window.dispatchEvent(new CustomEvent('admin:page-change', { detail: { page, paginationId: id } }));
+    });
+  });
+</script>

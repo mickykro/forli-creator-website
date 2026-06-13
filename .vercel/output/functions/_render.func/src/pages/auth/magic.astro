@@ -1,0 +1,131 @@
+---
+/**
+ * Magic Link Handler
+ * Auto-verifies OTP from URL and redirects to payment
+ * URL format: /auth/magic?otp=123456&phone=972542045280&product=credit_pack_taste
+ */
+import Base from '../../layouts/Base.astro';
+
+const url = new URL(Astro.request.url);
+const otp = url.searchParams.get('otp');
+const phone = url.searchParams.get('phone');
+const product = url.searchParams.get('product');
+---
+
+<Base
+  title="מתחבר... — Forly | Logging in..."
+  description="התחברות אוטומטית"
+  bilingual={true}
+>
+  <main class="magic-link">
+    <div class="container">
+      <div class="magic-card">
+        <div class="spinner"></div>
+        <h1 class="title">
+          <span class="l-he">מתחבר...</span>
+          <span class="l-en">Logging in...</span>
+        </h1>
+        <p class="subtitle">
+          <span class="l-he">מעביר אותך לתשלום</span>
+          <span class="l-en">Redirecting to payment</span>
+        </p>
+      </div>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .magic-link {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(50% 50% at 50% 50%, rgba(219, 107, 151, 0.08), transparent),
+                var(--surface);
+  }
+
+  .magic-card {
+    text-align: center;
+    padding: 48px 32px;
+  }
+
+  .spinner {
+    width: 64px;
+    height: 64px;
+    border: 6px solid var(--line);
+    border-top-color: var(--forli-pink);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 32px;
+  }
+
+  .title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--ink-soft);
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+
+<script define:vars={{ otp, phone, product }}>
+  async function autoLogin() {
+    try {
+      if (!otp || !phone || !product) {
+        throw new Error('Missing parameters');
+      }
+
+      // Parse product
+      const [productType, productId, billingCycle] = product.split('_');
+
+      // Verify OTP
+      const verifyResponse = await fetch('/api/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, otp }),
+      });
+
+      const verifyResult = await verifyResponse.json();
+
+      if (!verifyResponse.ok) {
+        throw new Error(verifyResult.error);
+      }
+
+      // Create payment link
+      const paymentResponse = await fetch('/api/payment/create-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productType: productType === 'credit' ? 'credit_pack' : productType,
+          productId,
+          billingCycle: billingCycle || null,
+        }),
+      });
+
+      const paymentResult = await paymentResponse.json();
+
+      if (!paymentResponse.ok) {
+        throw new Error(paymentResult.error);
+      }
+
+      // Redirect to Cardcom
+      window.location.href = paymentResult.paymentUrl;
+    } catch (error) {
+      console.error('Magic link error:', error);
+      // Redirect to checkout login on error
+      window.location.href = `/checkout/login?product=${product}&error=${encodeURIComponent(error.message)}`;
+    }
+  }
+
+  // Auto-run on page load
+  autoLogin();
+</script>
+</Base>

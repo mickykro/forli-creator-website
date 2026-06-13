@@ -1,0 +1,159 @@
+---
+import T from '../T.astro';
+import { WHATSAPP_QUESTION_URL } from '../../brand';
+
+const faqs = [
+  {
+    questionHe: 'איך עובדים קרדיטים?',
+    questionEn: 'How do credits work?',
+    answerHe: 'קרדיטים הם המטבע של פורלי. כל פעולה צורכת כמות קרדיטים שונה — תמונה צורכת כ-100 קרדיטים, קרוסלה כ-250, וסרטון כ-500. ככל שהתוכן מורכב יותר, כך נדרשים יותר קרדיטים.',
+    answerEn: 'Credits are Forly\'s currency. Each action uses a different amount — an image uses ~100 credits, a carousel ~250, and a video ~500. The more complex the content, the more credits required.',
+  },
+  {
+    questionHe: 'האם קרדיטים פגים?',
+    questionEn: 'Do credits expire?',
+    answerHe: 'קרדיטים במסלולים החודשיים מתחדשים בכל חודש ולא עוברים לחודש הבא. קרדיטים בחבילות חד-פעמיות תקפים ל-12 חודשים מרגע הרכישה.',
+    answerEn: 'Credits in monthly plans reset each month and don\'t roll over. Credits from one-time packs are valid for 12 months from purchase.',
+  },
+  {
+    questionHe: 'אפשר לבטל בכל רגע?',
+    questionEn: 'Can I cancel anytime?',
+    answerHe: 'כן, אין התחייבות. אפשר לבטל את המסלול החודשי בכל רגע דרך וואטסאפ או במייל ל-info@call4li.com. הביטול ייכנס לתוקף בתום תקופת החיוב הנוכחית.',
+    answerEn: 'Yes, no commitment. You can cancel your monthly plan anytime via WhatsApp or email to info@call4li.com. Cancellation takes effect at the end of the current billing period.',
+  },
+  {
+    questionHe: 'באילו אמצעי תשלום אתם מקבלים?',
+    questionEn: 'What payment methods are accepted?',
+    answerHe: 'אנחנו מקבלים כרטיסי אשראי (ויזה, מאסטרקארד, אמריקן אקספרס), ביט, ו-PayPal. התשלום מאובטח ומוצפן.',
+    answerEn: 'We accept credit cards (Visa, Mastercard, American Express), Bit, and PayPal. All payments are secure and encrypted.',
+  },
+  {
+    questionHe: 'האם אתם מנפיקים חשבונית מס?',
+    questionEn: 'Do you issue a tax invoice?',
+    answerHe: 'כן, חשבונית מס נשלחת אוטומטית למייל לאחר כל תשלום. אם אתם צריכים חשבונית על שם עסק או פרטים נוספים, פנו אלינו בוואטסאפ.',
+    answerEn: 'Yes, a tax invoice is automatically sent to your email after each payment. If you need an invoice with business details, contact us via WhatsApp.',
+  },
+  {
+    questionHe: 'מה קורה אם נגמרים לי הקרדיטים?',
+    questionEn: 'What happens if I run out of credits?',
+    answerHe: 'תקבלו התראה כשנשארו לכם 20% מהקרדיטים. אפשר לרכוש חבילת קרדיטים נוספת בכל רגע, או לשדרג מסלול. פורלי לא תפסיק לעבוד באמצע — רק תודיע לכם שהקרדיטים אזלו.',
+    answerEn: 'You\'ll get a notification when you have 20% credits left. You can purchase an additional credit pack anytime, or upgrade your plan. Forly won\'t stop mid-task — it will just let you know when credits are depleted.',
+  },
+];
+---
+
+<section class="pricing-faq" id="pricing-faq" data-pricing-faq>
+  <div class="container">
+    <header class="faq-header">
+      <h2 class="faq-title">
+        <T he="שאלות נפוצות על מחירים" en="Pricing FAQ" />
+      </h2>
+      <p class="faq-sub">
+        <T he="התשובות לכל מה שרציתם לדעת על תשלומים וקרדיטים" en="Answers to everything you wanted to know about payments and credits" />
+      </p>
+    </header>
+
+    <div class="faq-list">
+      {faqs.map((faq, i) => (
+        <details class="faq-item" {...(i === 0 ? { open: true } : {})}>
+          <summary>
+            <T he={faq.questionHe} en={faq.questionEn} />
+          </summary>
+          <p>
+            <span class="l-he">{faq.answerHe}</span>
+            <span class="l-en">{faq.answerEn}</span>
+          </p>
+        </details>
+      ))}
+    </div>
+
+    <div class="faq-cta">
+      <p><T he="יש שאלה נוספת?" en="Have another question?" /></p>
+      <a href={WHATSAPP_QUESTION_URL} target="_blank" rel="noopener noreferrer" class="btn btn-ghost">
+        <T he="שאלו אותנו בוואטסאפ" en="Ask us on WhatsApp" />
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pricing-faq {
+    padding: 80px 0;
+    background: var(--surface);
+  }
+
+  .faq-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .faq-title {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .faq-sub {
+    font-size: 16px;
+    color: var(--ink-soft);
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .faq-list {
+    display: grid;
+    gap: 12px;
+    max-width: 800px;
+    margin: 0 auto 40px;
+  }
+
+  .faq-item {
+    border: 1px solid var(--line);
+    background: var(--surface-soft);
+    border-radius: var(--radius-md);
+    padding: 18px 22px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .faq-item[open] {
+    border-color: rgba(219, 107, 151, 0.35);
+    box-shadow: 0 4px 24px rgba(219, 107, 151, 0.08);
+  }
+  .faq-item summary {
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--ink);
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after {
+    content: '+';
+    font-family: var(--font-mono);
+    color: var(--forli-pink-deep);
+    transition: transform 0.2s ease;
+    font-size: 20px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .faq-item[open] summary::after { content: '−'; }
+  .faq-item p {
+    margin: 14px 0 0;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  .faq-cta {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .faq-cta p {
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+</style>

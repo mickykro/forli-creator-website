@@ -1,0 +1,216 @@
+{
+	"version": 3,
+	"routes": [
+		{
+			"handle": "filesystem"
+		},
+		{
+			"src": "^/_astro/(.*)$",
+			"headers": {
+				"cache-control": "public, max-age=31536000, immutable"
+			},
+			"continue": true
+		},
+		{
+			"src": "^/_server-islands/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/_image/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/accessibility/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/credits/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/credits 2/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/index 2/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/login/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/login 2/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/purchases/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/purchases 2/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/settings/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/settings 2/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/subscriptions/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/subscriptions 2/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/usage/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/usage 2/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/users/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/users 2/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/admins/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/analytics/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/credits/export/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/credits/grant/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/credits/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/purchases/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/subscription/update/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/subscriptions/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/usage/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/user/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/users/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/auth/send-otp/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/auth/verify-otp/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/payment/create-link/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/pricing\\.json$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/pricing\\.json 2/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/auth/magic/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/auth/magic 2/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/checkout/failed/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/checkout/failed 2/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/checkout/login/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/checkout/login 2/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/checkout/success/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/checkout/success 2/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/faq/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/pricing/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/privacy/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/terms/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/404/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/.*$",
+			"dest": "_render",
+			"status": 404
+		}
+	]
+}

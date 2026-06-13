@@ -1,0 +1,159 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { WHATSAPP_HELLO_URL } from '../brand';
+
+const faqs = [
+  {
+    question: 'מה זה פורלי?',
+    answer:
+      'פורלי היא סטודיו תוכן AI שפועל ישירות בוואטסאפ. שולחים לה הודעה בעברית — והיא מחזירה לכם תמונה, סרטון, קרוסלה או אפילו אתר נחיתה, מוכנים לשליחה ללקוחות או לפרסום ברשתות.',
+  },
+  {
+    question: 'איך פורלי עובדת?',
+    answer:
+      'מוסיפים את פורלי לאנשי הקשר בוואטסאפ ושולחים בקשה בעברית פשוטה ("תכיני לי פוסט להשקה של תפריט חדש"). פורלי מבינה את ההקשר העסקי שלכם, מייצרת את התוכן בכמה שניות, ושולחת אותו חזרה לצ׳אט מוכן לפרסום.',
+  },
+  {
+    question: 'אילו סוגי תוכן פורלי יוצרת?',
+    answer:
+      'תמונות מוצר ופרסום, סרטונים קצרים, קרוסלות לאינסטגרם ופייסבוק, פוסטים מותאמים לרשתות, ואפילו עמודי נחיתה ואתרי תדמית בסיסיים. הכל עם זהות חזותית עקבית למותג שלכם.',
+  },
+  {
+    question: 'האם צריך אפליקציה או דשבורד?',
+    answer:
+      'לא. פורלי חיה בוואטסאפ. אין מה להתקין, אין על מה ללמוד — אם אתם יודעים לשלוח הודעה, אתם יודעים להשתמש בפורלי.',
+  },
+  {
+    question: 'כמה זמן לוקח להתחיל?',
+    answer:
+      'תהליך ההצטרפות הוא שלוש שאלות קצרות בוואטסאפ. תוך כמה דקות פורלי מכירה את העסק שלכם ויכולה לייצר תוכן ראשון.',
+  },
+  {
+    question: 'באילו שפות פורלי תומכת?',
+    answer:
+      'פורלי בנויה במיוחד לעסקים ישראליים — היא מבינה עברית כשפת אם, ומסוגלת לייצר תוכן בעברית, אנגלית וערבית.',
+  },
+  {
+    question: 'האם פורלי מתאימה לכל סוג עסק?',
+    answer:
+      'כן. עסקים קטנים, מסעדות, קליניקות, חנויות אונליין, יועצים, נדל"ן ועוד — כל מי שמשווק את עצמו ברשתות או מייצר תוכן ללקוחות. פורלי מתאימה את עצמה לטון, לזהות ולקהל היעד של כל עסק.',
+  },
+  {
+    question: 'מה קורה למידע שאני שולח/ת לפורלי?',
+    answer:
+      'המידע שאתם שולחים משמש אך ורק כדי לייצר את התוכן שלכם ולשפר את ההתאמה האישית של פורלי לעסק שלכם. לא משתפים מידע עם מפרסמים, לא משתמשים בתוכן שלכם לאימון מודלים פומביים. פרטיות כברירת מחדל.',
+  },
+  {
+    question: 'כמה פורלי עולה?',
+    answer:
+      'לפרטים על מסלולים ומחירים, בקרו בעמוד המחירים שלנו. יש מסלולים חודשיים וחבילות קרדיטים חד-פעמיות — ואפשר להתחיל בחינם עם 500 קרדיטים.',
+  },
+  {
+    question: 'איך אני מצטרף/ת?',
+    answer:
+      'לוחצים על "הצטרפו " בעמוד הבית או כותבים לנו ישירות בוואטסאפ. שלוש שאלות קצרות ופורלי מתחילה לעבוד עבורכם.',
+  },
+  {
+    question: 'איך אפשר לבטל את השירות?',
+    answer:
+      'אפשר לבטל בכל רגע — שולחים הודעה בוואטסאפ או מייל ל-info@call4li.com ואנחנו דואגים למחיקת המידע ולסיום השירות תוך ימי עסקים ספורים.',
+  },
+  {
+    question: 'איך יוצרים קשר עם הצוות?',
+    answer:
+      'הדרך המהירה ביותר — וואטסאפ. אפשר גם במייל info@call4li.com או בטלפון. נחזור אליכם בתוך יום עסקים אחד.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.question,
+    acceptedAnswer: { '@type': 'Answer', text: f.answer },
+  })),
+};
+---
+<Legal
+  title="שאלות ותשובות — Forly · פורלי"
+  description="מצאו תשובות לשאלות הנפוצות על פורלי — סטודיו התוכן AI שעובד בוואטסאפ. איך זה עובד, מה אפשר ליצור, ואיך מצטרפים."
+  heading="שאלות ותשובות"
+  schema={faqSchema}
+>
+  <p style="margin-bottom: 28px;">
+    הכל מה שרציתם לדעת על פורלי — סטודיו התוכן ב-AI שחי בוואטסאפ. אם לא מצאתם תשובה לשאלה שלכם,
+    <a href={WHATSAPP_HELLO_URL} target="_blank" rel="noopener noreferrer">דברו איתנו ישירות בוואטסאפ</a>.
+  </p>
+
+  <div class="faq-list">
+    {faqs.map((faq, i) => (
+      <details class="faq-item" {...(i === 0 ? { open: true } : {})}>
+        <summary>{faq.question}</summary>
+        <p>{faq.answer}</p>
+      </details>
+    ))}
+  </div>
+
+  <section class="faq-cta">
+    <h2>עוד שאלות?</h2>
+    <p>צוות פורלי זמין בוואטסאפ — תשובה אנושית, באמת, תוך יום עסקים.</p>
+    <a href={WHATSAPP_HELLO_URL} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+      דברו איתנו בוואטסאפ
+    </a>
+  </section>
+</Legal>
+
+<style>
+  .faq-list {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+  .faq-item {
+    border: 1px solid var(--line);
+    background: var(--surface-soft);
+    border-radius: var(--radius-md);
+    padding: 18px 22px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .faq-item[open] {
+    border-color: rgba(219, 107, 151, 0.35);
+    box-shadow: 0 4px 24px rgba(219, 107, 151, 0.08);
+  }
+  .faq-item summary {
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--ink);
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after {
+    content: '+';
+    font-family: var(--font-mono);
+    color: var(--forli-pink-deep);
+    transition: transform 0.2s ease;
+    font-size: 22px;
+    line-height: 1;
+  }
+  .faq-item[open] summary::after { content: '−'; }
+  .faq-item p {
+    margin: 14px 0 0;
+    color: var(--ink-soft);
+    line-height: 1.7;
+  }
+
+  .faq-cta {
+    text-align: center;
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 36px 24px;
+  }
+  .faq-cta h2 { margin-bottom: 10px; }
+  .faq-cta p { margin-bottom: 18px; color: var(--ink-soft); }
+</style>

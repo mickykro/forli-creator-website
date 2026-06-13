@@ -1,0 +1,290 @@
+---
+/**
+ * Admin Dashboard Overview
+ * Displays KPIs, recent activity, and key metrics
+ */
+import Dashboard from '../../layouts/Dashboard.astro';
+import KPICard from '../../components/admin/KPICard.astro';
+import UsageChart from '../../components/admin/UsageChart.astro';
+---
+
+<Dashboard title="Dashboard" activeNav="dashboard">
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <KPICard
+      title="Monthly Recurring Revenue"
+      value="0"
+      prefix="₪"
+      icon="revenue"
+      change={0}
+    />
+    <KPICard
+      title="Active Subscribers"
+      value="0"
+      icon="subscriptions"
+      change={0}
+    />
+    <KPICard
+      title="Trial Users"
+      value="0"
+      icon="users"
+      change={0}
+    />
+    <KPICard
+      title="This Month Revenue"
+      value="0"
+      prefix="₪"
+      icon="revenue"
+      change={0}
+    />
+  </div>
+
+  <!-- Charts Row -->
+  <div class="admin-grid admin-grid-2">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Revenue Trend</h3>
+          <p class="card-subtitle">Last 30 days</p>
+        </div>
+        <select class="admin-input admin-select" id="revenuePeriod" style="width: auto;">
+          <option value="30">Last 30 days</option>
+          <option value="90">Last 90 days</option>
+          <option value="365">Last year</option>
+        </select>
+      </div>
+      <UsageChart id="revenueChart" chartType="line" />
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Subscription Distribution</h3>
+          <p class="card-subtitle">By tier</p>
+        </div>
+      </div>
+      <UsageChart id="subscriptionChart" chartType="doughnut" height={260} />
+    </div>
+  </div>
+
+  <!-- Tables Row -->
+  <div class="admin-grid admin-grid-2" style="margin-top: 24px;">
+    <!-- Recent Payments -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Recent Payments</h3>
+          <p class="card-subtitle">Last 10 transactions</p>
+        </div>
+        <a href="/admin/purchases" class="admin-btn admin-btn-sm admin-btn-secondary">View All</a>
+      </div>
+      <table class="admin-table" id="recentPaymentsTable">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="4" style="text-align: center; color: var(--admin-text-muted); padding: 24px;">
+              Loading...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Top Users by Credit Usage -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Top Users by Credits</h3>
+          <p class="card-subtitle">This month</p>
+        </div>
+        <a href="/admin/usage" class="admin-btn admin-btn-sm admin-btn-secondary">View All</a>
+      </div>
+      <table class="admin-table" id="topUsersTable">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Credits Used</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="3" style="text-align: center; color: var(--admin-text-muted); padding: 24px;">
+              Loading...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</Dashboard>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  import { createClient } from '@supabase/supabase-js';
+
+  const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+  const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+  async function loadDashboardData() {
+    if (!supabaseUrl || !supabaseKey) {
+      console.warn('Supabase not configured');
+      return;
+    }
+
+    // Initialize charts with placeholder data
+    initCharts();
+
+    // Load data from API
+    try {
+      const response = await fetch('/api/admin/analytics?period=30d');
+      if (response.ok) {
+        const data = await response.json();
+        updateKPIs(data);
+        updateCharts(data);
+        updateTables(data);
+      }
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error);
+    }
+  }
+
+  function initCharts() {
+    // Revenue trend chart
+    if (window.createAdminChart) {
+      window.createAdminChart('revenueChart', 'line', {
+        labels: getLast30Days(),
+        datasets: [{
+          label: 'Revenue (₪)',
+          data: Array(30).fill(0),
+          borderColor: window.chartColors.primary,
+          backgroundColor: window.chartColors.primaryLight,
+          tension: 0.3,
+          fill: true,
+        }],
+      });
+
+      // Subscription distribution chart
+      window.createAdminChart('subscriptionChart', 'doughnut', {
+        labels: ['Starter', 'Growth', 'Pro', 'Trial'],
+        datasets: [{
+          data: [0, 0, 0, 0],
+          backgroundColor: window.chartColors.palette,
+          borderWidth: 0,
+        }],
+      });
+    }
+  }
+
+  function getLast30Days(): string[] {
+    const days = [];
+    for (let i = 29; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      days.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    }
+    return days;
+  }
+
+  function updateKPIs(data: Record<string, unknown>) {
+    // Update KPI cards via DOM manipulation
+    const kpiCards = document.querySelectorAll('.kpi-card');
+    if (kpiCards[0]) {
+      const valueEl = kpiCards[0].querySelector('.kpi-number');
+      if (valueEl) valueEl.textContent = formatNumber(data.mrr as number || 0);
+    }
+    if (kpiCards[1]) {
+      const valueEl = kpiCards[1].querySelector('.kpi-number');
+      if (valueEl) valueEl.textContent = String(data.activeSubscribers || 0);
+    }
+    if (kpiCards[2]) {
+      const valueEl = kpiCards[2].querySelector('.kpi-number');
+      if (valueEl) valueEl.textContent = String(data.trialUsers || 0);
+    }
+    if (kpiCards[3]) {
+      const valueEl = kpiCards[3].querySelector('.kpi-number');
+      if (valueEl) valueEl.textContent = formatNumber(data.monthRevenue as number || 0);
+    }
+  }
+
+  function updateCharts(data: Record<string, unknown>) {
+    // Charts would be updated with real data here
+    // This is placeholder - real implementation would use Chart.js update methods
+  }
+
+  function updateTables(data: Record<string, unknown>) {
+    // Update recent payments table
+    const paymentsBody = document.querySelector('#recentPaymentsTable tbody');
+    const payments = (data.recentPayments as Array<Record<string, unknown>>) || [];
+
+    if (paymentsBody) {
+      if (payments.length === 0) {
+        paymentsBody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align: center; color: var(--admin-text-muted); padding: 24px;">
+              No recent payments
+            </td>
+          </tr>
+        `;
+      } else {
+        paymentsBody.innerHTML = payments.map((p) => `
+          <tr>
+            <td>${p.user_name || 'Unknown'}</td>
+            <td><span class="badge badge-info">${p.purchase_type}</span></td>
+            <td>₪${p.amount_ils}</td>
+            <td style="color: var(--admin-text-muted);">${formatDate(p.created_at as string)}</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    // Update top users table
+    const usersBody = document.querySelector('#topUsersTable tbody');
+    const topUsers = (data.topUsers as Array<Record<string, unknown>>) || [];
+
+    if (usersBody) {
+      if (topUsers.length === 0) {
+        usersBody.innerHTML = `
+          <tr>
+            <td colspan="3" style="text-align: center; color: var(--admin-text-muted); padding: 24px;">
+              No usage data
+            </td>
+          </tr>
+        `;
+      } else {
+        usersBody.innerHTML = topUsers.map((u) => `
+          <tr>
+            <td>${u.display_name || 'Unknown'}</td>
+            <td>${formatCredits(u.credits_used as number)}</td>
+            <td>${u.action_count}</td>
+          </tr>
+        `).join('');
+      }
+    }
+  }
+
+  function formatNumber(num: number): string {
+    return num.toLocaleString();
+  }
+
+  function formatCredits(credits: number): string {
+    return (credits / 100).toLocaleString();
+  }
+
+  function formatDate(dateStr: string): string {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    });
+  }
+
+  // Load data on page load
+  loadDashboardData();
+</script>

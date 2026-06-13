@@ -1,0 +1,607 @@
+---
+/**
+ * Admin Settings Page
+ * System configuration and admin user management
+ */
+import Dashboard from '../../layouts/Dashboard.astro';
+import { PRICING_TIERS, CREDIT_PACKS, CREDIT_COSTS, TRIAL_CREDITS, REFERRAL_CREDITS } from '../../brand';
+---
+
+<Dashboard title="Settings" activeNav="settings">
+  <div class="settings-grid">
+    <!-- Admin Users -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Admin Users</h3>
+          <p class="card-subtitle">Manage admin access</p>
+        </div>
+        <button class="admin-btn admin-btn-primary" id="addAdminBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Add Admin
+        </button>
+      </div>
+      <table class="admin-table" id="adminUsersTable">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Added</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="adminUsersBody">
+          <tr>
+            <td colspan="4" style="text-align: center; color: var(--admin-text-muted); padding: 32px;">
+              Loading...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pricing Configuration (Read-only display) -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Pricing Configuration</h3>
+          <p class="card-subtitle">Current pricing from brand.ts</p>
+        </div>
+      </div>
+
+      <div class="config-section">
+        <h4 class="config-section-title">Subscription Tiers</h4>
+        <table class="admin-table config-table">
+          <thead>
+            <tr>
+              <th>Tier</th>
+              <th>Monthly Price</th>
+              <th>Monthly Credits</th>
+            </tr>
+          </thead>
+          <tbody>
+            {PRICING_TIERS.map((tier) => (
+              <tr>
+                <td style="font-weight: 500;">{tier.nameEn}</td>
+                <td>₪{tier.priceMonthly}</td>
+                <td>{(tier.creditsMonthly / 100).toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="config-section">
+        <h4 class="config-section-title">Credit Packs</h4>
+        <table class="admin-table config-table">
+          <thead>
+            <tr>
+              <th>Pack</th>
+              <th>Price</th>
+              <th>Credits</th>
+            </tr>
+          </thead>
+          <tbody>
+            {CREDIT_PACKS.map((pack) => (
+              <tr>
+                <td style="font-weight: 500;">{pack.nameEn}</td>
+                <td>₪{pack.price}</td>
+                <td>{(pack.credits / 100).toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="config-section">
+        <h4 class="config-section-title">Credit Costs</h4>
+        <table class="admin-table config-table">
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Credits</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(CREDIT_COSTS).map(([action, cost]) => (
+              <tr>
+                <td style="font-weight: 500;">{action.replace(/_/g, ' ')}</td>
+                <td>{cost / 100}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="config-section">
+        <h4 class="config-section-title">Other Settings</h4>
+        <div class="config-items">
+          <div class="config-item">
+            <span class="config-label">Trial Credits</span>
+            <span class="config-value">{TRIAL_CREDITS / 100}</span>
+          </div>
+          <div class="config-item">
+            <span class="config-label">Referral Credits</span>
+            <span class="config-value">{REFERRAL_CREDITS / 100}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Webhook URLs -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Webhook URLs</h3>
+          <p class="card-subtitle">Configure in n8n workflow for Cardcom</p>
+        </div>
+      </div>
+      <div class="webhook-list">
+        <div class="webhook-item">
+          <span class="webhook-label">Cardcom Webhook (n8n)</span>
+          <code class="webhook-url" id="ipnUrl">https://n8n.srv1173890.hstgr.cloud/webhook/cardcom-credits</code>
+          <button class="copy-btn" data-target="ipnUrl" title="Copy">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+          </button>
+        </div>
+        <div class="webhook-item">
+          <span class="webhook-label">Success Redirect</span>
+          <code class="webhook-url" id="redirectUrl">https://call4li.com/checkout/success</code>
+          <button class="copy-btn" data-target="redirectUrl" title="Copy">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- API Keys -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">API Configuration</h3>
+          <p class="card-subtitle">Environment variables status</p>
+        </div>
+      </div>
+      <div class="api-keys-list" id="apiKeysList">
+        <div class="api-key-item">
+          <span class="api-key-label">Supabase URL</span>
+          <span class="api-key-status" id="supabaseUrlStatus">Checking...</span>
+        </div>
+        <div class="api-key-item">
+          <span class="api-key-label">Supabase Anon Key</span>
+          <span class="api-key-status" id="supabaseAnonStatus">Checking...</span>
+        </div>
+        <div class="api-key-item">
+          <span class="api-key-label">Supabase Service Role</span>
+          <span class="api-key-status" id="supabaseServiceStatus">Server-side only</span>
+        </div>
+        <div class="api-key-item">
+          <span class="api-key-label">Cardcom API</span>
+          <span class="api-key-status" id="cardcomStatus">Server-side only</span>
+        </div>
+        <div class="api-key-item">
+          <span class="api-key-label">Green API (WhatsApp)</span>
+          <span class="api-key-status" id="greenApiStatus">Server-side only</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Admin Modal -->
+  <div class="modal-overlay" id="addAdminModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Admin User</h3>
+        <button class="modal-close" id="closeAddAdminModal">&times;</button>
+      </div>
+      <form id="addAdminForm">
+        <div class="form-group">
+          <label for="adminEmail">User Email</label>
+          <input type="email" id="adminEmail" class="admin-input" placeholder="user@example.com" required />
+          <p class="form-help">The user must already have an account</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="admin-btn admin-btn-secondary" id="cancelAddAdmin">Cancel</button>
+          <button type="submit" class="admin-btn admin-btn-primary">Grant Admin Access</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</Dashboard>
+
+<style>
+  .settings-grid {
+    display: grid;
+    gap: 24px;
+  }
+
+  .config-section {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--admin-border);
+  }
+
+  .config-section:first-of-type {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .config-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--admin-text);
+    margin-bottom: 12px;
+  }
+
+  .config-table {
+    font-size: 13px;
+  }
+
+  .config-items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .config-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--admin-border);
+  }
+
+  .config-item:last-child {
+    border-bottom: none;
+  }
+
+  .config-label {
+    color: var(--admin-text-muted);
+  }
+
+  .config-value {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .webhook-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .webhook-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--admin-bg);
+    border-radius: var(--admin-radius);
+  }
+
+  .webhook-label {
+    font-weight: 500;
+    min-width: 160px;
+  }
+
+  .webhook-url {
+    flex: 1;
+    font-size: 12px;
+    font-family: monospace;
+    padding: 8px 12px;
+    background: var(--admin-surface);
+    border-radius: var(--admin-radius);
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .copy-btn {
+    padding: 8px;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    cursor: pointer;
+    color: var(--admin-text-muted);
+    transition: all 0.15s ease;
+  }
+
+  .copy-btn:hover {
+    background: var(--admin-primary);
+    border-color: var(--admin-primary);
+    color: white;
+  }
+
+  .api-keys-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .api-key-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: var(--admin-bg);
+    border-radius: var(--admin-radius);
+  }
+
+  .api-key-label {
+    font-weight: 500;
+  }
+
+  .api-key-status {
+    font-size: 13px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    background: var(--admin-bg);
+  }
+
+  .api-key-status.configured {
+    background: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
+  }
+
+  .api-key-status.missing {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+  }
+
+  /* Modal styles */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open {
+    display: flex;
+  }
+
+  .modal {
+    background: var(--admin-surface);
+    border-radius: var(--admin-radius-lg);
+    width: 100%;
+    max-width: 440px;
+    margin: 20px;
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid var(--admin-border);
+  }
+
+  .modal-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .modal-close {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--admin-text-muted);
+    border-radius: var(--admin-radius);
+  }
+
+  .modal-close:hover {
+    background: var(--admin-bg);
+  }
+
+  .modal form {
+    padding: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .form-help {
+    font-size: 12px;
+    color: var(--admin-text-muted);
+    margin-top: 4px;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--admin-border);
+  }
+</style>
+
+<script>
+  // Webhook URLs are hardcoded above
+
+  // Check API key status
+  const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+  const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+  const urlStatus = document.getElementById('supabaseUrlStatus')!;
+  const anonStatus = document.getElementById('supabaseAnonStatus')!;
+
+  if (supabaseUrl) {
+    urlStatus.textContent = 'Configured';
+    urlStatus.classList.add('configured');
+  } else {
+    urlStatus.textContent = 'Missing';
+    urlStatus.classList.add('missing');
+  }
+
+  if (supabaseKey) {
+    anonStatus.textContent = 'Configured';
+    anonStatus.classList.add('configured');
+  } else {
+    anonStatus.textContent = 'Missing';
+    anonStatus.classList.add('missing');
+  }
+
+  // Copy button handlers
+  document.querySelectorAll('.copy-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const targetId = (btn as HTMLElement).dataset.target;
+      const textEl = document.getElementById(targetId!);
+      if (textEl) {
+        await navigator.clipboard.writeText(textEl.textContent || '');
+        const originalSvg = btn.innerHTML;
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+        setTimeout(() => {
+          btn.innerHTML = originalSvg;
+        }, 2000);
+      }
+    });
+  });
+
+  // Load admin users
+  async function loadAdminUsers() {
+    const tbody = document.getElementById('adminUsersBody');
+    if (!tbody) return;
+
+    try {
+      const response = await fetch('/api/admin/admins');
+      if (!response.ok) throw new Error('Failed to load admin users');
+
+      const data = await response.json();
+      const admins = data.admins || [];
+
+      if (admins.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align: center; color: var(--admin-text-muted); padding: 32px;">
+              No admin users found
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = admins.map((admin: Record<string, unknown>) => `
+        <tr>
+          <td>${admin.email}</td>
+          <td>${admin.display_name || '-'}</td>
+          <td style="color: var(--admin-text-muted);">${formatDate(admin.created_at as string)}</td>
+          <td>
+            <button class="admin-btn admin-btn-sm admin-btn-secondary remove-admin-btn" data-user-id="${admin.id}">
+              Remove
+            </button>
+          </td>
+        </tr>
+      `).join('');
+
+      // Attach remove handlers
+      document.querySelectorAll('.remove-admin-btn').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const userId = (btn as HTMLElement).dataset.userId;
+          if (confirm('Remove admin access from this user?')) {
+            await removeAdmin(userId!);
+          }
+        });
+      });
+    } catch (error) {
+      console.error('Error loading admins:', error);
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4" style="text-align: center; color: var(--admin-danger); padding: 32px;">
+            Failed to load admin users
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  async function removeAdmin(userId: string) {
+    try {
+      const response = await fetch('/api/admin/admins', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+
+      if (!response.ok) throw new Error('Failed to remove admin');
+
+      loadAdminUsers();
+    } catch (error) {
+      alert('Failed to remove admin. Please try again.');
+    }
+  }
+
+  function formatDate(dateStr: string): string {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  }
+
+  // Add admin modal
+  document.getElementById('addAdminBtn')?.addEventListener('click', () => {
+    document.getElementById('addAdminModal')?.classList.add('open');
+  });
+
+  document.getElementById('closeAddAdminModal')?.addEventListener('click', () => {
+    document.getElementById('addAdminModal')?.classList.remove('open');
+  });
+
+  document.getElementById('cancelAddAdmin')?.addEventListener('click', () => {
+    document.getElementById('addAdminModal')?.classList.remove('open');
+  });
+
+  document.getElementById('addAdminForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email = (document.getElementById('adminEmail') as HTMLInputElement).value;
+
+    try {
+      const response = await fetch('/api/admin/admins', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to add admin');
+      }
+
+      document.getElementById('addAdminModal')?.classList.remove('open');
+      (document.getElementById('addAdminForm') as HTMLFormElement).reset();
+      loadAdminUsers();
+    } catch (error) {
+      alert((error as Error).message);
+    }
+  });
+
+  // Initial load
+  loadAdminUsers();
+</script>

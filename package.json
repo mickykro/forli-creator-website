@@ -14,6 +14,7 @@
     "frames:transparent": "python3 scripts/remove-frame-bg.py"
   },
   "dependencies": {
+    "@astrojs/vercel": "^10.0.8",
     "@supabase/supabase-js": "^2.106.2",
     "@ungap/structured-clone": "^1.3.0",
     "astro": "^6.1.9",

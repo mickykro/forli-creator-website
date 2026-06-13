@@ -1,0 +1,506 @@
+---
+/**
+ * Subscription Management Page
+ * Manage all user subscriptions with filters and actions
+ */
+import Dashboard from '../../layouts/Dashboard.astro';
+import SearchBar from '../../components/admin/SearchBar.astro';
+import Pagination from '../../components/admin/Pagination.astro';
+import { PRICING_TIERS } from '../../brand';
+---
+
+<Dashboard title="Subscriptions" activeNav="subscriptions">
+  <!-- Filters -->
+  <div class="search-bar">
+    <SearchBar placeholder="Search by user name or phone..." id="subscriptionSearch" />
+    <div class="filters">
+      <select class="admin-input admin-select filter-select" id="tierFilter">
+        <option value="">All Tiers</option>
+        {PRICING_TIERS.map((tier) => (
+          <option value={tier.id}>{tier.nameEn}</option>
+        ))}
+      </select>
+      <select class="admin-input admin-select filter-select" id="statusFilter">
+        <option value="">All Status</option>
+        <option value="active">Active</option>
+        <option value="cancelled">Cancelled</option>
+        <option value="expired">Expired</option>
+        <option value="suspended">Suspended</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Subscription Table -->
+  <div class="card">
+    <div class="subscription-table-wrapper">
+      <table class="admin-table" id="subscriptionsTable">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Tier</th>
+            <th>Status</th>
+            <th>Start Date</th>
+            <th>Next Billing</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="subscriptionsTableBody">
+          <tr>
+            <td colspan="6" style="text-align: center; color: var(--admin-text-muted); padding: 48px;">
+              <div class="loading-spinner" style="margin: 0 auto;"></div>
+              <p style="margin-top: 12px;">Loading subscriptions...</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <Pagination currentPage={1} totalPages={1} totalItems={0} id="subscriptionsPagination" />
+  </div>
+
+  <!-- Change Tier Modal -->
+  <div class="modal-overlay" id="changeTierModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Change Subscription Tier</h3>
+        <button class="modal-close" id="closeChangeTierModal">&times;</button>
+      </div>
+      <form id="changeTierForm">
+        <input type="hidden" id="changeTierSubId" />
+        <div class="form-group">
+          <label for="newTier">New Tier</label>
+          <select id="newTier" class="admin-input admin-select" required>
+            {PRICING_TIERS.map((tier) => (
+              <option value={tier.id}>{tier.nameEn} - ₪{tier.priceMonthly}/mo</option>
+            ))}
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="admin-btn admin-btn-secondary" id="cancelChangeTier">Cancel</button>
+          <button type="submit" class="admin-btn admin-btn-primary">Change Tier</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</Dashboard>
+
+<style>
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open {
+    display: flex;
+  }
+
+  .modal {
+    background: var(--admin-surface);
+    border-radius: var(--admin-radius-lg);
+    width: 100%;
+    max-width: 440px;
+    margin: 20px;
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid var(--admin-border);
+  }
+
+  .modal-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .modal-close {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--admin-text-muted);
+    border-radius: var(--admin-radius);
+  }
+
+  .modal-close:hover {
+    background: var(--admin-bg);
+  }
+
+  .modal form {
+    padding: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--admin-border);
+  }
+
+  .user-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--admin-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .user-phone {
+    font-size: 12px;
+    color: var(--admin-text-muted);
+    font-family: monospace;
+  }
+
+  .actions-dropdown {
+    position: relative;
+  }
+
+  .actions-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    min-width: 150px;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    box-shadow: var(--admin-shadow-md);
+    z-index: 50;
+    display: none;
+  }
+
+  .actions-menu.open {
+    display: block;
+  }
+
+  .actions-menu-item {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 13px;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--admin-text);
+    text-decoration: none;
+  }
+
+  .actions-menu-item:hover {
+    background: var(--admin-bg);
+  }
+
+  .actions-menu-item.danger {
+    color: var(--admin-danger);
+  }
+</style>
+
+<script>
+  let currentPage = 1;
+  let currentSearch = '';
+  let currentTier = '';
+  let currentStatus = '';
+
+  async function loadSubscriptions() {
+    const tbody = document.getElementById('subscriptionsTableBody');
+    if (!tbody) return;
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align: center; padding: 48px;">
+          <div class="loading-spinner" style="margin: 0 auto;"></div>
+        </td>
+      </tr>
+    `;
+
+    try {
+      const params = new URLSearchParams({
+        page: String(currentPage),
+        ...(currentSearch && { search: currentSearch }),
+        ...(currentTier && { tier: currentTier }),
+        ...(currentStatus && { status: currentStatus }),
+      });
+
+      const response = await fetch(`/api/admin/subscriptions?${params}`);
+      if (!response.ok) throw new Error('Failed to load subscriptions');
+
+      const data = await response.json();
+      renderSubscriptions(data.subscriptions || []);
+      updatePagination(data.page || 1, data.totalPages || 1, data.total || 0);
+    } catch (error) {
+      console.error('Error loading subscriptions:', error);
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align: center; color: var(--admin-danger); padding: 48px;">
+            Failed to load subscriptions. Please try again.
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  function renderSubscriptions(subscriptions: Array<Record<string, unknown>>) {
+    const tbody = document.getElementById('subscriptionsTableBody');
+    if (!tbody) return;
+
+    if (subscriptions.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6">
+            <div class="empty-state">
+              <p class="empty-state-title">No subscriptions found</p>
+              <p>Try adjusting your filters</p>
+            </div>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = subscriptions.map((sub) => `
+      <tr data-sub-id="${sub.id}">
+        <td>
+          <div class="user-cell">
+            <div class="user-avatar">${((sub.user_name as string) || 'U').charAt(0).toUpperCase()}</div>
+            <div class="user-info">
+              <span>${sub.user_name || 'Unknown'}</span>
+              ${sub.user_phone ? `<span class="user-phone">${sub.user_phone}</span>` : ''}
+            </div>
+          </div>
+        </td>
+        <td>
+          <span class="badge ${getTierClass(sub.tier_id as string)}">${sub.tier_name || sub.tier_id}</span>
+        </td>
+        <td>
+          <span class="badge ${getStatusClass(sub.status as string)}">${sub.status}</span>
+        </td>
+        <td style="color: var(--admin-text-muted);">${formatDate(sub.start_date as string)}</td>
+        <td style="color: var(--admin-text-muted);">${sub.status === 'active' ? formatDate(sub.next_billing_date as string) : '-'}</td>
+        <td>
+          <div class="actions-dropdown">
+            <button class="admin-btn admin-btn-sm admin-btn-secondary actions-trigger" data-sub-id="${sub.id}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
+              </svg>
+            </button>
+            <div class="actions-menu" data-menu-for="${sub.id}">
+              <a href="/admin/users/${sub.user_id}" class="actions-menu-item">View User</a>
+              ${sub.status === 'active' ? `
+                <button class="actions-menu-item extend-btn" data-sub-id="${sub.id}">Extend 30 Days</button>
+                <button class="actions-menu-item change-tier-btn" data-sub-id="${sub.id}">Change Tier</button>
+                <button class="actions-menu-item danger cancel-btn" data-sub-id="${sub.id}">Cancel</button>
+              ` : ''}
+              ${sub.status === 'cancelled' ? `
+                <button class="actions-menu-item reactivate-btn" data-sub-id="${sub.id}">Reactivate</button>
+              ` : ''}
+            </div>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+    attachActionHandlers();
+  }
+
+  function attachActionHandlers() {
+    document.querySelectorAll('.actions-trigger').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const subId = (btn as HTMLElement).dataset.subId;
+        const menu = document.querySelector(`[data-menu-for="${subId}"]`);
+
+        document.querySelectorAll('.actions-menu.open').forEach((m) => {
+          if (m !== menu) m.classList.remove('open');
+        });
+
+        menu?.classList.toggle('open');
+      });
+    });
+
+    document.querySelectorAll('.cancel-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const subId = (btn as HTMLElement).dataset.subId;
+        if (confirm('Are you sure you want to cancel this subscription?')) {
+          await updateSubscription(subId!, 'cancel');
+        }
+      });
+    });
+
+    document.querySelectorAll('.extend-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const subId = (btn as HTMLElement).dataset.subId;
+        await updateSubscription(subId!, 'extend');
+      });
+    });
+
+    document.querySelectorAll('.change-tier-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const subId = (btn as HTMLElement).dataset.subId;
+        openChangeTierModal(subId!);
+      });
+    });
+  }
+
+  async function updateSubscription(subscriptionId: string, action: string, data?: Record<string, unknown>) {
+    try {
+      const response = await fetch('/api/admin/subscription/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subscriptionId, action, data }),
+      });
+
+      if (!response.ok) throw new Error('Failed to update subscription');
+
+      loadSubscriptions();
+    } catch (error) {
+      alert('Failed to update subscription. Please try again.');
+    }
+  }
+
+  function openChangeTierModal(subscriptionId: string) {
+    const modal = document.getElementById('changeTierModal');
+    const subIdInput = document.getElementById('changeTierSubId') as HTMLInputElement;
+
+    if (modal && subIdInput) {
+      subIdInput.value = subscriptionId;
+      modal.classList.add('open');
+    }
+  }
+
+  function updatePagination(page: number, totalPages: number, total: number) {
+    const pagination = document.getElementById('subscriptionsPagination');
+    if (!pagination) return;
+
+    const info = pagination.querySelector('.pagination-info');
+    if (info) {
+      const from = (page - 1) * 20 + 1;
+      const to = Math.min(page * 20, total);
+      info.textContent = `Showing ${from} to ${to} of ${total} results`;
+    }
+  }
+
+  function formatDate(dateStr: string | undefined): string {
+    if (!dateStr) return '-';
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  }
+
+  function getStatusClass(status: string): string {
+    switch (status) {
+      case 'active': return 'badge-success';
+      case 'cancelled': return 'badge-warning';
+      case 'expired': return 'badge-danger';
+      case 'suspended': return 'badge-danger';
+      default: return 'badge-neutral';
+    }
+  }
+
+  function getTierClass(tier: string): string {
+    switch (tier) {
+      case 'starter': return 'badge-info';
+      case 'growth': return 'badge-success';
+      case 'pro': return 'badge-warning';
+      default: return 'badge-neutral';
+    }
+  }
+
+  // Event listeners
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.actions-menu.open').forEach((m) => m.classList.remove('open'));
+  });
+
+  window.addEventListener('admin:search', (e: Event) => {
+    const detail = (e as CustomEvent).detail;
+    if (detail.inputId === 'subscriptionSearch') {
+      currentSearch = detail.query;
+      currentPage = 1;
+      loadSubscriptions();
+    }
+  });
+
+  window.addEventListener('admin:page-change', (e: Event) => {
+    const detail = (e as CustomEvent).detail;
+    if (detail.paginationId === 'subscriptionsPagination') {
+      currentPage = detail.page;
+      loadSubscriptions();
+    }
+  });
+
+  document.getElementById('tierFilter')?.addEventListener('change', (e) => {
+    currentTier = (e.target as HTMLSelectElement).value;
+    currentPage = 1;
+    loadSubscriptions();
+  });
+
+  document.getElementById('statusFilter')?.addEventListener('change', (e) => {
+    currentStatus = (e.target as HTMLSelectElement).value;
+    currentPage = 1;
+    loadSubscriptions();
+  });
+
+  // Modal handlers
+  document.getElementById('closeChangeTierModal')?.addEventListener('click', () => {
+    document.getElementById('changeTierModal')?.classList.remove('open');
+  });
+
+  document.getElementById('cancelChangeTier')?.addEventListener('click', () => {
+    document.getElementById('changeTierModal')?.classList.remove('open');
+  });
+
+  document.getElementById('changeTierForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const subscriptionId = (document.getElementById('changeTierSubId') as HTMLInputElement).value;
+    const newTier = (document.getElementById('newTier') as HTMLSelectElement).value;
+
+    await updateSubscription(subscriptionId, 'change_tier', { newTier });
+    document.getElementById('changeTierModal')?.classList.remove('open');
+  });
+
+  // Initial load
+  loadSubscriptions();
+</script>

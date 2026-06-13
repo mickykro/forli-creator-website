@@ -1,0 +1,123 @@
+---
+/**
+ * KPI Card Component
+ * Displays a key performance indicator with optional change percentage
+ */
+interface Props {
+  title: string;
+  value: string | number;
+  change?: number;
+  icon?: 'revenue' | 'users' | 'subscriptions' | 'credits';
+  prefix?: string;
+  suffix?: string;
+}
+
+const { title, value, change, icon = 'revenue', prefix = '', suffix = '' } = Astro.props;
+
+const isPositive = change && change > 0;
+const isNegative = change && change < 0;
+
+const icons: Record<string, string> = {
+  revenue: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
+  users: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+  subscriptions: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>`,
+  credits: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12"/><path d="M6 12h12"/></svg>`,
+};
+---
+
+<div class="kpi-card">
+  <div class="kpi-header">
+    <span class="kpi-icon" set:html={icons[icon]} />
+    <span class="kpi-title">{title}</span>
+  </div>
+  <div class="kpi-value">
+    {prefix}<span class="kpi-number">{value}</span>{suffix}
+  </div>
+  {change !== undefined && (
+    <div class:list={['kpi-change', { positive: isPositive, negative: isNegative }]}>
+      {isPositive && (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="18 15 12 9 6 15" />
+        </svg>
+      )}
+      {isNegative && (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      )}
+      <span>{Math.abs(change)}%</span>
+      <span class="kpi-change-label">vs last month</span>
+    </div>
+  )}
+</div>
+
+<style>
+  .kpi-card {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius-lg);
+    padding: 20px;
+  }
+
+  .kpi-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .kpi-icon {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    background: rgba(219, 107, 151, 0.1);
+    border-radius: 10px;
+    color: var(--admin-primary);
+  }
+
+  .kpi-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--admin-text-muted);
+  }
+
+  .kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--admin-text);
+    margin-bottom: 8px;
+  }
+
+  .kpi-number {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .kpi-change {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--admin-text-muted);
+  }
+
+  .kpi-change.positive {
+    color: var(--admin-success);
+  }
+
+  .kpi-change.negative {
+    color: var(--admin-danger);
+  }
+
+  .kpi-change svg {
+    flex-shrink: 0;
+  }
+
+  .kpi-change-label {
+    margin-left: 4px;
+    font-weight: 400;
+    color: var(--admin-text-muted);
+  }
+</style>
