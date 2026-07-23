@@ -1,0 +1,80 @@
+---
+import '../styles/portal.css';
+import { SITE_URL, BUSINESS } from '../brand';
+
+interface Props {
+  title?: string;
+  description?: string;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title = 'Call4li — כל הנכסים עם סרטון סיור | פורלי נדל״ן',
+  description =
+    'קטלוג הנכסים של פורלי: כל נכס עם סרטון סיור, גלריה ונתוני שכונה ממקורות אמיתיים — ורק נכסים שנמצאים בשוק עכשיו.',
+  schema,
+} = Astro.props;
+
+const pathPart = Astro.url.pathname.replace(/\/$/, '');
+const canonicalUrl = SITE_URL + pathPart || SITE_URL;
+
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: BUSINESS.brandName,
+  alternateName: [BUSINESS.brandNameHe, BUSINESS.legalName],
+  url: SITE_URL,
+  logo: `${SITE_URL}/apple-touch-icon.png`,
+  email: BUSINESS.email,
+  areaServed: 'IL',
+  description,
+};
+
+const schemas = schema
+  ? Array.isArray(schema)
+    ? [orgSchema, ...schema]
+    : [orgSchema, schema]
+  : [orgSchema];
+---
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#16110d" />
+    <title>{title}</title>
+
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
+    <meta property="og:locale" content="he_IL" />
+    <meta property="og:site_name" content={BUSINESS.brandName} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="geo.region" content="IL-TA" />
+    <meta name="geo.placename" content="Tel Aviv" />
+
+    {schemas.map((s) => (
+      <script type="application/ld+json" set:html={JSON.stringify(s)} />
+    ))}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@700&family=Heebo:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

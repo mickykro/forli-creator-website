@@ -1,0 +1,203 @@
+---
+/* Main filter row (city / price / rooms) + expandable advanced filters
+   (neighborhood / street / size / agency) + quick-browse category chips.
+   Filtering runs client-side over whatever .card elements are in the DOM, so
+   realtime-inserted cards are filtered too. Exposes window.__portalFilters
+   { apply, setOptions } for the portal client script. */
+interface Props {
+  cities: string[];
+  neighborhoods: string[];
+  agencies: string[];
+  total: number | null;
+}
+const { cities, neighborhoods, agencies, total } = Astro.props;
+
+const CATEGORIES = [
+  { tag: '', label: 'הכול' },
+  { tag: 'גן', label: 'דירות גן' },
+  { tag: 'פנטהאוז', label: 'פנטהאוזים' },
+  { tag: 'מרפסת', label: 'עם מרפסת' },
+  { tag: 'חניה', label: 'עם חניה' },
+  { tag: 'ים', label: 'ליד הים' },
+  { tag: 'בלעדיות', label: 'בלעדיות' },
+];
+---
+<section class="filters container" aria-label="סינון נכסים">
+  <form class="filters-card" id="ff">
+    <div class="fmain">
+      <div class="field">
+        <label for="f-city">עיר</label>
+        <select id="f-city">
+          <option value="">כל הארץ</option>
+          {cities.map((c) => <option>{c}</option>)}
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-price">מחיר עד</label>
+        <select id="f-price">
+          <option value="">ללא הגבלה</option>
+          <option value="2500000">₪2.5M</option>
+          <option value="3500000">₪3.5M</option>
+          <option value="5000000">₪5M</option>
+          <option value="7000000">₪7M</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-rooms">חדרים</label>
+        <select id="f-rooms">
+          <option value="">הכול</option>
+          <option value="3">3+</option>
+          <option value="4">4+</option>
+          <option value="5">5+</option>
+        </select>
+      </div>
+      <button class="fmore" type="button" id="fmore" aria-expanded="false" aria-controls="fadv">עוד סינון +</button>
+      <button class="btn btn-pink" type="submit">חיפוש</button>
+    </div>
+    <div class="fadv" id="fadv">
+      <div class="field">
+        <label for="f-hood">שכונה</label>
+        <select id="f-hood">
+          <option value="">הכול</option>
+          {neighborhoods.map((n) => <option>{n}</option>)}
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-street">רחוב</label>
+        <input id="f-street" type="text" placeholder="למשל: דיזנגוף" />
+      </div>
+      <div class="field">
+        <label for="f-size">גודל מ־</label>
+        <select id="f-size">
+          <option value="">הכול</option>
+          <option value="60">60 מ״ר</option>
+          <option value="80">80 מ״ר</option>
+          <option value="100">100 מ״ר</option>
+          <option value="120">120 מ״ר</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-agent">סוכנות</label>
+        <select id="f-agent">
+          <option value="">הכול</option>
+          {agencies.map((a) => <option>{a}</option>)}
+        </select>
+      </div>
+    </div>
+    <div class="filters-foot">
+      <span class="count">מציגים <b id="shown">{total ?? '—'}</b> מתוך <b id="total">{total ?? '—'}</b> נכסים</span>
+      <button class="reset" type="button" id="reset">ניקוי סינון</button>
+    </div>
+  </form>
+  <div class="cats" role="group" aria-label="קטגוריות מהירות">
+    {CATEGORIES.map((c, i) => (
+      <button class:list={['cat', { on: i === 0 }]} type="button" data-tag={c.tag}>{c.label}</button>
+    ))}
+  </div>
+</section>
+
+<script>
+  const byId = (id: string) => document.getElementById(id) as HTMLSelectElement | HTMLInputElement;
+  const f = {
+    city: byId('f-city'), hood: byId('f-hood'), street: byId('f-street'),
+    rooms: byId('f-rooms'), price: byId('f-price'), size: byId('f-size'), agent: byId('f-agent'),
+  };
+  let activeTag = '';
+  const shown = document.getElementById('shown');
+  const emptyMsg = document.getElementById('empty-grid');
+  const featuredSect = document.getElementById('new-sect');
+
+  function apply() {
+    // Query live so realtime-inserted cards participate.
+    const cards = document.querySelectorAll<HTMLElement>('.card');
+    let n = 0;
+    let featVisible = 0;
+    for (const c of cards) {
+      const d = c.dataset;
+      let ok = true;
+      if (f.city.value && d.city !== f.city.value) ok = false;
+      if (ok && f.hood.value && d.hood !== f.hood.value) ok = false;
+      if (ok && f.agent.value && d.agent !== f.agent.value) ok = false;
+      if (ok && f.rooms.value && parseFloat(d.rooms || '0') < parseFloat(f.rooms.value)) ok = false;
+      if (ok && f.price.value && parseInt(d.price || '0') > parseInt(f.price.value)) ok = false;
+      if (ok && f.size.value && parseInt(d.size || '0') < parseInt(f.size.value)) ok = false;
+      if (ok && f.street.value.trim() && !(d.street || '').includes(f.street.value.trim())) ok = false;
+      if (ok && activeTag && !` ${d.tags || ''} `.includes(` ${activeTag} `)) ok = false;
+      c.style.display = ok ? '' : 'none';
+      if (ok) {
+        n++;
+        if (c.parentElement?.id === 'featured') featVisible++;
+      }
+    }
+    if (shown) shown.textContent = String(n);
+    if (featuredSect) featuredSect.style.display = featVisible ? '' : 'none';
+    if (emptyMsg) emptyMsg.style.display = n === 0 && cards.length > 0 ? 'block' : 'none';
+  }
+
+  // Populate select options after a client-side data load (SSR-failure path).
+  function setOptions(cities: string[], hoods: string[], agencies: string[]) {
+    const fill = (el: HTMLSelectElement | HTMLInputElement, values: string[]) => {
+      if (!(el instanceof HTMLSelectElement)) return;
+      const current = el.value;
+      while (el.options.length > 1) el.remove(1);
+      for (const v of values) el.add(new Option(v, v));
+      el.value = current;
+    };
+    fill(f.city, cities);
+    fill(f.hood, hoods);
+    fill(f.agent, agencies);
+  }
+
+  (window as any).__portalFilters = { apply, setOptions };
+
+  for (const [key, el] of Object.entries(f)) {
+    el?.addEventListener(key === 'street' ? 'input' : 'change', apply);
+  }
+  document.getElementById('ff')?.addEventListener('submit', (e) => { e.preventDefault(); apply(); });
+  document.getElementById('reset')?.addEventListener('click', () => {
+    Object.values(f).forEach((el) => { if (el) el.value = ''; });
+    setTag('');
+    apply();
+  });
+
+  const fmore = document.getElementById('fmore');
+  const fadv = document.getElementById('fadv');
+  fmore?.addEventListener('click', () => {
+    const open = fadv?.classList.toggle('open') ?? false;
+    fmore.setAttribute('aria-expanded', String(open));
+    fmore.textContent = open ? 'פחות סינון −' : 'עוד סינון +';
+  });
+
+  const cats = [...document.querySelectorAll<HTMLElement>('.cat')];
+  function setTag(tag: string) {
+    activeTag = tag;
+    cats.forEach((b) => b.classList.toggle('on', b.dataset.tag === tag));
+  }
+  cats.forEach((b) => b.addEventListener('click', () => { setTag(b.dataset.tag || ''); apply(); }));
+
+  // Area tiles set the city filter.
+  document.querySelectorAll<HTMLElement>('.area-tile').forEach((t) => {
+    t.addEventListener('click', () => {
+      f.city.value = t.dataset.city || '';
+      apply();
+      document.getElementById('ff')?.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Sort applies to the main grid only.
+  const grid = document.getElementById('grid');
+  document.getElementById('sort')?.addEventListener('change', function (this: HTMLSelectElement) {
+    if (!grid) return;
+    const v = this.value;
+    const num = (el: Element, key: string) => parseFloat((el as HTMLElement).dataset[key] || '0');
+    [...grid.children]
+      .filter((el) => el.classList.contains('card'))
+      .sort((a, b) => {
+        if (v === 'price-asc') return num(a, 'price') - num(b, 'price');
+        if (v === 'price-desc') return num(b, 'price') - num(a, 'price');
+        if (v === 'size') return num(b, 'size') - num(a, 'size');
+        return num(b, 'new') - num(a, 'new');
+      })
+      .forEach((el) => grid.appendChild(el));
+  });
+</script>
