@@ -13,7 +13,7 @@ import AreaTiles from '../components/portal/AreaTiles.astro';
 import ValueStrip from '../components/portal/ValueStrip.astro';
 import AgentBand from '../components/portal/AgentBand.astro';
 import PortalFooter from '../components/portal/PortalFooter.astro';
-import { getPortalData, isNew, areaSummaries, PORTAL_API_BASE } from '../lib/portal';
+import { getPortalData, isNew, areaSummaries, deriveTags, PORTAL_API_BASE } from '../lib/portal';
 import { SITE_URL } from '../brand';
 
 const { ok, listings, agencies, cities } = await getPortalData();
@@ -26,6 +26,10 @@ const neighborhoods = [...new Set(listings.map((l) => l.neighborhood).filter(Boo
   (a, b) => a.localeCompare(b, 'he'),
 );
 const areas = areaSummaries(listings);
+// Quick-filter chips: the most common tags across the listings, most first.
+const tagCounts = new Map<string, number>();
+for (const l of listings) for (const t of deriveTags(l)) tagCounts.set(t, (tagCounts.get(t) || 0) + 1);
+const presentTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([t]) => t);
 
 const itemListSchema = ok
   ? {
@@ -49,6 +53,7 @@ const itemListSchema = ok
     cities={cities}
     neighborhoods={neighborhoods}
     agencies={agencies}
+    tags={presentTags}
     total={ok ? listings.length : null}
   />
 
@@ -142,7 +147,7 @@ const itemListSchema = ok
       var grid = document.getElementById('grid');
       var featuredEl = document.getElementById('featured');
       var tpl = document.getElementById('card-tpl');
-      var filters = function () { return window.__portalFilters || { apply: function () {}, setOptions: function () {} }; };
+      var filters = function () { return window.__portalFilters || { apply: function () {}, setOptions: function () {}, setCats: function () {} }; };
 
       /* ── tiny JS twins of the server-side presentation helpers ── */
       function fmtPrice(p) { return p > 0 ? '₪' + Number(p).toLocaleString('en-US') : 'מחיר בתיאום'; }
@@ -171,6 +176,7 @@ const itemListSchema = ok
       var KW = [[/פנטהאוז/, 'פנטהאוז'], [/דירת גן|גינה/, 'גן'], [/מרפסת/, 'מרפסת'],
         [/נוף לים|ליד הים|קו ראשון/, 'ים'], [/דופלקס/, 'דופלקס'], [/בלעדיות/, 'בלעדיות'], [/משופצ/, 'משופצת']];
       function deriveTags(l) {
+        if (l.tags && l.tags.length) return l.tags;
         var text = (l.title || '') + ' ' + (l.neighborhood || '');
         var tags = [];
         KW.forEach(function (kw) { if (kw[0].test(text) && tags.indexOf(kw[1]) < 0) tags.push(kw[1]); });
@@ -275,6 +281,10 @@ const itemListSchema = ok
         var hoods = [];
         listings.forEach(function (l) { if (l.neighborhood && hoods.indexOf(l.neighborhood) < 0) hoods.push(l.neighborhood); });
         filters().setOptions(data.cities || [], hoods.sort(), data.agencies || []);
+        var counts = {};
+        listings.forEach(function (l) { deriveTags(l).forEach(function (t) { counts[t] = (counts[t] || 0) + 1; }); });
+        var topTags = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; }).slice(0, 6);
+        filters().setCats(topTags);
         main.dataset.portalState = 'ready';
         document.getElementById('error-panel').classList.remove('on');
         refreshCounts();

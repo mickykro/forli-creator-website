@@ -29,6 +29,7 @@ export interface PortalListing {
   video_url: string | null;
   photo_count: number;
   view_count: number;
+  tags?: string[];
 }
 
 export interface PortalData {
@@ -130,6 +131,7 @@ const KEYWORD_TAGS: [RegExp, string][] = [
 ];
 
 export function deriveTags(l: PortalListing): string[] {
+  if (l.tags?.length) return l.tags; // agent-curated tags from the backend win
   const text = `${l.title} ${l.neighborhood}`;
   const tags = KEYWORD_TAGS.filter(([re]) => re.test(text)).map(([, tag]) => tag);
   if (l.parking > 0) tags.push('חניה');

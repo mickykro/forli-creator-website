@@ -1,26 +1,38 @@
 ---
-/* Main filter row (city / price / rooms) + expandable advanced filters
-   (neighborhood / street / size / agency) + quick-browse category chips.
+/* Main filter row (city / price / rooms / size ranges) + expandable advanced
+   filters (neighborhood / street / agency) + quick-browse category chips.
    Filtering runs client-side over whatever .card elements are in the DOM, so
-   realtime-inserted cards are filtered too. Exposes window.__portalFilters
-   { apply, setOptions } for the portal client script. */
+   realtime-inserted cards are filtered too. Quick-filter chips are derived from
+   the tags actually present in the listings (prop `tags`). Exposes
+   window.__portalFilters { apply, setOptions, setCats } for the portal client. */
 interface Props {
   cities: string[];
   neighborhoods: string[];
   agencies: string[];
+  tags: string[];
   total: number | null;
 }
-const { cities, neighborhoods, agencies, total } = Astro.props;
+const { cities, neighborhoods, agencies, tags, total } = Astro.props;
 
-const CATEGORIES = [
-  { tag: '', label: 'הכול' },
-  { tag: 'גן', label: 'דירות גן' },
-  { tag: 'פנטהאוז', label: 'פנטהאוזים' },
-  { tag: 'מרפסת', label: 'עם מרפסת' },
-  { tag: 'חניה', label: 'עם חניה' },
-  { tag: 'ים', label: 'ליד הים' },
-  { tag: 'בלעדיות', label: 'בלעדיות' },
+// tag → chip label, in display order. Chips render only for tags present.
+const TAG_LABELS: [string, string][] = [
+  ['גן', 'דירות גן'],
+  ['פנטהאוז', 'פנטהאוזים'],
+  ['מרפסת', 'עם מרפסת'],
+  ['חניה', 'עם חניה'],
+  ['ים', 'ליד הים'],
+  ['דופלקס', 'דופלקס'],
+  ['בלעדיות', 'בלעדיות'],
+  ['משופצת', 'משופצת'],
 ];
+// `tags` arrives already ordered by frequency (most common first).
+const LABELS = new Map(TAG_LABELS);
+const cats = tags.map((tag) => [tag, LABELS.get(tag) ?? tag] as [string, string]);
+
+const PRICE_STEPS = [1500000, 2000000, 2500000, 3500000, 5000000, 7000000, 10000000];
+const priceLabel = (p: number) => `₪${(p / 1000000).toFixed(p % 1000000 ? 1 : 0)}M`;
+const ROOM_STEPS = [2, 3, 4, 5, 6];
+const SIZE_STEPS = [40, 60, 80, 100, 120, 150, 200];
 ---
 <section class="filters container" aria-label="סינון נכסים">
   <form class="filters-card" id="ff">
@@ -32,24 +44,47 @@ const CATEGORIES = [
           {cities.map((c) => <option>{c}</option>)}
         </select>
       </div>
-      <div class="field">
-        <label for="f-price">מחיר עד</label>
-        <select id="f-price">
-          <option value="">ללא הגבלה</option>
-          <option value="2500000">₪2.5M</option>
-          <option value="3500000">₪3.5M</option>
-          <option value="5000000">₪5M</option>
-          <option value="7000000">₪7M</option>
-        </select>
+      <div class="field range">
+        <label>מחיר</label>
+        <div class="range-row">
+          <select id="f-price-min" aria-label="מחיר מ־">
+            <option value="">מ־</option>
+            {PRICE_STEPS.map((p) => <option value={p}>{priceLabel(p)}</option>)}
+          </select>
+          <span class="dash">–</span>
+          <select id="f-price-max" aria-label="מחיר עד">
+            <option value="">עד</option>
+            {PRICE_STEPS.map((p) => <option value={p}>{priceLabel(p)}</option>)}
+          </select>
+        </div>
       </div>
-      <div class="field">
-        <label for="f-rooms">חדרים</label>
-        <select id="f-rooms">
-          <option value="">הכול</option>
-          <option value="3">3+</option>
-          <option value="4">4+</option>
-          <option value="5">5+</option>
-        </select>
+      <div class="field range">
+        <label>חדרים</label>
+        <div class="range-row">
+          <select id="f-rooms-min" aria-label="חדרים מ־">
+            <option value="">מ־</option>
+            {ROOM_STEPS.map((r) => <option value={r}>{r}</option>)}
+          </select>
+          <span class="dash">–</span>
+          <select id="f-rooms-max" aria-label="חדרים עד">
+            <option value="">עד</option>
+            {ROOM_STEPS.map((r) => <option value={r}>{r}</option>)}
+          </select>
+        </div>
+      </div>
+      <div class="field range">
+        <label>גודל (מ״ר)</label>
+        <div class="range-row">
+          <select id="f-size-min" aria-label="גודל מ־">
+            <option value="">מ־</option>
+            {SIZE_STEPS.map((s) => <option value={s}>{s}</option>)}
+          </select>
+          <span class="dash">–</span>
+          <select id="f-size-max" aria-label="גודל עד">
+            <option value="">עד</option>
+            {SIZE_STEPS.map((s) => <option value={s}>{s}</option>)}
+          </select>
+        </div>
       </div>
       <button class="fmore" type="button" id="fmore" aria-expanded="false" aria-controls="fadv">עוד סינון +</button>
       <button class="btn btn-pink" type="submit">חיפוש</button>
@@ -67,16 +102,6 @@ const CATEGORIES = [
         <input id="f-street" type="text" placeholder="למשל: דיזנגוף" />
       </div>
       <div class="field">
-        <label for="f-size">גודל מ־</label>
-        <select id="f-size">
-          <option value="">הכול</option>
-          <option value="60">60 מ״ר</option>
-          <option value="80">80 מ״ר</option>
-          <option value="100">100 מ״ר</option>
-          <option value="120">120 מ״ר</option>
-        </select>
-      </div>
-      <div class="field">
         <label for="f-agent">סוכנות</label>
         <select id="f-agent">
           <option value="">הכול</option>
@@ -89,9 +114,10 @@ const CATEGORIES = [
       <button class="reset" type="button" id="reset">ניקוי סינון</button>
     </div>
   </form>
-  <div class="cats" role="group" aria-label="קטגוריות מהירות">
-    {CATEGORIES.map((c, i) => (
-      <button class:list={['cat', { on: i === 0 }]} type="button" data-tag={c.tag}>{c.label}</button>
+  <div class="cats" id="cats" role="group" aria-label="קטגוריות מהירות" data-labels={JSON.stringify(TAG_LABELS)}>
+    <button class="cat on" type="button" data-tag="">הכול</button>
+    {cats.map(([tag, label]) => (
+      <button class="cat" type="button" data-tag={tag}>{label}</button>
     ))}
   </div>
 </section>
@@ -99,13 +125,20 @@ const CATEGORIES = [
 <script>
   const byId = (id: string) => document.getElementById(id) as HTMLSelectElement | HTMLInputElement;
   const f = {
-    city: byId('f-city'), hood: byId('f-hood'), street: byId('f-street'),
-    rooms: byId('f-rooms'), price: byId('f-price'), size: byId('f-size'), agent: byId('f-agent'),
+    city: byId('f-city'), hood: byId('f-hood'), street: byId('f-street'), agent: byId('f-agent'),
+    roomsMin: byId('f-rooms-min'), roomsMax: byId('f-rooms-max'),
+    priceMin: byId('f-price-min'), priceMax: byId('f-price-max'),
+    sizeMin: byId('f-size-min'), sizeMax: byId('f-size-max'),
   };
   let activeTag = '';
   const shown = document.getElementById('shown');
   const emptyMsg = document.getElementById('empty-grid');
   const featuredSect = document.getElementById('new-sect');
+  const catsEl = document.getElementById('cats')!;
+
+  // Unknown (0) values pass range filters so "price on request" cards stay visible.
+  const inRange = (v: number, min: string, max: string) =>
+    v <= 0 || ((!min || v >= +min) && (!max || v <= +max));
 
   function apply() {
     // Query live so realtime-inserted cards participate.
@@ -118,9 +151,9 @@ const CATEGORIES = [
       if (f.city.value && d.city !== f.city.value) ok = false;
       if (ok && f.hood.value && d.hood !== f.hood.value) ok = false;
       if (ok && f.agent.value && d.agent !== f.agent.value) ok = false;
-      if (ok && f.rooms.value && parseFloat(d.rooms || '0') < parseFloat(f.rooms.value)) ok = false;
-      if (ok && f.price.value && parseInt(d.price || '0') > parseInt(f.price.value)) ok = false;
-      if (ok && f.size.value && parseInt(d.size || '0') < parseInt(f.size.value)) ok = false;
+      if (ok && !inRange(parseFloat(d.rooms || '0'), f.roomsMin.value, f.roomsMax.value)) ok = false;
+      if (ok && !inRange(parseInt(d.price || '0'), f.priceMin.value, f.priceMax.value)) ok = false;
+      if (ok && !inRange(parseInt(d.size || '0'), f.sizeMin.value, f.sizeMax.value)) ok = false;
       if (ok && f.street.value.trim() && !(d.street || '').includes(f.street.value.trim())) ok = false;
       if (ok && activeTag && !` ${d.tags || ''} `.includes(` ${activeTag} `)) ok = false;
       c.style.display = ok ? '' : 'none';
@@ -148,7 +181,23 @@ const CATEGORIES = [
     fill(f.agent, agencies);
   }
 
-  (window as any).__portalFilters = { apply, setOptions };
+  // Rebuild quick-filter chips from the tags present (client-render path).
+  const LABELS = new Map<string, string>(JSON.parse(catsEl.dataset.labels || '[]'));
+  function setCats(tags: string[]) {
+    // tags come in frequency order (most common first); render as given.
+    catsEl.innerHTML = '<button class="cat on" type="button" data-tag="">הכול</button>';
+    for (const tag of tags) {
+      const b = document.createElement('button');
+      b.className = 'cat';
+      b.type = 'button';
+      b.dataset.tag = tag;
+      b.textContent = LABELS.get(tag) ?? tag;
+      catsEl.appendChild(b);
+    }
+    setTag('');
+  }
+
+  (window as any).__portalFilters = { apply, setOptions, setCats };
 
   for (const [key, el] of Object.entries(f)) {
     el?.addEventListener(key === 'street' ? 'input' : 'change', apply);
@@ -168,12 +217,17 @@ const CATEGORIES = [
     fmore.textContent = open ? 'פחות סינון −' : 'עוד סינון +';
   });
 
-  const cats = [...document.querySelectorAll<HTMLElement>('.cat')];
   function setTag(tag: string) {
     activeTag = tag;
-    cats.forEach((b) => b.classList.toggle('on', b.dataset.tag === tag));
+    catsEl.querySelectorAll<HTMLElement>('.cat').forEach((b) => b.classList.toggle('on', b.dataset.tag === tag));
   }
-  cats.forEach((b) => b.addEventListener('click', () => { setTag(b.dataset.tag || ''); apply(); }));
+  // Delegated so rebuilt chips keep working.
+  catsEl.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLElement>('.cat');
+    if (!b) return;
+    setTag(b.dataset.tag || '');
+    apply();
+  });
 
   // Area tiles set the city filter.
   document.querySelectorAll<HTMLElement>('.area-tile').forEach((t) => {
