@@ -1,4 +1,22 @@
 /* Forly — design tokens & base styles */
+@font-face {
+  font-family: 'Discovery FS';
+  src: url('/fonts/Discovery_Fs-Light.woff2') format('woff2'),
+       url('/fonts/Discovery_Fs-Light.woff') format('woff');
+  font-weight: 300 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Discovery FS';
+  src: url('/fonts/Discovery_Fs-Bold.woff2') format('woff2'),
+       url('/fonts/Discovery_Fs-Bold.woff') format('woff');
+  font-weight: 700 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --forli-pink: #c9a464; /* champagne */
   --forli-pink-soft: #e6cf9f; /* champagne-soft */
@@ -24,8 +42,8 @@
   --radius-md: 16px;
   --radius-lg: 24px;
 
-  --font-display: 'Frank Ruhl Libre', 'Noto Serif Hebrew', 'Times New Roman', serif;
-  --font-body: 'Heebo', 'Assistant', -apple-system, 'Segoe UI', 'Arial Hebrew', Arial, sans-serif;
+  --font-display: 'Discovery FS', 'Noto Serif Hebrew', 'Times New Roman', serif;
+  --font-body: 'Discovery FS', 'Heebo', 'Assistant', -apple-system, 'Segoe UI', 'Arial Hebrew', Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
