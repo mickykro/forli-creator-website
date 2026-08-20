@@ -44,7 +44,7 @@ export interface PortalData {
 export const PORTAL_API_BASE = (
   (typeof process !== 'undefined' && process.env?.PORTAL_API_BASE) ||
   import.meta.env.PORTAL_API_BASE ||
-  'https://agent.call4li.com'
+  'https://nadlan.call4li.com'
 ).replace(/\/+$/, '');
 
 const FETCH_TIMEOUT_MS = 4000;
