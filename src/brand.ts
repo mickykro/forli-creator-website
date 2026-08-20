@@ -16,7 +16,7 @@ export const BUSINESS = {
 export const PLATFORM_URL = 'https://nadlan.call4li.com';
 export const PLATFORM_SIGNUP_URL = `${PLATFORM_URL}/signup`;
 export const WHATSAPP_URL = `https://wa.me/${BUSINESS.whatsappE164}`;
-export const WHATSAPP_QUESTION_URL = `${WHATSAPP_URL}?text=${encodeURIComponent('היי, יש לי שאלה לגבי פורלי')}`;
+export const WHATSAPP_QUESTION_URL = `${WHATSAPP_URL}?text=${encodeURIComponent('היי איך נרשמים לפורלי?')}`;
 
 export const TRIAL_CREDITS = 50000; // 500 credits at 100x scale
 export const REFERRAL_CREDITS = 100000; // 1000 credits at 100x scale
