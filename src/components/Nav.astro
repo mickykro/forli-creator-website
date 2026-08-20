@@ -11,7 +11,7 @@ const links = [
 <header class="nav" data-nav>
   <div class="nav-inner">
     <a href="#top" class="brand" aria-label="Forly home">
-      <span class="brand-mark" aria-hidden="true"></span>
+      <img class="brand-mark" src="/forly-logo-nav.png" alt="" aria-hidden="true" width="137" height="96" />
       <span class="brand-name">FORLY</span>
     </a>
     <nav class="links" aria-label="Primary">
@@ -70,11 +70,8 @@ const links = [
     font-size: 14px;
   }
   .brand-mark {
-    width: 26px;
     height: 26px;
-    border-radius: 8px;
-    background: radial-gradient(circle at 30% 30%, var(--forli-pink-soft), var(--forli-pink) 60%, var(--forli-pink-deep));
-    box-shadow: 0 0 12px rgba(201, 164, 100, 0.3);
+    width: auto;
   }
   .brand-name { color: var(--white); }
   .links {
