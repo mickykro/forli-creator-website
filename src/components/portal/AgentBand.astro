@@ -1,0 +1,28 @@
+---
+import { WHATSAPP_HELLO_URL } from '../../brand';
+
+interface Props {
+  agencies: string[];
+}
+const { agencies } = Astro.props;
+const shown = agencies.slice(0, 5);
+const extra = agencies.length - shown.length;
+---
+<section class="agents-band" id="agents">
+  <div class="container">
+    {shown.length > 0 && (
+      <div class="agencies" aria-label="סוכנויות בקטלוג">
+        <span class="lbl">כבר בקטלוג</span>
+        {shown.map((a) => <span>{a}</span>)}
+        {extra > 0 && <span>+{extra}</span>}
+      </div>
+    )}
+    <p class="eyebrow">לסוכני נדל״ן</p>
+    <h2>הנכסים האלה נוצרו בוואטסאפ. <em>הקונים כבר כאן.</em></h2>
+    <p>
+      שלחו לפורלי תמונות של נכס — קבלו סרטון סיור, דף נכס מלא, וחשיפה בקטלוג שבו
+      קונים מחפשים. בלי אפליקציה, בלי מעצב, מהצ׳אט.
+    </p>
+    <a class="btn btn-pink" href={WHATSAPP_HELLO_URL} target="_blank" rel="noopener">אני סוכן/ת — בואו נתחיל</a>
+  </div>
+</section>

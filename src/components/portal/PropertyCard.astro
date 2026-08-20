@@ -1,0 +1,76 @@
+---
+/* Server-rendered listing card. KEEP IN SYNC with the <template id="card-tpl">
+   in pages/index.astro — the portal client script builds identical cards in
+   the browser for realtime inserts and retry loads. */
+import type { PortalListing } from '../../lib/portal';
+import {
+  formatPrice, pricePerSqm, formatViews, isNew, freshLabel, metaLine, deriveTags,
+} from '../../lib/portal';
+
+interface Props {
+  listing: PortalListing;
+}
+const { listing: l } = Astro.props;
+
+const tags = deriveTags(l);
+const fresh = freshLabel(l);
+const ppm = pricePerSqm(l);
+const brandInitial = (l.agent.brand_name || l.agent.name || 'פ').trim().charAt(0);
+---
+<article
+  class="card"
+  data-page-id={l.page_id}
+  data-city={l.city}
+  data-hood={l.neighborhood}
+  data-street={l.address}
+  data-rooms={String(l.rooms || 0)}
+  data-price={String(l.price || 0)}
+  data-size={String(l.size_sqm || 0)}
+  data-agent={l.agent.brand_name}
+  data-new={isNew(l) ? '1' : '0'}
+  data-tags={tags.join(' ')}
+  data-phone={l.agent.phone}
+>
+  <a href={l.page_url} class="media" target="_blank" rel="noopener" aria-label={`דף הנכס: ${l.title || l.address}`}>
+    {l.poster_url && <img src={l.poster_url} alt={l.title || l.address} loading="lazy" />}
+    {isNew(l) && <span class="badges"><span class="badge-new">חדש</span></span>}
+    {l.view_count > 0 && (
+      <span class="views">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z" /><circle cx="12" cy="12" r="2.6" /></svg>
+        {formatViews(l.view_count)}
+      </span>
+    )}
+    <span class="play">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" /></svg>
+      סיור וידאו
+    </span>
+  </a>
+  <div class="card-body">
+    <div class="price-row">
+      <span class="price">{formatPrice(l.price)}</span>
+      {ppm && <span class="ppm">{ppm}</span>}
+    </div>
+    {metaLine(l) && <div class="meta">{metaLine(l)}</div>}
+    <div class="addr">
+      {l.address}
+      <span> · {[l.neighborhood, l.city].filter(Boolean).join(', ')}</span>
+    </div>
+    {tags.length > 0 && (
+      <div class="tags">{tags.map((t) => <span class="tag">{t}</span>)}</div>
+    )}
+    <div class="card-foot">
+      <span class="agent-chip">
+        <i>
+          {l.agent.logo_url
+            ? <img src={l.agent.logo_url} alt="" loading="lazy" />
+            : brandInitial}
+        </i>
+        {[l.agent.name, l.agent.brand_name].filter(Boolean).join(' · ')}
+      </span>
+      <span class="foot-side">
+        {fresh && <span class="fresh">{fresh}</span>}
+        {l.agent.phone && <button type="button" class="phone-btn">הצגת טלפון</button>}
+      </span>
+    </div>
+  </div>
+</article>

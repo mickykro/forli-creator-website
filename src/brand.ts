@@ -13,13 +13,10 @@ export const BUSINESS = {
   whatsappE164: '972553163293',
 };
 
+export const PLATFORM_URL = 'https://nadlan.call4li.com';
+export const PLATFORM_SIGNUP_URL = `${PLATFORM_URL}/signup`;
 export const WHATSAPP_URL = `https://wa.me/${BUSINESS.whatsappE164}`;
-export const WHATSAPP_HELLO_URL = `${WHATSAPP_URL}?text=${encodeURIComponent('היי, אני רוצה להצטרף לפורלי')}`;
 export const WHATSAPP_QUESTION_URL = `${WHATSAPP_URL}?text=${encodeURIComponent('היי, יש לי שאלה לגבי פורלי')}`;
-
-export const WHATSAPP_UPGRADE_STARTER_URL = `${WHATSAPP_URL}?text=${encodeURIComponent('היי, אני רוצה לשדרג למסלול Starter')}`;
-export const WHATSAPP_UPGRADE_GROWTH_URL = `${WHATSAPP_URL}?text=${encodeURIComponent('היי, אני רוצה לשדרג למסלול Growth')}`;
-export const WHATSAPP_UPGRADE_PRO_URL = `${WHATSAPP_URL}?text=${encodeURIComponent('היי, אני רוצה לשדרג למסלול Pro')}`;
 
 export const TRIAL_CREDITS = 50000; // 500 credits at 100x scale
 export const REFERRAL_CREDITS = 100000; // 1000 credits at 100x scale

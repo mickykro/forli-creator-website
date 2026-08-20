@@ -29,3 +29,4 @@ public/video/*
 !public/video/README.md
 .env
 .vercel
+.env*.local

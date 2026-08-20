@@ -1,0 +1,257 @@
+---
+/* Main filter row (city / price / rooms / size ranges) + expandable advanced
+   filters (neighborhood / street / agency) + quick-browse category chips.
+   Filtering runs client-side over whatever .card elements are in the DOM, so
+   realtime-inserted cards are filtered too. Quick-filter chips are derived from
+   the tags actually present in the listings (prop `tags`). Exposes
+   window.__portalFilters { apply, setOptions, setCats } for the portal client. */
+interface Props {
+  cities: string[];
+  neighborhoods: string[];
+  agencies: string[];
+  tags: string[];
+  total: number | null;
+}
+const { cities, neighborhoods, agencies, tags, total } = Astro.props;
+
+// tag → chip label, in display order. Chips render only for tags present.
+const TAG_LABELS: [string, string][] = [
+  ['גן', 'דירות גן'],
+  ['פנטהאוז', 'פנטהאוזים'],
+  ['מרפסת', 'עם מרפסת'],
+  ['חניה', 'עם חניה'],
+  ['ים', 'ליד הים'],
+  ['דופלקס', 'דופלקס'],
+  ['בלעדיות', 'בלעדיות'],
+  ['משופצת', 'משופצת'],
+];
+// `tags` arrives already ordered by frequency (most common first).
+const LABELS = new Map(TAG_LABELS);
+const cats = tags.map((tag) => [tag, LABELS.get(tag) ?? tag] as [string, string]);
+
+const PRICE_STEPS = [1500000, 2000000, 2500000, 3500000, 5000000, 7000000, 10000000];
+const priceLabel = (p: number) => `₪${(p / 1000000).toFixed(p % 1000000 ? 1 : 0)}M`;
+const ROOM_STEPS = [2, 3, 4, 5, 6];
+const SIZE_STEPS = [40, 60, 80, 100, 120, 150, 200];
+---
+<section class="filters container" aria-label="סינון נכסים">
+  <form class="filters-card" id="ff">
+    <div class="fmain">
+      <div class="field">
+        <label for="f-city">עיר</label>
+        <select id="f-city">
+          <option value="">כל הארץ</option>
+          {cities.map((c) => <option>{c}</option>)}
+        </select>
+      </div>
+      <div class="field range">
+        <label>מחיר</label>
+        <div class="range-row">
+          <select id="f-price-min" aria-label="מחיר מ־">
+            <option value="">מ־</option>
+            {PRICE_STEPS.map((p) => <option value={p}>{priceLabel(p)}</option>)}
+          </select>
+          <span class="dash">–</span>
+          <select id="f-price-max" aria-label="מחיר עד">
+            <option value="">עד</option>
+            {PRICE_STEPS.map((p) => <option value={p}>{priceLabel(p)}</option>)}
+          </select>
+        </div>
+      </div>
+      <div class="field range">
+        <label>חדרים</label>
+        <div class="range-row">
+          <select id="f-rooms-min" aria-label="חדרים מ־">
+            <option value="">מ־</option>
+            {ROOM_STEPS.map((r) => <option value={r}>{r}</option>)}
+          </select>
+          <span class="dash">–</span>
+          <select id="f-rooms-max" aria-label="חדרים עד">
+            <option value="">עד</option>
+            {ROOM_STEPS.map((r) => <option value={r}>{r}</option>)}
+          </select>
+        </div>
+      </div>
+      <div class="field range">
+        <label>גודל (מ״ר)</label>
+        <div class="range-row">
+          <select id="f-size-min" aria-label="גודל מ־">
+            <option value="">מ־</option>
+            {SIZE_STEPS.map((s) => <option value={s}>{s}</option>)}
+          </select>
+          <span class="dash">–</span>
+          <select id="f-size-max" aria-label="גודל עד">
+            <option value="">עד</option>
+            {SIZE_STEPS.map((s) => <option value={s}>{s}</option>)}
+          </select>
+        </div>
+      </div>
+      <button class="fmore" type="button" id="fmore" aria-expanded="false" aria-controls="fadv">עוד סינון +</button>
+      <button class="btn btn-pink" type="submit">חיפוש</button>
+    </div>
+    <div class="fadv" id="fadv">
+      <div class="field">
+        <label for="f-hood">שכונה</label>
+        <select id="f-hood">
+          <option value="">הכול</option>
+          {neighborhoods.map((n) => <option>{n}</option>)}
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-street">רחוב</label>
+        <input id="f-street" type="text" placeholder="למשל: דיזנגוף" />
+      </div>
+      <div class="field">
+        <label for="f-agent">סוכנות</label>
+        <select id="f-agent">
+          <option value="">הכול</option>
+          {agencies.map((a) => <option>{a}</option>)}
+        </select>
+      </div>
+    </div>
+    <div class="filters-foot">
+      <span class="count">מציגים <b id="shown">{total ?? '—'}</b> מתוך <b id="total">{total ?? '—'}</b> נכסים</span>
+      <button class="reset" type="button" id="reset">ניקוי סינון</button>
+    </div>
+  </form>
+  <div class="cats" id="cats" role="group" aria-label="קטגוריות מהירות" data-labels={JSON.stringify(TAG_LABELS)}>
+    <button class="cat on" type="button" data-tag="">הכול</button>
+    {cats.map(([tag, label]) => (
+      <button class="cat" type="button" data-tag={tag}>{label}</button>
+    ))}
+  </div>
+</section>
+
+<script>
+  const byId = (id: string) => document.getElementById(id) as HTMLSelectElement | HTMLInputElement;
+  const f = {
+    city: byId('f-city'), hood: byId('f-hood'), street: byId('f-street'), agent: byId('f-agent'),
+    roomsMin: byId('f-rooms-min'), roomsMax: byId('f-rooms-max'),
+    priceMin: byId('f-price-min'), priceMax: byId('f-price-max'),
+    sizeMin: byId('f-size-min'), sizeMax: byId('f-size-max'),
+  };
+  let activeTag = '';
+  const shown = document.getElementById('shown');
+  const emptyMsg = document.getElementById('empty-grid');
+  const featuredSect = document.getElementById('new-sect');
+  const catsEl = document.getElementById('cats')!;
+
+  // Unknown (0) values pass range filters so "price on request" cards stay visible.
+  const inRange = (v: number, min: string, max: string) =>
+    v <= 0 || ((!min || v >= +min) && (!max || v <= +max));
+
+  function apply() {
+    // Query live so realtime-inserted cards participate.
+    const cards = document.querySelectorAll<HTMLElement>('.card');
+    let n = 0;
+    let featVisible = 0;
+    for (const c of cards) {
+      const d = c.dataset;
+      let ok = true;
+      if (f.city.value && d.city !== f.city.value) ok = false;
+      if (ok && f.hood.value && d.hood !== f.hood.value) ok = false;
+      if (ok && f.agent.value && d.agent !== f.agent.value) ok = false;
+      if (ok && !inRange(parseFloat(d.rooms || '0'), f.roomsMin.value, f.roomsMax.value)) ok = false;
+      if (ok && !inRange(parseInt(d.price || '0'), f.priceMin.value, f.priceMax.value)) ok = false;
+      if (ok && !inRange(parseInt(d.size || '0'), f.sizeMin.value, f.sizeMax.value)) ok = false;
+      if (ok && f.street.value.trim() && !(d.street || '').includes(f.street.value.trim())) ok = false;
+      if (ok && activeTag && !` ${d.tags || ''} `.includes(` ${activeTag} `)) ok = false;
+      c.style.display = ok ? '' : 'none';
+      if (ok) {
+        n++;
+        if (c.parentElement?.id === 'featured') featVisible++;
+      }
+    }
+    if (shown) shown.textContent = String(n);
+    if (featuredSect) featuredSect.style.display = featVisible ? '' : 'none';
+    if (emptyMsg) emptyMsg.style.display = n === 0 && cards.length > 0 ? 'block' : 'none';
+  }
+
+  // Populate select options after a client-side data load (SSR-failure path).
+  function setOptions(cities: string[], hoods: string[], agencies: string[]) {
+    const fill = (el: HTMLSelectElement | HTMLInputElement, values: string[]) => {
+      if (!(el instanceof HTMLSelectElement)) return;
+      const current = el.value;
+      while (el.options.length > 1) el.remove(1);
+      for (const v of values) el.add(new Option(v, v));
+      el.value = current;
+    };
+    fill(f.city, cities);
+    fill(f.hood, hoods);
+    fill(f.agent, agencies);
+  }
+
+  // Rebuild quick-filter chips from the tags present (client-render path).
+  const LABELS = new Map<string, string>(JSON.parse(catsEl.dataset.labels || '[]'));
+  function setCats(tags: string[]) {
+    // tags come in frequency order (most common first); render as given.
+    catsEl.innerHTML = '<button class="cat on" type="button" data-tag="">הכול</button>';
+    for (const tag of tags) {
+      const b = document.createElement('button');
+      b.className = 'cat';
+      b.type = 'button';
+      b.dataset.tag = tag;
+      b.textContent = LABELS.get(tag) ?? tag;
+      catsEl.appendChild(b);
+    }
+    setTag('');
+  }
+
+  (window as any).__portalFilters = { apply, setOptions, setCats };
+
+  for (const [key, el] of Object.entries(f)) {
+    el?.addEventListener(key === 'street' ? 'input' : 'change', apply);
+  }
+  document.getElementById('ff')?.addEventListener('submit', (e) => { e.preventDefault(); apply(); });
+  document.getElementById('reset')?.addEventListener('click', () => {
+    Object.values(f).forEach((el) => { if (el) el.value = ''; });
+    setTag('');
+    apply();
+  });
+
+  const fmore = document.getElementById('fmore');
+  const fadv = document.getElementById('fadv');
+  fmore?.addEventListener('click', () => {
+    const open = fadv?.classList.toggle('open') ?? false;
+    fmore.setAttribute('aria-expanded', String(open));
+    fmore.textContent = open ? 'פחות סינון −' : 'עוד סינון +';
+  });
+
+  function setTag(tag: string) {
+    activeTag = tag;
+    catsEl.querySelectorAll<HTMLElement>('.cat').forEach((b) => b.classList.toggle('on', b.dataset.tag === tag));
+  }
+  // Delegated so rebuilt chips keep working.
+  catsEl.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLElement>('.cat');
+    if (!b) return;
+    setTag(b.dataset.tag || '');
+    apply();
+  });
+
+  // Area tiles set the city filter.
+  document.querySelectorAll<HTMLElement>('.area-tile').forEach((t) => {
+    t.addEventListener('click', () => {
+      f.city.value = t.dataset.city || '';
+      apply();
+      document.getElementById('ff')?.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Sort applies to the main grid only.
+  const grid = document.getElementById('grid');
+  document.getElementById('sort')?.addEventListener('change', function (this: HTMLSelectElement) {
+    if (!grid) return;
+    const v = this.value;
+    const num = (el: Element, key: string) => parseFloat((el as HTMLElement).dataset[key] || '0');
+    [...grid.children]
+      .filter((el) => el.classList.contains('card'))
+      .sort((a, b) => {
+        if (v === 'price-asc') return num(a, 'price') - num(b, 'price');
+        if (v === 'price-desc') return num(b, 'price') - num(a, 'price');
+        if (v === 'size') return num(b, 'size') - num(a, 'size');
+        return num(b, 'new') - num(a, 'new');
+      })
+      .forEach((el) => grid.appendChild(el));
+  });
+</script>

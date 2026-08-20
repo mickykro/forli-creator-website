@@ -6,8 +6,8 @@ const faqs = [
   {
     questionHe: 'איך עובדים קרדיטים?',
     questionEn: 'How do credits work?',
-    answerHe: 'קרדיטים הם המטבע של פורלי. כל פעולה צורכת כמות קרדיטים שונה — תמונה צורכת כ-100 קרדיטים, קרוסלה כ-250, וסרטון כ-500. ככל שהתוכן מורכב יותר, כך נדרשים יותר קרדיטים.',
-    answerEn: 'Credits are Forly\'s currency. Each action uses a different amount — an image uses ~100 credits, a carousel ~250, and a video ~500. The more complex the content, the more credits required.',
+    answerHe: 'קרדיטים הם המטבע של פורלי. הקמת דף נכס צורכת כ-100 קרדיטים, כתיבת טקסט שיווקי כ-250, וסיור וידאו כ-500. תוכלו לראות את היתרה שלכם באזור הניהול בכל עת.',
+    answerEn: 'Credits are Forly\'s currency. Creating a property page uses ~100 credits, marketing copy ~250, and a video tour ~500. You can view your balance in the dashboard at any time.',
   },
   {
     questionHe: 'האם קרדיטים פגים?',
@@ -18,8 +18,8 @@ const faqs = [
   {
     questionHe: 'אפשר לבטל בכל רגע?',
     questionEn: 'Can I cancel anytime?',
-    answerHe: 'כן, אין התחייבות. אפשר לבטל את המסלול החודשי בכל רגע דרך וואטסאפ או במייל ל-info@call4li.com. הביטול ייכנס לתוקף בתום תקופת החיוב הנוכחית.',
-    answerEn: 'Yes, no commitment. You can cancel your monthly plan anytime via WhatsApp or email to info@call4li.com. Cancellation takes effect at the end of the current billing period.',
+    answerHe: 'כן, אין התחייבות. אפשר לבטל את המסלול החודשי בכל רגע דרך אזור הניהול, בוואטסאפ או במייל. הביטול ייכנס לתוקף בתום תקופת החיוב הנוכחית.',
+    answerEn: 'Yes, no commitment. You can cancel your monthly plan anytime via the dashboard, WhatsApp, or email. Cancellation takes effect at the end of the current billing period.',
   },
   {
     questionHe: 'באילו אמצעי תשלום אתם מקבלים?',
@@ -30,8 +30,8 @@ const faqs = [
   {
     questionHe: 'האם אתם מנפיקים חשבונית מס?',
     questionEn: 'Do you issue a tax invoice?',
-    answerHe: 'כן, חשבונית מס נשלחת אוטומטית למייל לאחר כל תשלום. אם אתם צריכים חשבונית על שם עסק או פרטים נוספים, פנו אלינו בוואטסאפ.',
-    answerEn: 'Yes, a tax invoice is automatically sent to your email after each payment. If you need an invoice with business details, contact us via WhatsApp.',
+    answerHe: 'כן, חשבונית מס נשלחת אוטומטית למייל לאחר כל תשלום. אם אתם צריכים חשבונית על שם עסק או פרטים נוספים, פנו אלינו.',
+    answerEn: 'Yes, a tax invoice is automatically sent to your email after each payment. If you need an invoice with business details, contact us.',
   },
   {
     questionHe: 'מה קורה אם נגמרים לי הקרדיטים?',
@@ -88,7 +88,7 @@ const faqs = [
   }
   .faq-title {
     font-size: clamp(28px, 4vw, 40px);
-    font-weight: 800;
+    font-weight: 700;
     color: var(--ink);
     margin-bottom: 12px;
   }
@@ -114,8 +114,8 @@ const faqs = [
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
   .faq-item[open] {
-    border-color: rgba(219, 107, 151, 0.35);
-    box-shadow: 0 4px 24px rgba(219, 107, 151, 0.08);
+    border-color: rgba(201, 164, 100, 0.35);
+    box-shadow: 0 4px 24px rgba(201, 164, 100, 0.08);
   }
   .faq-item summary {
     cursor: pointer;
