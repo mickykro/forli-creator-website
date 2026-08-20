@@ -36,44 +36,44 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
     <!-- Hero copy: title above the canvas, text below it -->
     <div class="hero-top">
       <h1 class="hero-title" data-hero-line>
-        <span class="line line-1" data-hero-title-line><T he="כתבו לפורלי." en="Message Forly." /></span>
-        <span class="line line-2" data-hero-title-line><T he="קבלו תוכן." en="Get content." /></span>
+        <span class="line line-1" data-hero-title-line><T he="מנהל השיווק" en="The AI marketing" /></span>
+        <span class="line line-2" data-hero-title-line><T he="שלכם." en="manager." /></span>
         <span class="line line-3" data-hero-title-line><T he="בוואטסאפ." en="In WhatsApp." /></span>
       </h1>
     </div>
     <div class="hero-bottom">
       <p class="hero-sub" data-hero-line>
-        <span class="l-he">שלחו הודעה בעברית. מקבלים תמונה, סרטון, קרוסלה או אתר — ישר בצ׳אט. בלי אפליקציה. בלי דשבורד.</span>
-        <span class="l-en">Send a Hebrew message. Get back the image, video, carousel, or website — right in your chat. No app. No dashboard.</span>
+        <span class="l-he">מזינים פרטי נכס, ותוך דקות יש לכם דף נחיתה באוויר, סיור וידאו, וקופירייטינג מוכן. כל הלידים מגיעים ישר אליכם לנייד.</span>
+        <span class="l-en">Enter property details, and within minutes your landing page is live with a video tour and copy. All leads come straight to your phone.</span>
       </p>
       <div class="hero-actions" data-hero-line>
-        <a href="#cta" class="btn btn-primary"><T he="התחילו ליצור תוכן עם פורלי" en="Join the private beta" /></a>
-        <a href="#features" class="btn btn-ghost"><T he="ראו מה היא יוצרת ↓" en="See what it makes ↓" /></a>
+        <a href="#cta" class="btn btn-primary"><T he="התחילו לייצר לידים עם פורלי" en="Start generating leads with Forly" /></a>
+        <a href="#features" class="btn btn-ghost"><T he="ראו איך זה עובד ↓" en="See how it works ↓" /></a>
       </div>
     </div>
 
     <!-- Mid-scroll tagline that fades over the frames -->
     <div class="hero-mid" data-hero-mid aria-hidden="true">
-      <p class="eyebrow"><T he="בלי אפליקציה. בלי דשבורד." en="No app. No dashboard." /></p>
+      <p class="eyebrow"><T he="בלי סוכנויות. בלי מעצבים." en="No agencies. No designers." /></p>
       <h2 class="mid-title">
-        <span class="l-he">רק הודעה בעברית.<br/>פורלי עושה את השאר.</span>
-        <span class="l-en">Just a Hebrew message.<br/>Forly does the rest.</span>
+        <span class="l-he">רק הפרטים של הנכס.<br/>פורלי עושה את השאר.</span>
+        <span class="l-en">Just the property details.<br/>Forly does the rest.</span>
       </h2>
     </div>
 
     <!-- WhatsApp input bubble — visible during frames 21-41 (above the animation) -->
     <div class="hero-msg" data-hero-msg aria-hidden="true">
       <WhatsAppInput
-        he="תעשי לי פוסט להחלקת קרטין שאני מציעה השבוע, סטייל קליל וקיצי"
-        en="Make me a post for the keratin straightening I'm offering this week, light summery style"
+        he="יש לי דירת 4 חדרים חדשה ברחוב הרצל 15 בתל אביב, 120 מ״ר, קומה 3 עם מעלית וחניה. מחיר 4,500,000 ש״ח."
+        en="I have a new 4-room apartment at 15 Herzl St in Tel Aviv, 120 sqm, 3rd floor with elevator and parking. Price 4,500,000 NIS."
       />
     </div>
 
     <!-- WhatsApp confirmation message (incoming chat bubble) — frame 81 to the end -->
     <div class="hero-msg-out" data-hero-msg-out aria-hidden="true">
       <WhatsAppMessage
-        he="הפוסט שלך מוכן ✨"
-        en="Your post is ready ✨"
+        he="🎉 דף הנכס שלך באוויר: agent.call4li.com/p/herzl15"
+        en="🎉 Your property page is live: agent.call4li.com/p/herzl15"
         time="14:03"
         variant="incoming"
       />
@@ -84,46 +84,45 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
       <p class="eyebrow"><T he="אתם כותבים" en="You write" /></p>
       <div class="bubble bubble-in">
         <span class="bubble-meta">14:02 · <T he="וואטסאפ" en="WhatsApp" /></span>
-        <p class="bubble-text" dir="rtl">תעשי לי פוסט להחלקת קרטין שאני מציעה השבוע, סטייל קליל וקיצי 💇‍♀️</p>
+        <p class="bubble-text" dir="rtl">יש לי דירת 4 חדרים חדשה ברחוב הרצל 15 בתל אביב, 120 מ״ר, קומה 3 עם מעלית וחניה. מחיר 4,500,000 ש״ח 🏢</p>
       </div>
       <ul class="chips">
         <li><T he="עברית" en="Hebrew" /></li>
-        <li><T he="חופשי" en="Free-form" /></li>
-        <li><T he="הודעה אחת" en="1 message" /></li>
+        <li><T he="פרטי הנכס" en="Property details" /></li>
+        <li><T he="תמונות" en="Photos" /></li>
       </ul>
     </aside>
 
     <aside class="side side-right" data-side-right aria-hidden="true">
       <p class="eyebrow"><T he="פורלי מחזירה" en="Forly returns" /></p>
       <div class="bubble bubble-out">
-        <span class="bubble-meta">14:02 · <T he="6 שניות" en="6s" /></span>
-        <p class="bubble-text" dir="rtl">הלחות ניצחה אותך הקיץ? לא השנה. החלקת קרטין מקצועית — השבוע בלבד במחיר השקה. שיער חלק שזז יפה, נראה טבעי ומחזיק חודשים ✨</p>
-        <p class="bubble-tags">#החלקתקרטין #שיערחלק #מבצעהשקה</p>
+        <span class="bubble-meta">14:04 · <T he="2 דקות" en="2m" /></span>
+        <p class="bubble-text" dir="rtl">🎉 דף הנכס שלך באוויר:<br/>agent.call4li.com/p/herzl15<br/><br/>תקף ל-30 יום · לעריכה: agent.call4li.com</p>
       </div>
       <ul class="chips">
-        <li><T he="קרוסלה" en="Carousel" /></li>
-        <li><T he="כיתוב" en="Caption" /></li>
-        <li><T he="האשטגים" en="Hashtags" /></li>
+        <li><T he="דף נחיתה" en="Landing page" /></li>
+        <li><T he="סיור וידאו" en="Video tour" /></li>
+        <li><T he="טופס לידים" en="Lead form" /></li>
       </ul>
     </aside>
 
     <!-- End-of-scroll product detail rails -->
     <aside class="hero-detail hero-detail-left" data-hero-detail-left>
       <p class="eyebrow"><T he="המוצר" en="Product" /></p>
-      <h3><T he="פורלי v2" en="Forly v2" /></h3>
+      <h3><T he="פורלי לנדל״ן" en="Forly Real Estate" /></h3>
       <ul>
-        <li><span><T he="ערוץ" en="Channel" /></span><b><T he="וואטסאפ" en="WhatsApp" /></b></li>
+        <li><span><T he="ערוץ" en="Channel" /></span><b><T he="וואטסאפ / ווב" en="WhatsApp / Web" /></b></li>
         <li><span><T he="עברית" en="Hebrew" /></span><b><T he="נייטיב, ראשי" en="Native, first" /></b></li>
-        <li><span><T he="הצטרפות" en="Onboard" /></span><b><T he="3 שאלות" en="3 questions" /></b></li>
+        <li><span><T he="הצטרפות" en="Onboard" /></span><b><T he="מספר טלפון" en="Phone number" /></b></li>
       </ul>
     </aside>
     <aside class="hero-detail hero-detail-right" data-hero-detail-right>
       <p class="eyebrow"><T he="הפלט" en="Output" /></p>
-      <h3><T he="לעסקים קטנים" en="Built for SMBs" /></h3>
+      <h3><T he="לסוכני נדל״ן" en="Built for Agents" /></h3>
       <ul>
-        <li><span><T he="תמונה" en="Image" /></span><b><T he="כ-6 שניות" en="~6 sec" /></b></li>
-        <li><span><T he="סרטון" en="Video" /></span><b><T he="3 שוטים" en="3-shot story" /></b></li>
-        <li><span><T he="סגנונות" en="Tones" /></span><b><T he="8 סגנונות" en="8 styles" /></b></li>
+        <li><span><T he="דף נכס" en="Property Page" /></span><b><T he="תוך דקות" en="In minutes" /></b></li>
+        <li><span><T he="וידאו" en="Video" /></span><b><T he="סיור אוטומטי" en="Auto tour" /></b></li>
+        <li><span><T he="לידים" en="Leads" /></span><b><T he="ישר לנייד" en="Straight to mobile" /></b></li>
       </ul>
     </aside>
 

@@ -17,53 +17,46 @@ import {
 
 const tierFeatures = {
   starter: [
-    { he: 'כל סוגי התוכן (תמונה, סרטון, קרוסלה)', en: 'All content types (image, video, carousel)' },
-    { he: 'זהות מותגית מותאמת אישית', en: 'Custom brand identity' },
+    { he: 'דפי נכס ללא הגבלה', en: 'Unlimited property pages' },
+    { he: 'טפסי לידים ישירות לוואטסאפ', en: 'Lead forms direct to WhatsApp' },
+    { he: 'קופירייטינג שיווקי AI', en: 'AI marketing copywriting' },
     { he: 'תמיכה בוואטסאפ', en: 'WhatsApp support' },
-    { he: 'קרדיטים לא עוברים לחודש הבא', en: 'Credits don\'t roll over' },
   ],
   growth: [
     { he: 'הכל ב-Starter, ועוד:', en: 'Everything in Starter, plus:' },
-    { he: '3X קרדיטים לחודש', en: '3X credits per month' },
-    { he: 'עדיפות בתור', en: 'Priority queue' },
-    { he: 'גישה מוקדמת לפיצ׳רים חדשים', en: 'Early access to new features' },
+    { he: '3X קרדיטים לסיורי וידאו', en: '3X credits for video tours' },
+    { he: 'חיבור דומיין אישי', en: 'Custom domain connection' },
+    { he: 'תזכורות אוטומטיות לחידוש', en: 'Auto-renewal reminders' },
   ],
   pro: [
     { he: 'הכל ב-Growth, ועוד:', en: 'Everything in Growth, plus:' },
-    { he: '8X קרדיטים לחודש', en: '8X credits per month' },
-    { he: 'מנהל חשבון ייעודי', en: 'Dedicated account manager' },
-    { he: 'SLA זמן תגובה', en: 'Response time SLA' },
+    { he: '8X קרדיטים לסיורי וידאו', en: '8X credits for video tours' },
+    { he: 'מנהל לקוח אישי', en: 'Dedicated account manager' },
+    { he: 'SLA לזמן תגובה', en: 'Response time SLA' },
   ],
 };
 
 const creditExamples = [
   {
-    iconHe: 'תמונה',
-    iconEn: 'Image',
+    iconHe: 'דף נכס',
+    iconEn: 'Page',
     credits: CREDIT_COSTS.standard_image / 100,
-    descHe: 'תמונה מעוצבת',
-    descEn: 'Styled image',
+    descHe: 'הקמת דף נכס',
+    descEn: 'Property page creation',
   },
   {
-    iconHe: 'קרוסלה',
-    iconEn: 'Carousel',
+    iconHe: 'קופירייטינג',
+    iconEn: 'Copy',
     credits: CREDIT_COSTS.carousel / 100,
-    descHe: 'קרוסלה לאינסטגרם',
-    descEn: 'Instagram carousel',
+    descHe: 'כתיבת טקסט שיווקי',
+    descEn: 'Marketing copy generation',
   },
   {
-    iconHe: 'סרטון',
+    iconHe: 'וידאו',
     iconEn: 'Video',
     credits: CREDIT_COSTS.standard_video / 100,
-    descHe: 'סרטון קצר',
-    descEn: 'Short video',
-  },
-  {
-    iconHe: 'ייעוץ',
-    iconEn: 'Consult',
-    credits: CREDIT_COSTS.text_consultation / 100,
-    descHe: 'ייעוץ תוכן',
-    descEn: 'Content consultation',
+    descHe: 'סיור וידאו אוטומטי',
+    descEn: 'Auto video tour',
   },
 ];
 

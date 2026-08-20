@@ -8,16 +8,16 @@ import RadialOrbitalTimeline, { type TimelineItem } from './RadialOrbitalTimelin
 const processSteps: TimelineItem[] = [
   {
     id: 1,
-    iconKey: 'image',
+    iconKey: 'website',
     he: {
-      title: 'יצירת תמונה',
-      date: '5–10 שניות',
-      content: 'משפט אחד בעברית הופך לתמונה מוכנה לפרסום, עם כיתוב והאשטגים מותאמים לטון של העסק שלכם.',
+      title: 'דפי נכס באוויר',
+      date: 'תוך דקות',
+      content: 'מזינים פרטים בוואטסאפ או במערכת, ותוך דקות יש לנכס דף נחיתה מעוצב עם וידאו, גלריה ומידע על השכונה.',
     },
     en: {
-      title: 'Create image',
-      date: '5–10 seconds',
-      content: 'One Hebrew sentence becomes a ready-to-post image, with caption and hashtags matched to your brand voice.',
+      title: 'Live property pages',
+      date: 'In minutes',
+      content: 'Enter details in WhatsApp or the dashboard, and within minutes your listing has a landing page with video, gallery, and neighborhood info.',
     },
     status: 'completed',
     relatedIds: [2, 5],
@@ -25,151 +25,151 @@ const processSteps: TimelineItem[] = [
   },
   {
     id: 2,
-    iconKey: 'image-edit',
+    iconKey: 'video',
     he: {
-      title: 'תמונה לתמונה',
-      date: 'בלי פוטושופ',
-      content: 'שלחו תמונה ובקשה — "תוסיף לי כובע", "תשני את הצבע", "תחליפי רקע" — והפנים שלכם נשארות מזוהות.',
+      title: 'וידאו לכל נכס',
+      date: 'אוטומטי או שלכם',
+      content: 'פורלי יוצרת סיור וידאו מבוסס AI מהתמונות שלכם, או שפשוט תעלו סיור וידאו שצילמתם בעצמכם.',
     },
     en: {
-      title: 'Image to image',
-      date: 'No Photoshop',
-      content: 'Send a photo and a request — "add a hat", "change the color", "swap the background" — and your face stays recognizable.',
+      title: 'Video for every listing',
+      date: 'Auto or manual',
+      content: 'Forly generates an AI video tour from your photos, or you can simply upload a video tour you shot yourself.',
     },
     status: 'completed',
     relatedIds: [1],
-    progress: 96,
+    progress: 100,
   },
   {
     id: 3,
-    iconKey: 'video',
+    iconKey: 'carousel',
     he: {
-      title: 'יצירת סרטון',
-      date: '10–15 שניות וידאו',
-      content: 'משפט אחד הופך לסרטון מיני בן 3 שוטים: פתיחה → תפנית → סיום. רציפות פנימית, סגנון לבחירה.',
+      title: 'ניהול לידים',
+      date: 'ישר לוואטסאפ',
+      content: 'כל ליד שמגיע מדף הנכס נשלח אליכם מיד לוואטסאפ עם כל הפרטים, כדי שתוכלו לסגור עסקה בזמן אמת.',
     },
     en: {
-      title: 'Create video',
-      date: '10–15 second clip',
-      content: 'One sentence becomes a 3-shot mini-story: setup → turn → payoff. Internal continuity, tone of your choice.',
+      title: 'Lead management',
+      date: 'Straight to WhatsApp',
+      content: 'Every lead from your property page is sent instantly to your WhatsApp with all details, so you can close in real time.',
     },
     status: 'completed',
     relatedIds: [4],
-    progress: 90,
+    progress: 100,
   },
   {
     id: 4,
-    iconKey: 'video-motion',
+    iconKey: 'image-edit',
     he: {
-      title: 'תמונה לסרטון',
-      date: 'תנועה בהזמנה',
-      content: 'שלחו תמונה. פורלי שואלת "איזו תנועה?" — והתשובה שלכם הופכת לסרטון 3 שוטים שמעוגן בתמונה המקורית.',
+      title: 'עריכה חכמה',
+      date: 'שליטה מלאה',
+      content: 'שנו מחיר, החליפו תמונות, או עדכנו את הטקסט השיווקי מתוך אזור הניהול שלכם - השינויים באוויר מיד.',
     },
     en: {
-      title: 'Image to video',
-      date: 'Motion on demand',
-      content: 'Send an image. Forly asks "what motion?" — your reply becomes a 3-shot video anchored on your photo.',
+      title: 'Smart editing',
+      date: 'Full control',
+      content: 'Change the price, swap photos, or update the marketing copy from your dashboard - changes are live instantly.',
     },
-    status: 'in-progress',
+    status: 'completed',
     relatedIds: [3],
-    progress: 75,
+    progress: 100,
   },
   {
     id: 5,
-    iconKey: 'carousel',
+    iconKey: 'clock',
     he: {
-      title: 'קרוסלה',
-      date: 'אינסטגרם',
-      content: '3–5 תמונות מחוברות, מעוצבות לפוסט החלקה — מספרות סיפור אחד, פריים אחר פריים, עם כיתובים מותאמים.',
+      title: 'מעקב תוקף',
+      date: 'התראות חכמות',
+      content: 'דפי נכס פעילים ל-30 יום. פורלי שולחת לכם תזכורת 5 ימים לפני הסיום, עם כפתור אחד להארכה בחינם.',
     },
     en: {
-      title: 'Carousel',
-      date: 'Instagram swipe',
-      content: '3–5 connected images designed as a swipe post — they tell one story frame by frame, captions included.',
+      title: 'Expiry tracking',
+      date: 'Smart alerts',
+      content: 'Pages are live for 30 days. Forly sends you a reminder 5 days before expiry, with a one-tap free extension link.',
     },
-    status: 'in-progress',
+    status: 'completed',
     relatedIds: [1, 6],
-    progress: 60,
+    progress: 100,
   },
   {
     id: 6,
-    iconKey: 'website',
+    iconKey: 'spark',
     he: {
-      title: 'אתר עסק',
-      date: 'דף נחיתה',
-      content: 'דף עסק נקי שנבנה אוטומטית מהפרופיל שלכם ומכל התוכן שיצרתם — מתעדכן בהודעה אחת.',
+      title: 'קופירייטינג AI',
+      date: 'טקסטים שמוכרים',
+      content: 'ה-AI שלנו כותב את כותרות הגיבור, הטקסט השיווקי, ונקודות העניין של השכונה עבור כל נכס שלכם.',
     },
     en: {
-      title: 'Website',
-      date: 'Landing page',
-      content: 'A clean business page built automatically from your profile and the content you\'ve created — updates with a single message.',
+      title: 'AI Copywriting',
+      date: 'Text that sells',
+      content: 'Our AI writes the hero headlines, marketing copy, and neighborhood highlights for every listing you upload.',
     },
-    status: 'pending',
+    status: 'completed',
     relatedIds: [5, 1, 3],
-    progress: 35,
+    progress: 100,
   },
 ];
 
 const cards = [
   {
-    label: { he: 'טקסט → תמונה', en: 'Text → Image' },
-    title: { he: 'פוסט ממשפט אחד', en: 'Posts from a sentence' },
+    label: { he: 'הודעה → דף נכס', en: 'Message → Property Page' },
+    title: { he: 'דף נחיתה ממשפט אחד', en: 'Landing page from a sentence' },
     body: {
-      he: 'כתבו "תעשי לי פוסט לפיצרייה שלי". פורלי מחזירה את התמונה עם כיתוב בעברית והאשטגים — מוכן לפרסום.',
-      en: 'Type "תעשי לי פוסט לפיצרייה שלי". Forly returns the image with a Hebrew caption and hashtags — ready to post.',
+      he: 'שלחו "דירת 4 חדרים בהרצל 15". פורלי מקימה דף נכס מעוצב עם פרטים, גלריה וטופס לידים, וחוזרת אליכם עם קישור מוכן.',
+      en: 'Send "4 room apartment at 15 Herzl". Forly builds a designed property page with details, gallery, and a lead form, returning a live link.',
     },
     metric: 100,
-    metricLabel: { he: 'כיתוב + האשטגים', en: 'Caption + hashtags' },
+    metricLabel: { he: 'דף נכס באוויר', en: 'Live property page' },
   },
   {
-    label: { he: 'תמונה → תמונה', en: 'Image → Image' },
-    title: { he: 'עריכה בלי פוטושופ', en: 'Edits without Photoshop' },
+    label: { he: 'תמונות → וידאו', en: 'Photos → Video' },
+    title: { he: 'סיור וידאו אוטומטי', en: 'Automatic video tours' },
     body: {
-      he: 'שלחו תמונה, כתבו "תוסיף לי כובע שמש". פורלי שומרת על הפנים שלכם ומשנה רק את מה שביקשתם.',
-      en: 'Send a photo, write "תוסיף לי כובע שמש". Forly keeps your face recognizable and changes only what you asked for.',
+      he: 'העלו את התמונות של הנכס, ופורלי תהפוך אותן לסיור וידאו מקצועי שמשולב אוטומטית בדף הנכס שלכם.',
+      en: 'Upload your property photos, and Forly turns them into a professional video tour that is automatically embedded in your page.',
     },
     metric: 96,
-    metricLabel: { he: 'הפנים נשמרות', en: 'Identity preserved' },
+    metricLabel: { he: 'המרת תמונות לוידאו', en: 'Photos to video' },
   },
   {
-    label: { he: 'טקסט → סרטון', en: 'Text → Video' },
-    title: { he: 'סיפור ב-3 שוטים', en: '3-shot mini-stories' },
+    label: { he: 'לידים → וואטסאפ', en: 'Leads → WhatsApp' },
+    title: { he: 'כל ליד אצלכם בנייד', en: 'Every lead on your phone' },
     body: {
-      he: 'כל סרטון בנוי כך: פתיחה → תפנית → סיום. פורלי מייצרת את שלושת השוטים בריצה אחת, עם רציפות פנימית.',
-      en: 'Every video follows setup → turn → payoff. Forly generates all three shots in one pass, with internal continuity.',
+      he: 'ברגע שלקוח פוטנציאלי משאיר פרטים בדף הנכס, אתם מקבלים הודעת וואטסאפ עם השם והטלפון שלו, עם כפתור לחיוג מהיר.',
+      en: 'The moment a prospect leaves their details on the property page, you get a WhatsApp message with their name and phone, ready to call.',
     },
     metric: 100,
-    metricLabel: { he: 'מבנה סיפורי', en: 'Story arc shipped' },
+    metricLabel: { he: 'זמן הגעת ליד', en: 'Lead delivery time' },
   },
   {
-    label: { he: 'תמונה → סרטון', en: 'Image → Video' },
-    title: { he: 'תנועה על התמונה שלכם', en: 'Motion on top of your photo' },
+    label: { he: 'שליטה מלאה', en: 'Full Control' },
+    title: { he: 'עריכה בזמן אמת', en: 'Real-time editing' },
     body: {
-      he: 'שלחו תמונה. פורלי שואלת "איזו תנועה?" — והתשובה שלכם הופכת לסרטון 3 שוטים שמעוגן בתמונה.',
-      en: 'Send the image. Forly asks "איזו תנועה?" — your reply becomes a 3-shot video anchored on your photo.',
+      he: 'המחיר ירד? התמונות התעדכנו? היכנסו לאזור הניהול, שנו את הפרטים בטופס פשוט, והדף מתעדכן באותו רגע.',
+      en: 'Price dropped? New photos? Log into the dashboard, change the details in a simple form, and the page updates instantly.',
     },
     metric: 90,
-    metricLabel: { he: 'זמן יצירת תנועה', en: 'Motion turnaround' },
+    metricLabel: { he: 'זמן עדכון באוויר', en: 'Live update time' },
   },
   {
-    label: { he: 'מערכת סגנונות', en: 'Tone system' },
-    title: { he: '8 שפות ויזואליות', en: '8 visual DNAs' },
+    label: { he: 'קופירייטינג AI', en: 'AI Copywriting' },
+    title: { he: 'טקסטים שמוכרים', en: 'Text that sells' },
     body: {
-      he: 'יוקרתי · משעשע · קולנועי · אנרגטי · אינטימי · דוקומנטרי · חולמני · נועז. בחרו ברירת מחדל, או החליפו בכל הודעה בעברית.',
-      en: 'Luxurious · playful · cinematic · energetic · intimate · documentary · dreamy · bold. Pick one in your default, or override per message in Hebrew.',
+      he: 'ה-AI שלנו כותב את כותרות הגיבור, הטקסט השיווקי, ונקודות העניין של השכונה עבור כל נכס שלכם באופן אוטומטי.',
+      en: 'Our AI automatically writes the hero headlines, marketing copy, and neighborhood highlights for every listing you upload.',
     },
     metric: 100,
-    metricLabel: { he: 'סגנונות זמינים', en: 'Tones supported' },
+    metricLabel: { he: 'יצירת טקסט שיווקי', en: 'Marketing copy generation' },
   },
   {
-    label: { he: 'ישראל קודם כל', en: 'Israeli first' },
-    title: { he: 'ים-תיכוני בברירת מחדל', en: 'Mediterranean by default' },
+    label: { he: 'מעקב תוקף', en: 'Expiry tracking' },
+    title: { he: 'התראות חכמות', en: 'Smart alerts' },
     body: {
-      he: 'כל דמות שנוצרת מקבלת מאפיינים ים-תיכוניים ומזרח-תיכוניים — בנוי לעסקים ישראליים, לא הוצמד אחרי.',
-      en: 'Every generated character has Middle Eastern and Mediterranean features by default — built for Israeli businesses, not retrofitted.',
+      he: 'דפי נכס פעילים ל-30 יום. פורלי שולחת לכם תזכורת 5 ימים לפני הסיום, עם כפתור אחד להארכה בחינם.',
+      en: 'Pages are live for 30 days. Forly sends you a reminder 5 days before expiry, with a one-tap free extension link.',
     },
     metric: 100,
-    metricLabel: { he: 'בנוי לישראל', en: 'Built for Israel' },
+    metricLabel: { he: 'הארכה בחינם', en: 'Free extension' },
   },
 ];
 
@@ -183,9 +183,9 @@ const stats: {
   he: string;
   en: string;
 }[] = [
-  { value: 6, suffix: '', accent: 'pink', icon: 'spark', he: 'יכולות פעילות', en: 'Capabilities shipping' },
-  { value: 8, suffix: '', accent: 'violet', icon: 'palette', he: 'סגנונות ויזואליים', en: 'Visual tones' },
-  { value: 10, suffix: ' s', accent: 'amber', icon: 'clock', he: 'זמן יצירת תמונה', en: 'Image turnaround' },
+  { value: 6, suffix: '', accent: 'pink', icon: 'spark', he: 'יכולות נדל״ן', en: 'Real estate tools' },
+  { value: 2, suffix: ' m', accent: 'violet', icon: 'clock', he: 'דף נכס באוויר', en: 'Page live in' },
+  { value: 30, suffix: ' d', accent: 'amber', icon: 'clock', he: 'תוקף דף נכס', en: 'Page lifespan' },
   { value: 100, suffix: '%', accent: 'sage', icon: 'globe', he: 'עברית נייטיב', en: 'Hebrew native' },
 ];
 ---
@@ -201,12 +201,12 @@ const stats: {
     <header class="features-head" data-reveal-stagger>
       <p class="eyebrow" data-reveal><T he="מה פורלי יוצרת" en="What Forly makes" /></p>
       <h2 class="features-title" data-reveal>
-        <span class="l-he">סטודיו <span class="grad">יצירתי</span><br />שחי בצ׳אט שלכם.</span>
-        <span class="l-en">A <span class="grad">creative studio</span><br />that lives in your chat.</span>
+        <span class="l-he">מנהל שיווק <span class="grad">לסוכנים</span><br />שחי בצ׳אט שלכם.</span>
+        <span class="l-en">A <span class="grad">marketing manager</span><br />that lives in your chat.</span>
       </h2>
       <p class="features-sub" data-reveal>
-        <span class="l-he">שש יכולות, רחוקות הודעה אחת בעברית — נוצרות על ידי פורלי, מוחזרות ישר לוואטסאפ.</span>
-        <span class="l-en">Six capabilities, one Hebrew message away — generated by Forly, delivered straight back into WhatsApp.</span>
+        <span class="l-he">שש יכולות ליצירת דפי נכס, סיורי וידאו, וקופירייטינג שיווקי — הכל מנוהל מהוואטסאפ שלכם.</span>
+        <span class="l-en">Six capabilities for creating property pages, video tours, and marketing copy — all managed from your WhatsApp.</span>
       </p>
     </header>
 
@@ -236,10 +236,10 @@ const stats: {
     <!-- Letter-by-letter scramble quote — each language gets its own scramble target. -->
     <blockquote class="scramble" data-scramble-block>
       <p class="scramble-text">
-        <span class="l-he" data-scramble>הכל במקום אחד </span>
-        <span class="l-en" data-scramble>No app. No dashboard. No design tools. Just WhatsApp.</span>
+        <span class="l-he" data-scramble>בלי סוכנויות. בלי מעצבים. הכל בוואטסאפ.</span>
+        <span class="l-en" data-scramble>No agencies. No designers. Just WhatsApp.</span>
       </p>
-      <cite><T he="— התזה של פורלי v2" en="— The Forly v2 thesis" /></cite>
+      <cite><T he="— התזה של פורלי לנדל״ן" en="— The Forly Real Estate thesis" /></cite>
     </blockquote>
 
     <!-- Counter strip — four accent-coded cards. Each stat owns a color,
