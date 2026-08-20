@@ -227,14 +227,26 @@ const stats: {
       ))}
     </div>
 
-    <!-- Letter-by-letter scramble quote — each language gets its own scramble target. -->
-    <blockquote class="scramble" data-scramble-block>
-      <p class="scramble-text">
-        <span class="l-he" data-scramble>בלי סוכנויות. בלי מעצבים. פלטפורמה אחת.</span>
-        <span class="l-en" data-scramble>No agencies. No designers. Just one platform.</span>
-      </p>
-      <cite><T he="— התזה של פורלי לנדל״ן" en="— The Forly Real Estate thesis" /></cite>
-    </blockquote>
+    <!-- Platform Thesis Section -->
+    <div class="thesis-section" data-reveal-stagger>
+      <div class="thesis-content">
+        <p class="eyebrow" data-reveal><T he="התזה שלנו" en="Our Thesis" /></p>
+        <h2 class="thesis-title" data-reveal>
+          <span class="l-he">סוכני נדל״ן צריכים <span class="grad">למכור</span>, לא לעצב.</span>
+          <span class="l-en">Real estate agents should <span class="grad">sell</span>, not design.</span>
+        </h2>
+        <div class="thesis-body" data-reveal>
+          <p>
+            <span class="l-he">הבנו שסוכני נדל״ן מבזבזים שעות יקרות על עריכת תמונות, כתיבת טקסטים, ובניית דפי נחיתה במקום להתמקד במה שהם עושים הכי טוב — לסגור עסקאות.</span>
+            <span class="l-en">We realized real estate agents spend precious hours editing photos, writing copy, and building landing pages instead of focusing on what they do best — closing deals.</span>
+          </p>
+          <p>
+            <span class="l-he">פורלי נבנתה מתוך ההבנה הזו. פלטפורמה אחת שמרכזת את כל כלי השיווק שסוכן צריך, עם אפס עקומת למידה. מהרגע שהזנתם את פרטי הנכס, המערכת שלנו לוקחת פיקוד ומייצרת נוכחות דיגיטלית מלאה שמביאה לידים אמיתיים.</span>
+            <span class="l-en">Forly was built on this understanding. A single platform that centralizes all the marketing tools an agent needs, with zero learning curve. From the moment you enter property details, our system takes over and generates a full digital presence that drives real leads.</span>
+          </p>
+        </div>
+      </div>
+    </div>
 
   </div>
 </section>
@@ -422,30 +434,41 @@ const stats: {
     box-shadow: 0 0 10px rgba(201, 164, 100, 0.45);
   }
 
-  .scramble {
-    margin: 140px auto 120px;
-    max-width: 920px;
+  .thesis-section {
+    margin: 140px auto 100px;
+    max-width: 800px;
     text-align: center;
-    display: grid;
-    gap: 18px;
+    padding: 64px 40px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 24px 48px rgba(26, 18, 32, 0.03);
+    backdrop-filter: blur(20px);
   }
-  .scramble-text {
+  .thesis-title {
     font-family: var(--font-display);
-    font-size: clamp(28px, 4.4vw, 56px);
+    font-size: clamp(32px, 4vw, 48px);
     font-weight: 700;
     line-height: 1.1;
     letter-spacing: -0.02em;
     color: var(--ink);
+    margin: 16px 0 32px;
   }
-  .scramble-text .ch { display: inline-block; }
-  .scramble-text .ch.live { color: var(--forli-pink); }
-  .scramble cite {
-    font-style: normal;
+  .thesis-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     color: var(--ink-soft);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
+    font-size: 17px;
+    line-height: 1.6;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  @media (max-width: 640px) {
+    .thesis-section {
+      padding: 40px 24px;
+      margin: 100px auto 80px;
+    }
   }
 
   .organic-marketing {
@@ -585,44 +608,7 @@ const stats: {
     });
   }
 
-  // Letter-by-letter scramble reveal — applied independently to each language.
-  const chars = '!<>-_\\/[]{}—=+*^?#________';
-  document.querySelectorAll<HTMLElement>('[data-scramble]').forEach((scrambleEl) => {
-    const original = scrambleEl.textContent ?? '';
-    scrambleEl.innerHTML = original
-      .split('')
-      .map((c) => `<span class="ch" data-c="${c.replace(/"/g, '&quot;')}">${c === ' ' ? '&nbsp;' : c}</span>`)
-      .join('');
-    const spans = scrambleEl.querySelectorAll<HTMLElement>('.ch');
 
-    ScrollTrigger.create({
-      trigger: scrambleEl,
-      start: 'top 75%',
-      once: true,
-      onEnter: () => {
-        spans.forEach((span, i) => {
-          const finalChar = span.dataset.c ?? '';
-          if (finalChar === ' ') return;
-          let frame = 0;
-          const totalFrames = 14 + Math.floor(Math.random() * 8);
-          const start = i * 22;
-          setTimeout(() => {
-            span.classList.add('live');
-            const id = setInterval(() => {
-              frame++;
-              if (frame >= totalFrames) {
-                span.textContent = finalChar;
-                span.classList.remove('live');
-                clearInterval(id);
-              } else {
-                span.textContent = chars[Math.floor(Math.random() * chars.length)];
-              }
-            }, 28);
-          }, start);
-        });
-      },
-    });
-  });
 
 
 </script>
