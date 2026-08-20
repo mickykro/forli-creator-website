@@ -5,6 +5,8 @@
 import type { APIRoute } from 'astro';
 import { getSupabaseServer } from '../../../../lib/supabase';
 
+export const prerender = false;
+
 export const GET: APIRoute = async ({ params }) => {
   const userId = params.id;
 

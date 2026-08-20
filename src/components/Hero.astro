@@ -986,110 +986,14 @@ import WhatsAppMessage from './WhatsAppMessage.astro';
         );
     };
 
-    // Decode an image off-thread when supported, fall back to onload.
-    const decodeImage = (url: string): Promise<HTMLImageElement> =>
-      new Promise((resolve) => {
-        const img = new Image();
-        img.decoding = 'async';
-        img.src = url;
-        const done = () => resolve(img);
-        if ('decode' in img && typeof img.decode === 'function') {
-          img.decode().then(done).catch(done);
-        } else {
-          img.onload = done;
-          img.onerror = done;
-        }
-      });
-
-    // Decode N urls concurrently with a bounded queue.
-    const decodePool = async (
-      urls: string[],
-      indices: number[],
-      concurrency: number,
-      onProgress: (loaded: number) => void,
-    ) => {
-      let cursor = 0;
-      let loaded = 0;
-      const total = indices.length;
-      const worker = async () => {
-        while (cursor < total) {
-          const myCursor = cursor++;
-          const idx = indices[myCursor];
-          const img = await decodeImage(urls[idx]);
-          state.images[idx] = img;
-          loaded++;
-          onProgress(loaded);
-        }
-      };
-      await Promise.all(Array.from({ length: concurrency }, worker));
-    };
-
-    const setLoader = (loaded: number, total: number) => {
-      const pct = total > 0 ? Math.round((loaded / total) * 100) : 0;
-      if (loaderBar) loaderBar.style.transform = `scaleX(${loaded / Math.max(1, total)})`;
-      if (loaderPct) loaderPct.textContent = `${pct}%`;
-    };
-
+    // For video, we don't need frame loading logic
     const hideLoader = () => {
       if (!loader) return;
       loader.dataset.state = 'done';
     };
-
-    const loadFrames = async () => {
-      try {
-        const res = await fetch('/frames/manifest.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error('manifest missing');
-        const manifest = (await res.json()) as Manifest;
-        state.manifest = manifest;
-        if (frameTotal) frameTotal.textContent = String(manifest.count).padStart(4, '0');
-
-        const urls: string[] = [];
-        for (let i = 0; i < manifest.count; i++) {
-          const num = String(i + 1).padStart(manifest.pad, '0');
-          urls.push(`/frames/${manifest.prefix}${num}.${manifest.ext}`);
-        }
-
-        // Phase 1: decode the first frame so the canvas isn't a placeholder.
-        const first = await decodeImage(urls[0]);
-        state.images[0] = first;
-        drawAt(0);
-
-        // Phase 2: decode a head batch (~25% or 60 frames, whichever is smaller)
-        // before we let scroll start scrubbing — this prevents black flashes.
-        const headSize = Math.min(60, Math.max(12, Math.floor(manifest.count * 0.25)));
-        const headIndices: number[] = [];
-        for (let i = 1; i < headSize; i++) headIndices.push(i);
-        let loadedCount = 1;
-        setLoader(loadedCount, manifest.count);
-        await decodePool(urls, headIndices, 8, (n) => {
-          loadedCount = 1 + n;
-          setLoader(loadedCount, manifest.count);
-        });
-
-        // Phase 3: build the scroll timeline now that we have a usable head.
-        buildHeroTimeline(manifest.count);
-        ScrollTrigger.refresh();
-
-        // Phase 4: decode the rest in the background, lower concurrency.
-        const tailIndices: number[] = [];
-        for (let i = headSize; i < manifest.count; i++) tailIndices.push(i);
-        decodePool(urls, tailIndices, 6, (n) => {
-          loadedCount = headSize + n;
-          setLoader(loadedCount, manifest.count);
-          if (loadedCount >= manifest.count) hideLoader();
-        }).then(() => hideLoader());
-
-        // If head completed everything (small video), still hide the loader.
-        if (manifest.count <= headSize) hideLoader();
-      } catch (err) {
-        console.warn('[hero] no frames manifest yet — running with placeholder.', err);
-        if (frameTotal) frameTotal.textContent = '----';
-        hideLoader();
-        // Still build the timeline so scroll behavior is testable.
-        buildHeroTimeline(1);
-      }
-    };
-
-    loadFrames();
+    hideLoader();
+    // Build the timeline for scroll animations (copy, bubbles, etc)
+    buildHeroTimeline();
+    ScrollTrigger.refresh();
   }
 </script>
