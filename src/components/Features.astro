@@ -227,6 +227,44 @@ const stats: {
       ))}
     </div>
 
+    <!-- Template Gallery -->
+    <div class="template-gallery" data-reveal-stagger>
+      <header class="gallery-head" data-reveal>
+        <p class="eyebrow"><T he="דפי נכס" en="Property Pages" /></p>
+        <h2 class="gallery-title">
+          <span class="l-he">תבניות שהומרו ל<span class="grad">לידים</span></span>
+          <span class="l-en">Templates converted to <span class="grad">leads</span></span>
+        </h2>
+      </header>
+      
+      <div class="gallery-grid" data-reveal>
+        <div class="gallery-item blur-effect">
+          <img src="/media/properties/living-01.png" alt="Property living room" loading="lazy" />
+          <div class="item-overlay">
+            <span class="badge"><T he="דף נכס חי" en="Live Page" /></span>
+          </div>
+        </div>
+        <div class="gallery-item blur-effect">
+          <img src="/media/properties/kitchen-01.png" alt="Property kitchen" loading="lazy" />
+          <div class="item-overlay">
+            <span class="badge"><T he="דף נכס חי" en="Live Page" /></span>
+          </div>
+        </div>
+        <div class="gallery-item blur-effect">
+          <img src="/media/properties/exterior-01.png" alt="Property exterior" loading="lazy" />
+          <div class="item-overlay">
+            <span class="badge"><T he="דף נכס חי" en="Live Page" /></span>
+          </div>
+        </div>
+        <div class="gallery-item blur-effect">
+          <img src="/media/properties/bathroom-01.png" alt="Property bathroom" loading="lazy" />
+          <div class="item-overlay">
+            <span class="badge"><T he="דף נכס חי" en="Live Page" /></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Platform Thesis Section -->
     <div class="thesis-section" data-reveal-stagger>
       <div class="thesis-content">
@@ -267,6 +305,9 @@ const stats: {
 
     <div class="organic-grid">
       <div class="organic-card" data-card>
+        <div class="organic-img-wrap">
+          <img src="/media/properties/bedroom-01.png" alt="Property bedroom" loading="lazy" />
+        </div>
         <div class="organic-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
@@ -279,6 +320,9 @@ const stats: {
         </p>
       </div>
       <div class="organic-card" data-card>
+        <div class="organic-img-wrap">
+          <img src="/media/properties/living-02.png" alt="Property living room" loading="lazy" />
+        </div>
         <div class="organic-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -293,6 +337,9 @@ const stats: {
         </p>
       </div>
       <div class="organic-card" data-card>
+        <div class="organic-img-wrap">
+          <img src="/media/properties/office-01.png" alt="Property office" loading="lazy" />
+        </div>
         <div class="organic-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -434,6 +481,75 @@ const stats: {
     box-shadow: 0 0 10px rgba(201, 164, 100, 0.45);
   }
 
+  .template-gallery {
+    margin: 120px 0 140px;
+  }
+  .gallery-head {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .gallery-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3.5vw, 42px);
+    color: var(--ink);
+    margin-top: 12px;
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 0 20px;
+  }
+  .gallery-item {
+    position: relative;
+    aspect-ratio: 3/4;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(26, 18, 32, 0.08);
+  }
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+  .blur-effect img {
+    filter: blur(8px) brightness(0.9);
+  }
+  .gallery-item:hover img {
+    transform: scale(1.05);
+    filter: blur(0px) brightness(1);
+  }
+  .item-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(26, 18, 32, 0.2);
+    opacity: 1;
+    transition: opacity 0.4s ease;
+  }
+  .gallery-item:hover .item-overlay {
+    opacity: 0;
+  }
+  .item-overlay .badge {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--ink);
+    padding: 8px 16px;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  @media (max-width: 1024px) {
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .gallery-grid { grid-template-columns: 1fr; max-width: 320px; margin: 0 auto; }
+  }
+
   .thesis-section {
     margin: 140px auto 100px;
     max-width: 800px;
@@ -506,7 +622,7 @@ const stats: {
     background: var(--surface-soft);
     border: 1px solid var(--line);
     border-radius: var(--radius-md);
-    padding: 32px 24px;
+    padding: 20px 20px 32px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -518,6 +634,18 @@ const stats: {
     transform: translateY(-4px);
     box-shadow: 0 12px 32px rgba(26, 18, 32, 0.06);
     border-color: rgba(201, 164, 100, 0.4);
+  }
+  .organic-img-wrap {
+    width: 100%;
+    aspect-ratio: 4/3;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .organic-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .organic-icon {
     width: 56px;

@@ -4,7 +4,7 @@ import { WHATSAPP_HELLO_URL } from '../brand';
 ---
 <header class="phero" id="top">
   <div class="container phero-in">
-    <div>
+    <div class="hero-copy">
       <h1 class="hero-title">
         <span class="l-he">מנהל השיווק <em>לסוכני נדל״ן.</em></span>
         <span class="l-en">The AI marketing manager <em>for Real Estate.</em></span>
@@ -16,6 +16,23 @@ import { WHATSAPP_HELLO_URL } from '../brand';
       <div class="hero-actions">
         <a href="#cta" class="btn btn-pink"><T he="התחילו לייצר לידים עם פורלי" en="Start generating leads with Forly" /></a>
         <a href="#features" class="btn btn-ghost"><T he="ראו איך זה עובד ↓" en="See how it works ↓" /></a>
+      </div>
+    </div>
+    
+    <div class="hero-visual">
+      <div class="video-wrapper">
+        <video 
+          src="/media/forly-property-tour.mp4" 
+          autoplay 
+          loop 
+          muted 
+          playsinline
+          class="property-tour-video"
+        ></video>
+        <div class="video-badge">
+          <span class="dot"></span>
+          <T he="סיור וידאו AI באוויר" en="AI Video Tour Live" />
+        </div>
       </div>
     </div>
   </div>
@@ -33,11 +50,65 @@ import { WHATSAPP_HELLO_URL } from '../brand';
     margin-top: 0;
   }
   .phero-in {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 48px;
+  }
+  .hero-copy {
+    max-width: 600px;
+  }
+  .hero-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+  .video-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    aspect-ratio: 9/16;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 32px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(230, 207, 159, 0.2);
+    transform: perspective(1000px) rotateY(-8deg) rotateX(4deg);
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .video-wrapper:hover {
+    transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.02);
+  }
+  .property-tour-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .video-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(20, 17, 12, 0.7);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 100px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 32px;
-    flex-wrap: wrap;
+    gap: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+  .video-badge .dot {
+    width: 6px;
+    height: 6px;
+    background: #e5484d;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
   }
   .hero-title {
     font-size: clamp(32px, 4.5vw, 56px);
@@ -87,10 +158,32 @@ import { WHATSAPP_HELLO_URL } from '../brand';
     color: rgba(244, 236, 223, 0.55);
     text-transform: uppercase;
   }
-  @media (max-width: 760px) {
+  @media (max-width: 900px) {
+    .phero-in {
+      grid-template-columns: 1fr;
+      text-align: center;
+      gap: 56px;
+    }
+    .hero-copy {
+      margin: 0 auto;
+    }
+    .phero-sub {
+      margin-inline: auto;
+    }
+    .hero-actions {
+      justify-content: center;
+    }
+    .video-wrapper {
+      transform: none;
+      max-width: 320px;
+    }
+    .video-wrapper:hover {
+      transform: scale(1.02);
+    }
+  }
+  @media (max-width: 600px) {
     .phero { padding: 100px 0 60px; }
-    .phero-stats { width: 100%; justify-content: center; }
-    .hero-actions { width: 100%; flex-direction: column; }
-    .hero-actions .btn { width: 100%; }
+    .hero-actions { flex-direction: column; width: 100%; }
+    .hero-actions .btn { width: 100%; justify-content: center; }
   }
 </style>
