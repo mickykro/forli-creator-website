@@ -14,8 +14,8 @@ interface Props {
 }
 
 const {
-  title = 'Forly — סטודיו תוכן AI בוואטסאפ | פורלי',
-  description = 'פורלי הופכת הודעות וואטסאפ בעברית לתמונות, סרטונים, קרוסלות ואתרים — נוצרים ונשלחים ישר חזרה לצ׳אט שלכם.',
+  title = 'Forly — מנהל שיווק AI לסוכני נדל״ן | פורלי',
+  description = 'פורלי מייצרת דפי נכס, סיורי וידאו וקופירייטינג שיווקי מתוך הוואטסאפ שלכם. כל ליד נשלח אליכם ישירות לנייד.',
   canonical,
   ogImage = `${SITE_URL}/og-image.png`,
   schema,
@@ -100,19 +100,19 @@ const schemas = schema
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700;900&family=Heebo:wght@400;500;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
     {bilingual && (
       <script is:inline>
         (function () {
           var TITLES = {
-            he: 'Forly — סטודיו תוכן AI בוואטסאפ | פורלי',
-            en: 'Forly — A WhatsApp-native AI content studio'
+            he: 'Forly — מנהל שיווק AI לסוכני נדל״ן | פורלי',
+            en: 'Forly — AI Marketing Manager for Real Estate Agents'
           };
           var DESCS = {
-            he: 'פורלי הופכת הודעות וואטסאפ בעברית לתמונות, סרטונים, קרוסלות ואתרים — נוצרים ונשלחים ישר חזרה לצ׳אט שלכם.',
-            en: 'Forly turns Hebrew WhatsApp messages into images, videos, carousels, and websites — generated and delivered straight back into your chat.'
+            he: 'פורלי מייצרת דפי נכס, סיורי וידאו וקופירייטינג שיווקי מתוך הוואטסאפ שלכם. כל ליד נשלח אליכם ישירות לנייד.',
+            en: 'Forly generates property pages, video tours, and marketing copy from your WhatsApp. Every lead is sent directly to your phone.'
           };
           try {
             var stored = localStorage.getItem('forly-lang');

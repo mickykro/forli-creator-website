@@ -1,6 +1,6 @@
 ---
 import T from './T.astro';
-import { BUSINESS, WHATSAPP_HELLO_URL, WHATSAPP_QUESTION_URL } from '../brand';
+import { BUSINESS, PLATFORM_SIGNUP_URL, WHATSAPP_QUESTION_URL } from '../brand';
 
 const year = new Date().getFullYear();
 ---
@@ -11,16 +11,16 @@ const year = new Date().getFullYear();
 
   <div class="container cta-inner">
     <h2 class="cta-title" data-cta-line>
-      <span class="l-he">מוכנים ליצור<br /><span class="grad">תוכן מהצ׳אט?</span></span>
-      <span class="l-en">Ready to make<br /><span class="grad">content from chat?</span></span>
+      <span class="l-he">מוכנים לשווק<br /><span class="grad">את הנכסים שלכם?</span></span>
+      <span class="l-en">Ready to market<br /><span class="grad">your properties?</span></span>
     </h2>
     <p class="cta-sub" data-cta-line>
-      <span class="l-he">שלוש שאלות להצטרפות. שלחו הודעה ראשונה בעברית וצפו בתמונה חוזרת תוך שניות. אנחנו איתכם בוואטסאפ לכל הדרך — מהפוסט הראשון ועד הסרטון הראשון.</span>
-      <span class="l-en">Three questions to onboard. Send your first Hebrew message and watch the image come back in seconds. We are on WhatsApp with you the whole way — from your first post to your first 3-shot video.</span>
+      <span class="l-he">הרשמה מהירה לפלטפורמה. הזינו את פרטי הנכס הראשון שלכם וקבלו דף נחיתה מוכן תוך דקות.</span>
+      <span class="l-en">Quick platform signup. Enter your first property details and get a ready landing page in minutes.</span>
     </p>
     <div class="cta-actions" data-cta-line>
-      <a href={WHATSAPP_HELLO_URL} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-        <T he="הצטרפו בוואטסאפ" en="Join the beta on WhatsApp" />
+      <a href={PLATFORM_SIGNUP_URL} target="_blank" rel="noopener noreferrer" class="btn btn-pink">
+        <T he="הצטרפו לפלטפורמה" en="Join the Platform" />
       </a>
       <a href={WHATSAPP_QUESTION_URL} target="_blank" rel="noopener noreferrer" class="btn btn-ghost">
         <T he="יש שאלה? כתבו לנו בוואטסאפ" en="Got a question? WhatsApp us" />
@@ -38,37 +38,26 @@ const year = new Date().getFullYear();
 
 <footer class="footer">
   <div class="container footer-inner">
-    <div class="footer-top">
-      <div class="brand">
-        <span class="brand-mark" aria-hidden="true"></span>
-        <span class="brand-name">FORLY · {BUSINESS.legalName}</span>
-      </div>
-      <nav class="footer-links" aria-label="Site links">
-        <a href="/faq"><T he="שאלות ותשובות" en="FAQ" /></a>
-        <a href="/terms"><T he="תקנון אתר" en="Terms" /></a>
-        <a href="/privacy"><T he="מדיניות פרטיות" en="Privacy" /></a>
-        <a href="/accessibility"><T he="הצהרת נגישות" en="Accessibility" /></a>
-      </nav>
-      <div class="footer-contact">
-        <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
-        <a href={`tel:${BUSINESS.phoneE164}`} dir="ltr">{BUSINESS.phone}</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>
-        <T he={`© ${year} פורלי · ${BUSINESS.legalName}. נעשה בתל אביב.`} en={`© ${year} Forly · ${BUSINESS.legalName}. Made in Tel Aviv.`} />
-      </p>
-    </div>
+    <span class="brand-name">FORLY · {BUSINESS.legalName}</span>
+    <span class="footer-links">
+      <a href="/faq"><T he="שאלות ותשובות" en="FAQ" /></a> ·
+      <a href="/terms"><T he="תקנון אתר" en="Terms" /></a> ·
+      <a href="/privacy"><T he="מדיניות פרטיות" en="Privacy" /></a> ·
+      <a href="/accessibility"><T he="הצהרת נגישות" en="Accessibility" /></a>
+    </span>
+    <span class="footer-copy">
+      <T he={`© ${year} פורלי · ${BUSINESS.legalName}. נעשה בתל אביב.`} en={`© ${year} Forly · ${BUSINESS.legalName}. Made in Tel Aviv.`} />
+    </span>
   </div>
 </footer>
 
 <style>
   .cta {
     position: relative;
-    padding: 200px 0 180px;
+    padding: 140px 0 120px;
     overflow: hidden;
-    background:
-      linear-gradient(180deg, var(--surface), rgba(244, 163, 191, 0.10) 50%, var(--surface));
+    background: var(--aubergine-deep);
+    color: var(--rose-bg);
     isolation: isolate;
   }
   .ambient {
@@ -76,8 +65,8 @@ const year = new Date().getFullYear();
     inset: -10%;
     z-index: -1;
     background:
-      radial-gradient(50% 50% at 50% 50%, rgba(219, 107, 151, 0.18), transparent 60%),
-      radial-gradient(40% 40% at 70% 30%, rgba(127, 168, 155, 0.10), transparent 60%);
+      radial-gradient(50% 50% at 50% 50%, rgba(201, 164, 100, 0.15), transparent 60%),
+      radial-gradient(40% 40% at 70% 30%, rgba(201, 164, 100, 0.08), transparent 60%);
     filter: blur(60px);
     opacity: 0.95;
   }
@@ -120,20 +109,16 @@ const year = new Date().getFullYear();
   }
   .cta-title {
     font-size: clamp(40px, 6vw, 84px);
-    font-weight: 900;
-    color: var(--ink);
+    font-weight: 700;
+    color: var(--rose-bg);
     letter-spacing: -0.03em;
     line-height: 1;
-    text-shadow: 0 0 60px rgba(219, 107, 151, 0.18);
   }
   .grad {
-    background: linear-gradient(110deg, var(--forli-pink-soft) 0%, var(--forli-pink) 50%, var(--forli-pink-deep) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--forli-pink);
   }
   .cta-sub {
-    color: var(--ink-soft);
+    color: rgba(244, 236, 223, 0.78);
     font-size: clamp(15px, 1.4vw, 18px);
     line-height: 1.55;
     max-width: 600px;
@@ -151,11 +136,11 @@ const year = new Date().getFullYear();
     justify-content: center;
     gap: 18px;
     margin-top: 18px;
-    color: var(--ink-soft);
+    color: rgba(244, 236, 223, 0.78);
     font-size: 14px;
   }
   .cta-contact a { transition: color 0.2s ease; }
-  .cta-contact a:hover { color: var(--forli-pink-deep); }
+  .cta-contact a:hover { color: var(--forli-pink); }
 
   .cta-foot {
     margin-top: 24px;
@@ -163,51 +148,39 @@ const year = new Date().getFullYear();
     font-size: 11px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: rgba(26, 18, 32, 0.45);
+    color: rgba(244, 236, 223, 0.45);
   }
 
   .footer {
-    border-top: 1px solid var(--line);
-    padding: 32px 0 28px;
-    background: var(--surface-soft);
-    color: var(--ink-soft);
-    font-size: 13px;
+    border-top: 1px solid rgba(230, 207, 159, 0.1);
+    padding: 24px 0;
+    background: var(--aubergine);
+    color: rgba(244, 236, 223, 0.5);
+    font-size: 12px;
   }
-  .footer-inner { display: grid; gap: 18px; }
-  .footer-top {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+  .footer-inner {
+    display: flex;
     align-items: center;
-    gap: 18px 32px;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .brand-name {
+    font-family: var(--font-display);
+    letter-spacing: 0.14em;
+    color: var(--rose-bg);
   }
   .footer-links {
     display: flex;
+    gap: 8px;
     flex-wrap: wrap;
-    gap: 18px;
-    justify-content: center;
   }
   .footer-links a { transition: color 0.2s ease; }
-  .footer-links a:hover { color: var(--forli-pink-deep); }
-  .footer-contact {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    text-align: end;
+  .footer-links a:hover { color: var(--rose-bg); }
+  
+  @media (max-width: 760px) {
+    .footer-inner { flex-direction: column; text-align: center; gap: 12px; }
   }
-  .footer-contact a:hover { color: var(--forli-pink-deep); }
-  .footer-bottom {
-    border-top: 1px solid var(--line);
-    padding-top: 14px;
-    text-align: center;
-    font-size: 12px;
-  }
-  @media (max-width: 720px) {
-    .footer-top { grid-template-columns: 1fr; text-align: center; }
-    .footer-contact { text-align: center; }
-    .footer-links { justify-content: center; }
-  }
-  .brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 900; letter-spacing: 0.16em; font-size: 13px; color: var(--ink); }
-  .brand-mark { width: 22px; height: 22px; border-radius: 7px; background: radial-gradient(circle at 30% 30%, var(--forli-pink-soft), var(--forli-pink) 60%, var(--forli-pink-deep)); box-shadow: var(--glow-pink); }
 </style>
 
 <script>
