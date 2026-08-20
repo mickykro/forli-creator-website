@@ -238,7 +238,8 @@ const stats: {
       </header>
       
       <div class="gallery-grid" data-reveal>
-        <div class="gallery-item html-mockup">
+        <!-- Template 1: Classic Dark Hero -->
+        <div class="gallery-item html-mockup tpl-classic">
           <div class="mockup-content blur-effect">
             <div class="mockup-hero" style="background-image: url('/media/properties/living-01.png')">
               <div class="mockup-hero-overlay"></div>
@@ -268,29 +269,23 @@ const stats: {
           </div>
         </div>
 
-        <div class="gallery-item html-mockup">
+        <!-- Template 2: Minimal Split (Image top, text below) -->
+        <div class="gallery-item html-mockup tpl-minimal">
           <div class="mockup-content blur-effect">
-            <div class="mockup-hero" style="background-image: url('/media/properties/exterior-01.png')">
-              <div class="mockup-hero-overlay"></div>
-              <div class="mockup-hero-content">
-                <div class="mockup-eyebrow">רמת השרון</div>
-                <div class="mockup-title">בית פרטי<br/>מעוצב אדריכלית</div>
-              </div>
+            <div class="mockup-hero-split" style="background-image: url('/media/properties/exterior-01.png')"></div>
+            <div class="mockup-header-split">
+              <div class="mockup-title">בית פרטי<br/>מעוצב אדריכלית</div>
+              <div class="mockup-eyebrow">רמת השרון</div>
             </div>
-            <div class="mockup-specs">
-              <span>6 חדרים</span>
-              <span>250 מ״ר</span>
-              <span>חניה כפולה</span>
+            <div class="mockup-specs-chips">
+              <span class="chip">6 חד׳</span>
+              <span class="chip">250 מ״ר</span>
+              <span class="chip">חניה</span>
             </div>
             <div class="mockup-body">
               <div class="mockup-text-line"></div>
-              <div class="mockup-text-line"></div>
               <div class="mockup-text-line short"></div>
-              <div class="mockup-gallery">
-                <img src="/media/properties/living-02.png" alt="Living room" />
-                <img src="/media/properties/balcony-01.png" alt="Balcony" />
-              </div>
-              <div class="mockup-btn">לתיאום סיור</div>
+              <div class="mockup-btn-outline">קבעו פגישה</div>
             </div>
           </div>
           <div class="item-overlay">
@@ -298,29 +293,22 @@ const stats: {
           </div>
         </div>
 
-        <div class="gallery-item html-mockup">
+        <!-- Template 3: Editorial Card (Framed image, serif focus) -->
+        <div class="gallery-item html-mockup tpl-editorial">
           <div class="mockup-content blur-effect">
-            <div class="mockup-hero" style="background-image: url('/media/properties/bedroom-01.png')">
-              <div class="mockup-hero-overlay"></div>
-              <div class="mockup-hero-content">
-                <div class="mockup-eyebrow">לב העיר, תל אביב</div>
-                <div class="mockup-title">דירת 3 חדרים<br/>משופצת קומפלט</div>
-              </div>
-            </div>
-            <div class="mockup-specs">
-              <span>3 חדרים</span>
-              <span>85 מ״ר</span>
-              <span>מעלית</span>
+            <div class="mockup-frame">
+              <img src="/media/properties/bedroom-01.png" alt="Bedroom" />
             </div>
             <div class="mockup-body">
+              <div class="mockup-eyebrow">לב העיר, תל אביב</div>
+              <div class="mockup-title">דירת 3 חדרים<br/>משופצת קומפלט</div>
               <div class="mockup-text-line"></div>
               <div class="mockup-text-line"></div>
-              <div class="mockup-text-line short"></div>
-              <div class="mockup-gallery">
-                <img src="/media/properties/office-01.png" alt="Office" />
-                <img src="/media/properties/bedroom-02.png" alt="Bedroom" />
+              <div class="mockup-specs-grid">
+                <div><span>חדרים</span><b>3</b></div>
+                <div><span>מ״ר</span><b>85</b></div>
               </div>
-              <div class="mockup-btn">לתיאום סיור</div>
+              <div class="mockup-btn-solid">לתיאום סיור</div>
             </div>
           </div>
           <div class="item-overlay">
@@ -328,29 +316,18 @@ const stats: {
           </div>
         </div>
 
-        <div class="gallery-item html-mockup">
-          <div class="mockup-content blur-effect">
-            <div class="mockup-hero" style="background-image: url('/media/properties/bathroom-02.png')">
-              <div class="mockup-hero-overlay"></div>
-              <div class="mockup-hero-content">
-                <div class="mockup-eyebrow">הרצליה הירוקה</div>
-                <div class="mockup-title">פנטהאוז מרהיב<br/>עם מרפסת ענקית</div>
+        <!-- Template 4: Immersive (Full background with floating card) -->
+        <div class="gallery-item html-mockup tpl-immersive">
+          <div class="mockup-content blur-effect" style="background-image: url('/media/properties/bathroom-02.png')">
+            <div class="mockup-immersive-overlay"></div>
+            <div class="mockup-floating-card">
+              <div class="mockup-eyebrow">הרצליה הירוקה</div>
+              <div class="mockup-title">פנטהאוז מרהיב<br/>עם מרפסת ענקית</div>
+              <div class="mockup-specs">
+                <span>5 חד׳</span>
+                <span>160 מ״ר</span>
               </div>
-            </div>
-            <div class="mockup-specs">
-              <span>5 חדרים</span>
-              <span>160 מ״ר</span>
-              <span>מרפסת 80 מ״ר</span>
-            </div>
-            <div class="mockup-body">
-              <div class="mockup-text-line"></div>
-              <div class="mockup-text-line"></div>
-              <div class="mockup-text-line short"></div>
-              <div class="mockup-gallery">
-                <img src="/media/properties/living-01.png" alt="Living room" />
-                <img src="/media/properties/kitchen-01.png" alt="Kitchen" />
-              </div>
-              <div class="mockup-btn">לתיאום סיור</div>
+              <div class="mockup-btn">צור קשר</div>
             </div>
           </div>
           <div class="item-overlay">
@@ -699,6 +676,150 @@ const stats: {
     border-radius: 100px;
     font-size: 10px;
     font-weight: 600;
+  }
+
+  /* Template 2: Minimal Split */
+  .tpl-minimal {
+    background: #fff;
+  }
+  .mockup-hero-split {
+    height: 40%;
+    background-size: cover;
+    background-position: center;
+  }
+  .mockup-header-split {
+    padding: 16px 16px 8px;
+    text-align: right;
+  }
+  .mockup-header-split .mockup-title {
+    color: #1A1A1A;
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+  .mockup-header-split .mockup-eyebrow {
+    color: #888;
+  }
+  .mockup-specs-chips {
+    display: flex;
+    gap: 6px;
+    padding: 0 16px;
+  }
+  .mockup-specs-chips .chip {
+    background: #F0F0F0;
+    color: #444;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 9px;
+  }
+  .mockup-btn-outline {
+    margin-top: auto;
+    border: 1px solid #1A1A1A;
+    color: #1A1A1A;
+    text-align: center;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  /* Template 3: Editorial Card */
+  .tpl-editorial {
+    background: #FAFAFA;
+  }
+  .tpl-editorial .mockup-content {
+    padding: 12px;
+  }
+  .mockup-frame {
+    height: 45%;
+    padding: 4px;
+    background: #fff;
+    border: 1px solid #EAEAEA;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  }
+  .mockup-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .tpl-editorial .mockup-body {
+    padding: 16px 8px 8px;
+    background: transparent;
+    text-align: center;
+  }
+  .tpl-editorial .mockup-eyebrow {
+    color: #999;
+  }
+  .tpl-editorial .mockup-title {
+    color: #222;
+    font-family: var(--font-serif);
+    margin-bottom: 12px;
+  }
+  .mockup-specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+    border-top: 1px solid #EAEAEA;
+    padding-top: 12px;
+  }
+  .mockup-specs-grid div {
+    display: flex;
+    flex-direction: column;
+    font-size: 9px;
+    color: #666;
+  }
+  .mockup-specs-grid b {
+    font-size: 12px;
+    color: #222;
+  }
+  .mockup-btn-solid {
+    margin-top: 16px;
+    background: #222;
+    color: #fff;
+    text-align: center;
+    padding: 8px;
+    font-size: 10px;
+  }
+
+  /* Template 4: Immersive */
+  .tpl-immersive .mockup-content {
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    padding: 16px;
+    justify-content: flex-end;
+  }
+  .mockup-immersive-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 100%);
+  }
+  .mockup-floating-card {
+    position: relative;
+    z-index: 2;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 16px;
+    color: #fff;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .tpl-immersive .mockup-title {
+    color: #fff;
+  }
+  .tpl-immersive .mockup-specs {
+    background: transparent;
+    padding: 8px 0 0;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    margin-top: 4px;
+  }
+  .tpl-immersive .mockup-btn {
+    background: #fff;
+    color: #000;
   }
   .item-overlay {
     position: absolute;
