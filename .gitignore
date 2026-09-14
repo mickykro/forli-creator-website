@@ -23,10 +23,5 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-# Source videos are heavy and regenerated locally; frames are committed
-# so static deploys (Vercel) have them without re-running extract:frames.
-public/video/*
-!public/video/README.md
-.env
 .vercel
 .env*.local
