@@ -19,7 +19,8 @@ interface Props {
 const { id, nameHe, nameEn, creditsMonthly, priceMonthly, priceAnnual, launchPromo, isPopular, features } = Astro.props;
 
 const displayCredits = creditsMonthly / 100;
-const ctaUrl = `/checkout/login?product=subscription_${id}_monthly`;
+import { PLATFORM_SIGNUP_URL } from '../../brand';
+const ctaUrl = `${PLATFORM_SIGNUP_URL}?plan=${id}`;
 ---
 
 <article class:list={['pricing-card', { popular: isPopular, 'has-promo': !!launchPromo }]} data-pricing-card>
@@ -73,7 +74,7 @@ const ctaUrl = `/checkout/login?product=subscription_${id}_monthly`;
       ))}
     </ul>
 
-    <a href={ctaUrl} target="_blank" rel="noopener noreferrer" class:list={['btn', isPopular ? 'btn-primary' : 'btn-ghost']}>
+    <a href={ctaUrl} target="_blank" rel="noopener noreferrer" class:list={['btn', isPopular ? 'btn-pink' : 'btn-ghost']}>
       <T he="התחל עכשיו" en="Get started" />
     </a>
   </div>
@@ -97,8 +98,8 @@ const ctaUrl = `/checkout/login?product=subscription_${id}_monthly`;
   }
   .pricing-card.popular {
     border-color: var(--forli-pink);
-    box-shadow: 0 8px 32px rgba(219, 107, 151, 0.15);
-    background: linear-gradient(180deg, rgba(244, 163, 191, 0.06), var(--surface-soft) 40%);
+    box-shadow: 0 8px 32px rgba(201, 164, 100, 0.15);
+    background: linear-gradient(180deg, rgba(201, 164, 100, 0.06), var(--surface-soft) 40%);
   }
   .pricing-card.has-promo {
     border-color: rgba(127, 168, 155, 0.5);
@@ -135,7 +136,7 @@ const ctaUrl = `/checkout/login?product=subscription_${id}_monthly`;
   }
   .tier-name {
     font-size: 24px;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--ink);
     margin-bottom: 8px;
   }

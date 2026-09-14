@@ -1,0 +1,22 @@
+---
+/* One thin band — the listing grid must be visible in the first viewport.
+   Stat values carry ids so the portal client script can update them live. */
+interface Props {
+  listingCount: number | null;
+  agencyCount: number | null;
+}
+const { listingCount, agencyCount } = Astro.props;
+---
+<header class="phero">
+  <div class="container phero-in">
+    <div>
+      <h1>מוצאים בית. <em>רואים אותו קודם.</em></h1>
+      <p class="phero-sub">כל נכס עם סרטון סיור ונתוני שכונה — רק נכסים שבשוק עכשיו.</p>
+    </div>
+    <div class="phero-stats" aria-label="נתוני הקטלוג">
+      <div class="hstat"><b id="stat-listings">{listingCount ?? '—'}</b><span>נכסים בשוק</span></div>
+      <div class="hstat"><b id="stat-agencies">{agencyCount ?? '—'}</b><span>סוכנויות</span></div>
+      <div class="hstat"><b>100%</b><span>עם סרטון</span></div>
+    </div>
+  </div>
+</header>

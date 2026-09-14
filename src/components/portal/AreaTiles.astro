@@ -1,0 +1,21 @@
+---
+import type { AreaSummary } from '../../lib/portal';
+
+interface Props {
+  areas: AreaSummary[];
+}
+const { areas } = Astro.props;
+---
+{areas.length > 0 && (
+  <section class="areas container" aria-label="חיפוש לפי אזור">
+    <h2>מחפשים לפי אזור</h2>
+    <div class="areas-grid">
+      {areas.map((a) => (
+        <button class="area-tile" type="button" data-city={a.city}>
+          <b>{a.city}</b>
+          <span>{a.count === 1 ? 'נכס אחד בשוק' : `${a.count} נכסים בשוק`}</span>
+        </button>
+      ))}
+    </div>
+  </section>
+)}

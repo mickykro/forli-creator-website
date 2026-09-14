@@ -13,7 +13,8 @@ const { id, nameHe, nameEn, credits, price } = Astro.props;
 
 const displayCredits = credits / 100;
 const pricePerCredit = (price / displayCredits).toFixed(2);
-const ctaUrl = `/checkout/login?product=credit_pack_${id}`;
+import { PLATFORM_SIGNUP_URL } from '../../brand';
+const ctaUrl = `${PLATFORM_SIGNUP_URL}?pack=${id}`;
 ---
 
 <article class="credit-pack" data-credit-pack>
@@ -36,7 +37,7 @@ const ctaUrl = `/checkout/login?product=credit_pack_${id}`;
       <T he={`₪${pricePerCredit} לקרדיט`} en={`₪${pricePerCredit}/credit`} />
     </p>
     <a href={ctaUrl} target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">
-      <T he="רכישה בוואטסאפ" en="Buy via WhatsApp" />
+      <T he="רכישה במערכת" en="Buy via Platform" />
     </a>
   </div>
 </article>
@@ -54,7 +55,7 @@ const ctaUrl = `/checkout/login?product=credit_pack_${id}`;
   }
   .credit-pack:hover {
     transform: translateY(-2px);
-    border-color: rgba(219, 107, 151, 0.3);
+    border-color: rgba(201, 164, 100, 0.3);
     box-shadow: 0 8px 24px rgba(26, 18, 32, 0.06);
   }
 
@@ -94,7 +95,7 @@ const ctaUrl = `/checkout/login?product=credit_pack_${id}`;
   }
   .price {
     font-size: 32px;
-    font-weight: 900;
+    font-weight: 700;
     color: var(--ink);
   }
   .price-per-credit {

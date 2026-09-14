@@ -1,33 +1,50 @@
 /* Forly — design tokens & base styles */
-:root {
-  --forli-pink: #db6b97;
-  --forli-pink-soft: #f4a3bf;
-  --forli-pink-deep: #b94c79;
-  --aubergine: #2a1f33;
-  --aubergine-deep: #1a1220;
-  --rose-bg: #fbf5f8;
-  --cream: #f8e9dc;
-  --sage: #7fa89b;
-  --muted: #5a4f65;
-  --white: #ffffff;
-  /* Light theme surfaces & ink — warm rose-tinted off-white that matches
-     the animation's ambient background so the canvas blends seamlessly. */
-  --surface: #fbf5f8;
-  --surface-soft: #f3edf0;
-  --ink: #1a1220;
-  --ink-soft: #5a4f65;
-  --line: rgba(26, 18, 32, 0.08);
+@font-face {
+  font-family: 'Discovery FS';
+  src: url('/fonts/Discovery_Fs-Light.woff2') format('woff2'),
+       url('/fonts/Discovery_Fs-Light.woff') format('woff');
+  font-weight: 300 600;
+  font-style: normal;
+  font-display: swap;
+}
 
-  --glow-pink: 0 0 32px rgba(219, 107, 151, 0.55), 0 0 80px rgba(219, 107, 151, 0.25);
-  --glow-pink-strong: 0 0 24px rgba(219, 107, 151, 0.9), 0 0 56px rgba(219, 107, 151, 0.55), 0 0 120px rgba(219, 107, 151, 0.3);
+@font-face {
+  font-family: 'Discovery FS';
+  src: url('/fonts/Discovery_Fs-Bold.woff2') format('woff2'),
+       url('/fonts/Discovery_Fs-Bold.woff') format('woff');
+  font-weight: 700 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --forli-pink: #c9a464; /* champagne */
+  --forli-pink-soft: #e6cf9f; /* champagne-soft */
+  --forli-pink-deep: #a07a35; /* gold */
+  --aubergine: #211913; /* espresso-2 */
+  --aubergine-deep: #16110d; /* espresso */
+  --rose-bg: #f4ecdf; /* ground */
+  --cream: #f4ecdf;
+  --sage: #a07a35; /* mapped to gold for stats */
+  --muted: #6b5d4d;
+  --white: #ffffff;
+  
+  --surface: #fffdf6;
+  --surface-soft: #f4ecdf; /* ground */
+  --ink: #221a12; /* text */
+  --ink-soft: #6b5d4d; /* muted */
+  --line: rgba(34, 26, 18, 0.14);
+
+  --glow-pink: 0 0 32px rgba(201, 164, 100, 0.35), 0 0 80px rgba(201, 164, 100, 0.15);
+  --glow-pink-strong: 0 0 24px rgba(201, 164, 100, 0.6), 0 0 56px rgba(201, 164, 100, 0.3), 0 0 120px rgba(201, 164, 100, 0.15);
 
   --radius-sm: 12px;
-  --radius-md: 18px;
-  --radius-lg: 28px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
 
-  --font-display: 'Heebo', 'Inter', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-  --font-body: 'Inter', 'Heebo', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-display: 'Discovery FS', 'Noto Serif Hebrew', 'Times New Roman', serif;
+  --font-body: 'Discovery FS', 'Heebo', 'Assistant', -apple-system, 'Segoe UI', 'Arial Hebrew', Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 * {
@@ -48,17 +65,14 @@ html, body {
 }
 
 body {
-  background:
-    radial-gradient(1200px 800px at 80% -10%, rgba(219, 107, 151, 0.10), transparent 60%),
-    radial-gradient(1000px 700px at -10% 30%, rgba(127, 168, 155, 0.06), transparent 55%),
-    var(--surface);
+  background: var(--surface);
   min-height: 100vh;
 }
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   line-height: 1.05;
 }
 
@@ -100,29 +114,27 @@ img, canvas { display: block; max-width: 100%; }
   transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
-.btn-primary {
+.btn-pink {
   background: var(--forli-pink);
-  color: var(--white);
-  box-shadow: var(--glow-pink);
+  color: #fff;
+  box-shadow: 0 0 22px rgba(201, 164, 100, 0.32);
 }
 
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--glow-pink-strong);
+.btn-pink:hover {
   background: var(--forli-pink-deep);
+  transform: translateY(-2px);
 }
 
 .btn-ghost {
-  border: 1px solid var(--line);
-  background: rgba(26, 18, 32, 0.03);
-  color: var(--ink);
+  border: 1px solid rgba(230, 207, 159, 0.35);
+  background: rgba(230, 207, 159, 0.06);
+  color: #f4ecdf;
   backdrop-filter: blur(10px);
 }
 
 .btn-ghost:hover {
-  background: rgba(26, 18, 32, 0.06);
   border-color: var(--forli-pink);
-  color: var(--forli-pink-deep);
+  transform: translateY(-2px);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -12,58 +12,51 @@ import {
   CREDIT_PACKS,
   CREDIT_COSTS,
   TRIAL_CREDITS,
-  WHATSAPP_HELLO_URL,
+  PLATFORM_SIGNUP_URL,
 } from '../brand';
 
 const tierFeatures = {
   starter: [
-    { he: 'כל סוגי התוכן (תמונה, סרטון, קרוסלה)', en: 'All content types (image, video, carousel)' },
-    { he: 'זהות מותגית מותאמת אישית', en: 'Custom brand identity' },
-    { he: 'תמיכה בוואטסאפ', en: 'WhatsApp support' },
-    { he: 'קרדיטים לא עוברים לחודש הבא', en: 'Credits don\'t roll over' },
+    { he: 'דפי נכס ללא הגבלה', en: 'Unlimited property pages' },
+    { he: 'ניהול לידים מתקדם במערכת', en: 'Advanced lead management' },
+    { he: 'קופירייטינג שיווקי AI', en: 'AI marketing copywriting' },
+    { he: 'תמיכה בצ׳אט', en: 'Chat support' },
   ],
   growth: [
     { he: 'הכל ב-Starter, ועוד:', en: 'Everything in Starter, plus:' },
-    { he: '3X קרדיטים לחודש', en: '3X credits per month' },
-    { he: 'עדיפות בתור', en: 'Priority queue' },
-    { he: 'גישה מוקדמת לפיצ׳רים חדשים', en: 'Early access to new features' },
+    { he: '3X קרדיטים לסיורי וידאו', en: '3X credits for video tours' },
+    { he: 'חיבור דומיין אישי', en: 'Custom domain connection' },
+    { he: 'תזכורות אוטומטיות לחידוש', en: 'Auto-renewal reminders' },
   ],
   pro: [
     { he: 'הכל ב-Growth, ועוד:', en: 'Everything in Growth, plus:' },
-    { he: '8X קרדיטים לחודש', en: '8X credits per month' },
-    { he: 'מנהל חשבון ייעודי', en: 'Dedicated account manager' },
-    { he: 'SLA זמן תגובה', en: 'Response time SLA' },
+    { he: '8X קרדיטים לסיורי וידאו', en: '8X credits for video tours' },
+    { he: 'מנהל לקוח אישי', en: 'Dedicated account manager' },
+    { he: 'SLA לזמן תגובה', en: 'Response time SLA' },
   ],
 };
 
 const creditExamples = [
   {
-    iconHe: 'תמונה',
-    iconEn: 'Image',
+    iconHe: 'דף נכס',
+    iconEn: 'Page',
     credits: CREDIT_COSTS.standard_image / 100,
-    descHe: 'תמונה מעוצבת',
-    descEn: 'Styled image',
+    descHe: 'הקמת דף נכס',
+    descEn: 'Property page creation',
   },
   {
-    iconHe: 'קרוסלה',
-    iconEn: 'Carousel',
+    iconHe: 'קופירייטינג',
+    iconEn: 'Copy',
     credits: CREDIT_COSTS.carousel / 100,
-    descHe: 'קרוסלה לאינסטגרם',
-    descEn: 'Instagram carousel',
+    descHe: 'כתיבת טקסט שיווקי',
+    descEn: 'Marketing copy generation',
   },
   {
-    iconHe: 'סרטון',
+    iconHe: 'וידאו',
     iconEn: 'Video',
     credits: CREDIT_COSTS.standard_video / 100,
-    descHe: 'סרטון קצר',
-    descEn: 'Short video',
-  },
-  {
-    iconHe: 'ייעוץ',
-    iconEn: 'Consult',
-    credits: CREDIT_COSTS.text_consultation / 100,
-    descHe: 'ייעוץ תוכן',
-    descEn: 'Content consultation',
+    descHe: 'סיור וידאו אוטומטי',
+    descEn: 'Auto video tour',
   },
 ];
 
@@ -98,10 +91,10 @@ const pricingSchema = {
           <span class="l-en">Simple pricing.<br /><span class="grad">No surprises.</span></span>
         </h1>
         <p class="hero-sub">
-          <span class="l-he">נסו את פורלי עם <strong>{displayTrialCredits} קרדיטים בחינם</strong> — בלי כרטיס אשראי. שדרגו כשתרצו.</span>
-          <span class="l-en">Try Forly with <strong>{displayTrialCredits} free credits</strong> — no credit card required. Upgrade when ready.</span>
+          <span class="l-he">נסו את פלטפורמת פורלי עם <strong>{displayTrialCredits} קרדיטים בחינם</strong> — בלי כרטיס אשראי. שדרגו כשתרצו.</span>
+          <span class="l-en">Try the Forly platform with <strong>{displayTrialCredits} free credits</strong> — no credit card required. Upgrade when ready.</span>
         </p>
-        <a href={WHATSAPP_HELLO_URL} target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">
+        <a href={PLATFORM_SIGNUP_URL} target="_blank" rel="noopener noreferrer" class="btn btn-pink btn-lg">
           <T he="התחילו עכשיו בחינם" en="Start free now" />
         </a>
       </div>
@@ -192,14 +185,14 @@ const pricingSchema = {
     padding: 80px 0 60px;
     text-align: center;
     background:
-      radial-gradient(50% 50% at 50% 100%, rgba(219, 107, 151, 0.12), transparent),
+      radial-gradient(50% 50% at 50% 100%, rgba(201, 164, 100, 0.12), transparent),
       var(--surface);
   }
   .hero-badge {
     display: inline-block;
     padding: 8px 16px;
-    background: rgba(127, 168, 155, 0.15);
-    border: 1px solid rgba(127, 168, 155, 0.3);
+    background: rgba(201, 164, 100, 0.15);
+    border: 1px solid rgba(201, 164, 100, 0.3);
     border-radius: 999px;
     font-family: var(--font-mono);
     font-size: 11px;
@@ -211,17 +204,14 @@ const pricingSchema = {
   }
   .hero-title {
     font-size: clamp(36px, 5vw, 64px);
-    font-weight: 900;
+    font-weight: 700;
     color: var(--ink);
     letter-spacing: -0.03em;
     line-height: 1.1;
     margin-bottom: 20px;
   }
   .grad {
-    background: linear-gradient(110deg, var(--forli-pink-soft) 0%, var(--forli-pink) 50%, var(--forli-pink-deep) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--forli-pink);
   }
   .hero-sub {
     font-size: clamp(15px, 1.4vw, 18px);
@@ -291,7 +281,7 @@ const pricingSchema = {
   }
   .section-header h2 {
     font-size: clamp(28px, 4vw, 40px);
-    font-weight: 800;
+    font-weight: 700;
     color: var(--ink);
     margin-bottom: 12px;
   }

@@ -1,1095 +1,189 @@
 ---
-// Hero — pinned canvas with GSAP ScrollTrigger frame scrubbing.
-// Frames live in /public/frames/ and are produced by `npm run extract:frames`.
-// The script reads /frames/manifest.json at runtime to know how many frames exist.
 import T from './T.astro';
-import WhatsAppInput from './WhatsAppInput.astro';
-import WhatsAppMessage from './WhatsAppMessage.astro';
+import { WHATSAPP_HELLO_URL } from '../brand';
 ---
-<section class="hero" id="top" data-hero>
-  <div class="hero-pin" data-hero-pin>
-    <!-- Horizontal halo: a circular pink gradient masked to its horizontal axis only -->
-    <div class="hero-halo" aria-hidden="true"></div>
-    <canvas class="hero-canvas" data-hero-canvas aria-hidden="true"></canvas>
-
-    <!-- Ambient pink wash that rides on top of the canvas -->
-    <div class="hero-glow" aria-hidden="true"></div>
-    <div class="hero-vignette" aria-hidden="true"></div>
-
-    
-    <!-- Live frame counter — script writes [data-frame-num] / [data-frame-total]
-         on every scrub tick (frameNum at line ~775, frameTotal at line ~881). -->
-      <!-- <div class="tech tech-tr frame-hud" aria-hidden="true">
-        <span class="tech-dot"></span>
-        <span class="frame-hud-label"><T he="פריים" en="FRAME" /></span>
-        <span class="frame-hud-num" data-frame-num>0001</span>
-        <span class="frame-hud-sep">/</span>
-        <span class="frame-hud-total" data-frame-total>----</span>
-      </div> -->
-    <div class="tech tech-bl">
-      <span><T he="גלילה ↓" en="SCROLL ↓" /></span>
-    </div>
-    <div class="tech tech-br">
-      <span><T he="וואטסאפ נייטיב · 24/7" en="WHATSAPP NATIVE · 24/7" /></span>
-    </div>
-
-    <!-- Hero copy: title above the canvas, text below it -->
-    <div class="hero-top">
-      <h1 class="hero-title" data-hero-line>
-        <span class="line line-1" data-hero-title-line><T he="כתבו לפורלי." en="Message Forly." /></span>
-        <span class="line line-2" data-hero-title-line><T he="קבלו תוכן." en="Get content." /></span>
-        <span class="line line-3" data-hero-title-line><T he="בוואטסאפ." en="In WhatsApp." /></span>
+<header class="phero" id="top">
+  <div class="container phero-in">
+    <div class="hero-copy">
+      <h1 class="hero-title">
+        <span class="l-he">מנהל השיווק <em>לסוכני נדל״ן.</em></span>
+        <span class="l-en">The AI marketing manager <em>for Real Estate.</em></span>
       </h1>
-    </div>
-    <div class="hero-bottom">
-      <p class="hero-sub" data-hero-line>
-        <span class="l-he">שלחו הודעה בעברית. מקבלים תמונה, סרטון, קרוסלה או אתר — ישר בצ׳אט. בלי אפליקציה. בלי דשבורד.</span>
-        <span class="l-en">Send a Hebrew message. Get back the image, video, carousel, or website — right in your chat. No app. No dashboard.</span>
+      <p class="phero-sub">
+        <span class="l-he">פלטפורמה חכמה לסוכנים: מזינים פרטי נכס ומקבלים דף נחיתה, סיור וידאו, צ׳אטבוט בזמן אמת וקופירייטינג שיווקי — הכל מוכן בדקות.</span>
+        <span class="l-en">Smart platform for agents: enter property details and get a landing page, video tour, realtime chatbot, and marketing copy — all ready in minutes.</span>
       </p>
-      <div class="hero-actions" data-hero-line>
-        <a href="#cta" class="btn btn-primary"><T he="התחילו ליצור תוכן עם פורלי" en="Join the private beta" /></a>
-        <a href="#features" class="btn btn-ghost"><T he="ראו מה היא יוצרת ↓" en="See what it makes ↓" /></a>
+      <div class="hero-actions">
+        <a href="#cta" class="btn btn-pink"><T he="התחילו לייצר לידים עם פורלי" en="Start generating leads with Forly" /></a>
+        <a href="#features" class="btn btn-ghost"><T he="ראו איך זה עובד ↓" en="See how it works ↓" /></a>
       </div>
     </div>
-
-    <!-- Mid-scroll tagline that fades over the frames -->
-    <div class="hero-mid" data-hero-mid aria-hidden="true">
-      <p class="eyebrow"><T he="בלי אפליקציה. בלי דשבורד." en="No app. No dashboard." /></p>
-      <h2 class="mid-title">
-        <span class="l-he">רק הודעה בעברית.<br/>פורלי עושה את השאר.</span>
-        <span class="l-en">Just a Hebrew message.<br/>Forly does the rest.</span>
-      </h2>
-    </div>
-
-    <!-- WhatsApp input bubble — visible during frames 21-41 (above the animation) -->
-    <div class="hero-msg" data-hero-msg aria-hidden="true">
-      <WhatsAppInput
-        he="תעשי לי פוסט להחלקת קרטין שאני מציעה השבוע, סטייל קליל וקיצי"
-        en="Make me a post for the keratin straightening I'm offering this week, light summery style"
-      />
-    </div>
-
-    <!-- WhatsApp confirmation message (incoming chat bubble) — frame 81 to the end -->
-    <div class="hero-msg-out" data-hero-msg-out aria-hidden="true">
-      <WhatsAppMessage
-        he="הפוסט שלך מוכן ✨"
-        en="Your post is ready ✨"
-        time="14:03"
-        variant="incoming"
-      />
-    </div>
-
-    <!-- Persistent side rails — what the user sends, what Forly returns -->
-    <aside class="side side-left" data-side-left aria-hidden="true">
-      <p class="eyebrow"><T he="אתם כותבים" en="You write" /></p>
-      <div class="bubble bubble-in">
-        <span class="bubble-meta">14:02 · <T he="וואטסאפ" en="WhatsApp" /></span>
-        <p class="bubble-text" dir="rtl">תעשי לי פוסט להחלקת קרטין שאני מציעה השבוע, סטייל קליל וקיצי 💇‍♀️</p>
+    
+    <div class="hero-visual">
+      <div class="video-wrapper">
+        <video 
+          src="/media/forly-property-tour.mp4" 
+          autoplay 
+          loop 
+          muted 
+          playsinline
+          class="property-tour-video"
+        ></video>
+        <div class="video-badge">
+          <span class="dot"></span>
+          <T he="סיור וידאו AI באוויר" en="AI Video Tour Live" />
+        </div>
       </div>
-      <ul class="chips">
-        <li><T he="עברית" en="Hebrew" /></li>
-        <li><T he="חופשי" en="Free-form" /></li>
-        <li><T he="הודעה אחת" en="1 message" /></li>
-      </ul>
-    </aside>
-
-    <aside class="side side-right" data-side-right aria-hidden="true">
-      <p class="eyebrow"><T he="פורלי מחזירה" en="Forly returns" /></p>
-      <div class="bubble bubble-out">
-        <span class="bubble-meta">14:02 · <T he="6 שניות" en="6s" /></span>
-        <p class="bubble-text" dir="rtl">הלחות ניצחה אותך הקיץ? לא השנה. החלקת קרטין מקצועית — השבוע בלבד במחיר השקה. שיער חלק שזז יפה, נראה טבעי ומחזיק חודשים ✨</p>
-        <p class="bubble-tags">#החלקתקרטין #שיערחלק #מבצעהשקה</p>
-      </div>
-      <ul class="chips">
-        <li><T he="קרוסלה" en="Carousel" /></li>
-        <li><T he="כיתוב" en="Caption" /></li>
-        <li><T he="האשטגים" en="Hashtags" /></li>
-      </ul>
-    </aside>
-
-    <!-- End-of-scroll product detail rails -->
-    <aside class="hero-detail hero-detail-left" data-hero-detail-left>
-      <p class="eyebrow"><T he="המוצר" en="Product" /></p>
-      <h3><T he="פורלי v2" en="Forly v2" /></h3>
-      <ul>
-        <li><span><T he="ערוץ" en="Channel" /></span><b><T he="וואטסאפ" en="WhatsApp" /></b></li>
-        <li><span><T he="עברית" en="Hebrew" /></span><b><T he="נייטיב, ראשי" en="Native, first" /></b></li>
-        <li><span><T he="הצטרפות" en="Onboard" /></span><b><T he="3 שאלות" en="3 questions" /></b></li>
-      </ul>
-    </aside>
-    <aside class="hero-detail hero-detail-right" data-hero-detail-right>
-      <p class="eyebrow"><T he="הפלט" en="Output" /></p>
-      <h3><T he="לעסקים קטנים" en="Built for SMBs" /></h3>
-      <ul>
-        <li><span><T he="תמונה" en="Image" /></span><b><T he="כ-6 שניות" en="~6 sec" /></b></li>
-        <li><span><T he="סרטון" en="Video" /></span><b><T he="3 שוטים" en="3-shot story" /></b></li>
-        <li><span><T he="סגנונות" en="Tones" /></span><b><T he="8 סגנונות" en="8 styles" /></b></li>
-      </ul>
-    </aside>
-
-    <!-- Frame preload progress (auto-hides when done) -->
-    <div class="hero-loader" data-hero-loader role="status" aria-live="polite">
-      <span class="hero-loader-label"><T he="טוען סצנה" en="Loading scene" /></span>
-      <span class="hero-loader-track"><span class="hero-loader-bar" data-hero-loader-bar></span></span>
-      <span class="hero-loader-pct" data-hero-loader-pct>0%</span>
     </div>
   </div>
-</section>
+</header>
 
 <style>
-  .hero {
-    position: relative;
-    width: 100%;
+  .phero {
+    background:
+      radial-gradient(80% 160% at 50% -50%, rgba(201, 164, 100, 0.17), transparent 60%),
+      repeating-linear-gradient(90deg, rgba(230, 207, 159, 0.045) 0 1px, transparent 1px 96px),
+      repeating-linear-gradient(0deg, rgba(230, 207, 159, 0.03) 0 1px, transparent 1px 64px),
+      var(--aubergine-deep);
+    color: var(--rose-bg);
+    padding: 120px 0 80px;
+    margin-top: 0;
   }
-  .hero-pin {
+  .phero-in {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 48px;
+  }
+  .hero-copy {
+    max-width: 600px;
+  }
+  .hero-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+  .video-wrapper {
     position: relative;
     width: 100%;
-    /* Use dvh so the pin fits the *visible* mobile viewport (excluding the
-       browser chrome / URL bar). With plain 100vh on mobile, the pin is
-       taller than the visible area and the bottom content sits below
-       the fold — that's why the buttons disappeared on mobile. */
-    height: 100vh;
-    height: 100dvh;
+    max-width: 360px;
+    aspect-ratio: 9/16;
+    border-radius: 24px;
     overflow: hidden;
-    /* Match the page surface (warm rose-tint) — pure white made the whole
-       hero read as a different color than the rest of the site. */
-    background: var(--surface);
+    box-shadow: 0 32px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(230, 207, 159, 0.2);
+    transform: perspective(1000px) rotateY(-8deg) rotateX(4deg);
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
-  .hero-canvas {
-    position: absolute;
-    /* Animation centered horizontally, shifted 10% down on the Y axis (50% → 60%). */
-    top: 60%;
-    left: 50%;
-    /* 50% of the visible viewport height, width derived from the source frame
-       ratio. min() guards narrow viewports so the canvas never overflows.
-       vh declared first as a fallback — if a browser fails to parse the dvh
-       declaration, CSS falls back to vh instead of leaving height undefined
-       (which would collapse the canvas to its default ~150px and hide it). */
-    height: min(50vh, calc(86vw * 1396 / 1480));
-    height: min(50dvh, calc(86vw * 1396 / 1480));
-    aspect-ratio: 1480 / 1396;
-    width: auto;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-    /* Frames carry real alpha (background removed offline), so no mask or
-       blend tricks are needed — the page shows through the canvas. */
+  .video-wrapper:hover {
+    transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.02);
   }
-
-  /* Horizontal pink halo behind the animation.
-     Source: a circular radial gradient centered on the canvas.
-     Mask:   a vertical linear-gradient that's only opaque in a thin band
-             through the middle — so only the gradient's horizontal axis
-             (its left/right lobes) is visible. The top + bottom of the
-             circle are clipped away. */
-  .hero-halo {
-    position: absolute;
-    z-index: 1;
-    /* Anchor to the same center as the canvas (60% Y, 50% X) */
-    top: 60%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    /* Wider than the viewport so the horizontal lobes spill past the canvas */
-    width: min(1260vw, 2900px);
-    height: min(1140vh, 2900px);
-    pointer-events: none;
-    /* background: radial-gradient(
-      circle at 50% 50%,
-      rgba(244, 240, 242, 1) 0%,
-      /* rgba(219, 107, 151, 0.25) 20%, 
-       rgba(244, 240, 242, 1) 72%,
-        rgba(219, 107, 151, 0.25) 86%,
-       /* rgba(244, 240, 242, 1) 92% 
-    ); */
-    /* Visible band: 25%–75% of halo height (50% opaque) so the visible
-       horizontal halo is taller than the animation as well as wider. */
-    -webkit-mask-image: linear-gradient(
-      to bottom,
-      transparent 0%,
-      transparent 25%,
-      #000 50%,
-      transparent 75%,
-      transparent 100%
-    );
-    mask-image: linear-gradient(
-      to bottom,
-      transparent 0%,
-      transparent 25%,
-      #000 50%,
-      transparent 75%,
-      transparent 100%
-    );
-    filter: blur(36px);
+  .property-tour-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
-  .hero-glow {
+  .video-badge {
     position: absolute;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-    background:
-      radial-gradient(60% 50% at 50% 60%, rgba(219, 107, 151, 0.10), transparent 70%);
-  }
-  .hero-vignette {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-    background:
-      linear-gradient(180deg, rgba(251, 245, 248, 0.85) 0%, rgba(251, 245, 248, 0) 16%, rgba(251, 245, 248, 0) 70%, rgba(251, 245, 248, 0.92) 100%);
-  }
-
-  /* Tech overlay labels */
-  .tech {
-    position: absolute;
-    z-index: 5;
+    top: 16px;
+    right: 16px;
+    background: rgba(20, 17, 12, 0.7);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 100px;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    padding: 10px 14px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(8px);
+    gap: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
   }
-  .tech-tl { top: 96px; left: 24px; }
-  .tech-tr { top: 96px; right: 24px; }
-  .tech-bl { bottom: 32px; left: 24px; }
-  .tech-br { bottom: 32px; right: 24px; }
-  .tech-dot {
+  .video-badge .dot {
     width: 6px;
     height: 6px;
+    background: #e5484d;
     border-radius: 50%;
-    background: var(--forli-pink);
-    box-shadow: 0 0 10px var(--forli-pink);
+    animation: pulse 1.5s infinite;
   }
-
-  /* Frame counter HUD — uses the same .tech overlay shell with a tabular-num
-     layout so digits don't shift width as the counter ticks. */
-  .frame-hud {
-    gap: 10px;
-    font-variant-numeric: tabular-nums;
-  }
-  .frame-hud .tech-dot { animation: pulse 1.6s ease-in-out infinite; }
-  .frame-hud-label { color: var(--ink-soft); }
-  .frame-hud-num { color: var(--forli-pink-deep); font-weight: 700; }
-  .frame-hud-sep { color: rgba(26, 18, 32, 0.25); }
-  .frame-hud-total { color: var(--ink-soft); }
-  .tech-dot.live {
-    background: var(--sage);
-    box-shadow: 0 0 10px var(--sage);
-    animation: pulse 1.6s ease-in-out infinite;
-  }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
-
-  /* Title sits above the canvas, anchored to the top of the pin and
-     extending down to just above the canvas top edge.
-     Canvas is at top: 60% with height 50dvh → its top edge sits at 35dvh.
-     We span 35dvh and align to flex-end so the title hugs the canvas. */
-  .hero-top {
-    position: absolute;
-    z-index: 6;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 35dvh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    text-align: center;
-    padding: 92px 24px 8px;
-    gap: 10px;
-  }
-  /* Sub + actions sit below the canvas. min-height (instead of fixed) lets
-     the block grow UPWARD on short / mobile viewports so the buttons never
-     clip — the overflow goes into the canvas's feathered bottom edge, which
-     is already transparent and reads as page background. */
-  .hero-bottom {
-    position: absolute;
-    z-index: 6;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    min-height: 25dvh;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    text-align: center;
-    padding: 18px 24px 56px;
-    gap: 14px;
-  }
-  @media (max-width: 720px) {
-    .hero-bottom { padding: 14px 20px 32px; gap: 10px; }
-    .hero-actions { width: 100%; flex-direction: column; gap: 8px; }
-    .hero-actions .btn { width: 100%; max-width: 320px; }
-    /* Mobile: the sub card + stacked buttons are tall, so shrink the canvas
-       and lift its center — otherwise they sit on top of the character. */
-    .hero-canvas {
-      top: 44%;
-      height: min(32vh, calc(76vw * 1396 / 1480));
-      height: min(32dvh, calc(76vw * 1396 / 1480));
-    }
-    .hero-halo { top: 44%; }
-    .hero-top, .hero-mid { height: 30dvh; padding-top: 84px; }
-  }
-  .hero-top .eyebrow {
-    color: var(--forli-pink-deep);
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
   }
   .hero-title {
-    font-size: clamp(28px, 4.2vw, 56px);
-    font-weight: 900;
-    letter-spacing: -0.035em;
-    line-height: 0.98;
-    color: var(--pink);
-    text-shadow: 0 0 34px rgba(219, 107, 151, 0.18);
+    font-size: clamp(32px, 4.5vw, 56px);
+    margin-bottom: 16px;
   }
-  .hero-title .line {
-    display: block;
-    will-change: transform, opacity;
-  }
-  /* Line 2: solid pink. */
-  .hero-title .line-2 {
+  .hero-title em {
+    font-style: normal;
     color: var(--forli-pink);
   }
-  /* Line 3: 1.2× the title size, sized relative to the inherited font-size. */
-  .hero-title .line-3 {
-    font-size: 1.2em;
-  }
-  .line-2{
-    color: var(--pink);
-  }
-  /* Soft frosted-glass backdrop so the text reads cleanly even when it sits
-     over the feathered bottom edge of the canvas. Matches the same glass
-     vocabulary used by hero-detail cards and tech overlays. */
-  .hero-sub {
-    max-width: 560px;
-    font-size: clamp(14px, 1.2vw, 17px);
-    line-height: 1.55;
-    color: var(--ink);
-    padding: 12px 20px;
-    background: rgba(255, 255, 255, 0.7);
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 6px 20px rgba(26, 18, 32, 0.06);
-  }
-  @media (max-width: 720px) {
-    .hero-sub { padding: 10px 16px; border-radius: 14px; }
+  .phero-sub {
+    color: rgba(244, 236, 223, 0.78);
+    font-size: clamp(16px, 1.8vw, 20px);
+    max-width: 600px;
+    line-height: 1.6;
+    margin-bottom: 32px;
   }
   .hero-actions {
     display: flex;
-    gap: 12px;
+    gap: 16px;
     flex-wrap: wrap;
-    justify-content: center;
   }
-
-  /* Mid-scroll tagline mirrors .hero-top so it also hugs the canvas. */
-  .hero-mid {
-    position: absolute;
-    z-index: 6;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 35dvh;
+  .phero-stats {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    text-align: center;
-    pointer-events: none;
-    opacity: 0;
-    padding: 92px 24px 8px;
-    gap: 8px;
+    gap: 32px;
+    padding: 24px 32px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(230, 207, 159, 0.1);
+    border-radius: 16px;
+    backdrop-filter: blur(12px);
   }
-  .hero-mid .eyebrow { color: var(--forli-pink-deep); margin-bottom: 4px; }
-  .mid-title {
-    font-size: clamp(26px, 3.6vw, 48px);
-    font-weight: 800;
-    letter-spacing: -0.025em;
-    line-height: 1.1;
-    color: var(--ink);
-    text-shadow: 0 0 50px rgba(219, 107, 151, 0.22);
-  }
-  @media (max-width: 720px) {
-    .hero-mid { padding-bottom: 32px; }
-  }
-
-  /* Positioning wrappers for the WhatsAppInput component. The component owns
-     its own visual styles — these rules only place it in the hero and gate
-     its visibility for the scroll-driven fade in/out.
-       .hero-msg     → ABOVE the animation (frames 21-41)
-       .hero-msg-out → BELOW the animation (frame 81 to end) */
-  .hero-msg,
-  .hero-msg-out {
-    position: absolute;
-    z-index: 7;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(540px, 86vw);
-    opacity: 0;
-    pointer-events: none;
-    will-change: transform, opacity;
-  }
-  .hero-msg     { top: 18vh; top: 18dvh; }
-  .hero-msg-out { bottom: 8vh; bottom: 8dvh; }
-  @media (max-width: 720px) {
-    .hero-msg,
-    .hero-msg-out { width: min(94vw, 480px); }
-    .hero-msg     { top: 14vh; top: 14dvh; }
-    .hero-msg-out { bottom: 12vh; bottom: 12dvh; }
-  }
-
-  /* Persistent side rails (visible during most of the scroll) */
-  .side {
-    position: absolute;
-    z-index: 5;
-    top: 19%;
-    width: 268px;
+  .hstat {
     display: grid;
-    gap: 12px;
-    opacity: 0;
-    will-change: transform, opacity;
+    gap: 4px;
+    justify-items: center;
   }
-  .side .eyebrow {
-    color: var(--forli-pink-deep);
-    margin-left: 4px;
+  .hstat b {
+    font-family: var(--font-display);
+    font-size: 32px;
+    color: var(--forli-pink-soft);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
   }
-  .side-left { left: 4vw; }
-  .side-right { right: 4vw; }
-  .bubble {
-    border-radius: 18px;
-    padding: 14px 16px;
-    background: rgba(255, 255, 255, 0.92);
-    border: 1px solid var(--line);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 24px rgba(26, 18, 32, 0.06);
-    display: grid;
-    gap: 8px;
-  }
-  .bubble-in  { border-bottom-left-radius: 6px; }
-  .bubble-out {
-    border-bottom-right-radius: 6px;
-    background: linear-gradient(180deg, rgba(244, 163, 191, 0.16), rgba(219, 107, 151, 0.10));
-    border-color: rgba(219, 107, 151, 0.28);
-  }
-  .bubble-meta {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-  }
-  .bubble-text {
-    font-size: 15px;
-    line-height: 1.45;
-    color: var(--ink);
-    font-weight: 500;
-  }
-  .bubble-tags {
-    font-size: 12.5px;
-    color: var(--forli-pink-deep);
-    font-weight: 500;
-  }
-  .chips {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 0 4px;
-  }
-  .chips li {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    padding: 5px 9px;
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    color: var(--ink-soft);
-  }
-
-  .hero-detail {
-    position: absolute;
-    z-index: 5;
-    bottom: 7%;
-    width: 268px;
-    padding: 16px 18px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 24px rgba(26, 18, 32, 0.06);
-    opacity: 0;
-  }
-  .hero-detail-left { left: 4vw; }
-  .hero-detail-right { right: 4vw; }
-  .hero-detail h3 {
-    font-size: 20px;
-    margin: 4px 0 10px;
-    color: var(--ink);
-  }
-  .hero-detail ul { list-style: none; display: grid; gap: 6px; }
-  .hero-detail li {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    font-size: 12.5px;
-    color: var(--ink-soft);
-    padding: 3px 0;
-    border-bottom: 1px dashed var(--line);
-  }
-  .hero-detail li:last-child { border-bottom: none; }
-  .hero-detail b { color: var(--ink); font-weight: 600; text-align: right; }
-
-  /* Frame preload progress bar */
-  .hero-loader {
-    position: absolute;
-    z-index: 7;
-    left: 50%;
-    bottom: 90px;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  .hstat span {
     font-family: var(--font-mono);
     font-size: 11px;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.14em;
+    color: rgba(244, 236, 223, 0.55);
     text-transform: uppercase;
-    color: var(--ink-soft);
-    padding: 8px 14px;
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid var(--line);
-    backdrop-filter: blur(8px);
-    border-radius: 999px;
-    transition: opacity 0.5s ease, transform 0.5s ease;
-  }
-  .hero-loader[data-state='done'] {
-    opacity: 0;
-    transform: translateX(-50%) translateY(8px);
-    pointer-events: none;
-  }
-  .hero-loader-track {
-    display: inline-block;
-    width: 120px;
-    height: 3px;
-    background: rgba(26, 18, 32, 0.08);
-    border-radius: 999px;
-    overflow: hidden;
-  }
-  .hero-loader-bar {
-    display: block;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, var(--forli-pink-soft), var(--forli-pink), var(--forli-pink-deep));
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 0.25s ease;
-    box-shadow: 0 0 12px rgba(219, 107, 151, 0.6);
-  }
-  .hero-loader-pct {
-    min-width: 38px;
-    text-align: right;
-    color: var(--ink);
-  }
-
-  @media (max-width: 1100px) {
-    .side { display: none; }
   }
   @media (max-width: 900px) {
-    .tech-tl, .tech-tr { font-size: 10px; padding: 8px 10px; }
-    .tech-bl, .tech-br { display: none; }
-    .hero-detail { display: none; }
-    .hero-loader { bottom: 70px; }
+    .phero-in {
+      grid-template-columns: 1fr;
+      text-align: center;
+      gap: 56px;
+    }
+    .hero-copy {
+      margin: 0 auto;
+    }
+    .phero-sub {
+      margin-inline: auto;
+    }
+    .hero-actions {
+      justify-content: center;
+    }
+    .video-wrapper {
+      transform: none;
+      max-width: 320px;
+    }
+    .video-wrapper:hover {
+      transform: scale(1.02);
+    }
+  }
+  @media (max-width: 600px) {
+    .phero { padding: 100px 0 60px; }
+    .hero-actions { flex-direction: column; width: 100%; }
+    .hero-actions .btn { width: 100%; justify-content: center; }
   }
 </style>
-
-<script>
-  import { gsap } from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
-  import Lenis from 'lenis';
-  gsap.registerPlugin(ScrollTrigger);
-
-  type Manifest = { count: number; ext: string; pad: number; prefix: string };
-
-  // ── Lenis smooth scroll, driven by GSAP's RAF so ScrollTrigger stays in sync ──
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!reduceMotion && !(window as any).__lenis) {
-    const lenis = new Lenis({
-      duration: 1.15,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 1.4,
-    });
-    (window as any).__lenis = lenis;
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => lenis.raf(time * 1000));
-    gsap.ticker.lagSmoothing(0);
-  }
-
-  const hero = document.querySelector<HTMLElement>('[data-hero]');
-  const pin = document.querySelector<HTMLElement>('[data-hero-pin]');
-  const canvas = document.querySelector<HTMLCanvasElement>('[data-hero-canvas]');
-  const frameNum = document.querySelector<HTMLElement>('[data-frame-num]');
-  const frameTotal = document.querySelector<HTMLElement>('[data-frame-total]');
-  const loader = document.querySelector<HTMLElement>('[data-hero-loader]');
-  const loaderBar = document.querySelector<HTMLElement>('[data-hero-loader-bar]');
-  const loaderPct = document.querySelector<HTMLElement>('[data-hero-loader-pct]');
-  const titleLines = gsap.utils.toArray<HTMLElement>('[data-hero-title-line]');
-  const heroLines = gsap.utils.toArray<HTMLElement>('[data-hero-line]');
-  const heroMid = document.querySelector<HTMLElement>('[data-hero-mid]');
-  const heroMsg = document.querySelector<HTMLElement>('[data-hero-msg]');
-  const heroMsgOut = document.querySelector<HTMLElement>('[data-hero-msg-out]');
-  const heroLeft = document.querySelector<HTMLElement>('[data-hero-detail-left]');
-  const heroRight = document.querySelector<HTMLElement>('[data-hero-detail-right]');
-  const sideLeft = document.querySelector<HTMLElement>('[data-side-left]');
-  const sideRight = document.querySelector<HTMLElement>('[data-side-right]');
-
-  if (!hero || !pin || !canvas) {
-    console.warn('[hero] missing required DOM');
-  } else {
-    // alpha: true — frames are transparent webp (bg removed by
-    // scripts/remove-frame-bg.py), the page background shows through.
-    const ctx = canvas.getContext('2d', { alpha: true });
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-    const sizeCanvas = () => {
-      // CSS drives the on-screen size (50vh × source aspect, centered).
-      // We only set the pixel buffer to match the rendered size × dpr.
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      if (w === 0 || h === 0) return;
-      canvas.width = Math.floor(w * dpr);
-      canvas.height = Math.floor(h * dpr);
-    };
-
-    const isReady = (img: HTMLImageElement | undefined): img is HTMLImageElement =>
-      !!img && img.complete && img.naturalWidth > 0;
-
-    const paintFrame = (img: HTMLImageElement, alpha = 1) => {
-      if (!ctx) return;
-      const cw = canvas.width;
-      const ch = canvas.height;
-      const iw = img.naturalWidth;
-      const ih = img.naturalHeight;
-      // contain: fit the whole frame inside the canvas, letterbox the rest.
-      const scale = Math.min(cw / iw, ch / ih);
-      const dw = iw * scale;
-      const dh = ih * scale;
-      const dx = (cw - dw) / 2;
-      const dy = (ch - dh) / 2;
-      ctx.globalAlpha = alpha;
-      ctx.drawImage(img, dx, dy, dw, dh);
-      ctx.globalAlpha = 1;
-    };
-
-    // Render at fractional frame f by drawing floor(f) and crossfading ceil(f) on top.
-    const drawAt = (f: number) => {
-      if (!ctx) return;
-      const last = state.images.length - 1;
-      const fc = Math.max(0, Math.min(last, f));
-      const i0 = Math.floor(fc);
-      const i1 = Math.min(last, i0 + 1);
-      const t = fc - i0;
-      const a = state.images[i0];
-      const b = state.images[i1];
-      const fallback = isReady(a) ? a : isReady(b) ? b : findNearestReady(i0);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      if (!fallback) return;
-      paintFrame(isReady(a) ? a : fallback, 1);
-      if (t > 0 && isReady(b) && b !== a) paintFrame(b, t);
-    };
-
-    const findNearestReady = (idx: number): HTMLImageElement | null => {
-      for (let r = 0; r < state.images.length; r++) {
-        const lo = state.images[idx - r];
-        if (isReady(lo)) return lo;
-        const hi = state.images[idx + r];
-        if (isReady(hi)) return hi;
-      }
-      return null;
-    };
-
-    const drawPlaceholder = () => {
-      if (!ctx) return;
-      const cw = canvas.width;
-      const ch = canvas.height;
-      ctx.clearRect(0, 0, cw, ch);
-      ctx.fillStyle = 'rgba(26, 18, 32, 0.35)';
-      ctx.font = `${14 * dpr}px ui-monospace, Menlo, monospace`;
-      ctx.textAlign = 'center';
-      ctx.fillText(
-        'Drop your MP4 in /public/video/  →  npm run extract:frames',
-        cw / 2,
-        ch / 2,
-      );
-    };
-
-    sizeCanvas();
-    drawPlaceholder();
-    window.addEventListener('resize', () => {
-      sizeCanvas();
-      if (state.images.length) drawAt(state.current);
-      else drawPlaceholder();
-    });
-
-    const state = {
-      current: 0,
-      images: [] as HTMLImageElement[],
-      manifest: null as Manifest | null,
-    };
-
-    const buildHeroTimeline = (frameCount: number) => {
-      const proxy = { f: 0 };
-      // Hero entrance — animate the WRAPPERS (.hero-top / .hero-bottom),
-      // not the same elements the scrub timeline targets. This keeps the
-      // scrub's fromTo start state authoritative for the title elements,
-      // so reverse-scrolling always restores the title cleanly.
-      const heroTopEl = document.querySelector<HTMLElement>('.hero-top');
-      const heroBottomEl = document.querySelector<HTMLElement>('.hero-bottom');
-      gsap.from([heroTopEl, heroBottomEl].filter(Boolean) as HTMLElement[], {
-        y: 40,
-        opacity: 0,
-        duration: 0.9,
-        ease: 'power3.out',
-        stagger: 0.12,
-        delay: 0.15,
-      });
-
-      // Story-beat frames mapped to ScrollTrigger progress (0–1):
-      //   Frame 23  → 0.26  (after WhatsApp input bubble appears)
-      //   Frame 60  → 0.59  (mid-tagline showing)
-      //   Frame 84  → 0.83  (confirmation bubble visible)
-      //   Frame 101 → 1.00  (end of the pinned scrub)
-      // Skip enforcement for prefers-reduced-motion users (they free-scroll).
-      const reduceMotion = typeof window !== 'undefined' &&
-        window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-      const snapPoints = [0.36, 0.59, 1.0];
-
-      // Master scrubbed timeline pinned to the hero section
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: hero,
-          start: 'top top',
-          // Long pin so the frame scrub feels meaningful (~3 viewports)
-          end: '+=3200',
-          pin: pin,
-          scrub: 1,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      // Forced stepping: hijack wheel + touchend so every gesture lands on a
-      // milestone. The user cannot stop between snap points — any scroll input
-      // triggers a programmatic Lenis scrollTo() with `lock: true`, which makes
-      // Lenis ignore all further user input until the animation completes.
-      if (!reduceMotion) {
-        type LenisLike = {
-          scrollTo: (y: number, opts?: Record<string, unknown>) => void;
-          stop: () => void;
-          start: () => void;
-        };
-        const lenis = (window as { __lenis?: LenisLike }).__lenis;
-        let stepLock = false;
-        let unlockTimer: number | null = null;
-        const STEP_EPS = 0.01;
-        // Per-segment animation duration in seconds. Each entry is the time
-        // to traverse ONE milestone hop. Edit any value to change the feel:
-        //   higher = slower / more deliberate, lower = snappier.
-        // Order: index 0 = first hop (start → frame 23), 1 = 23 → 60,
-        //        2 = 60 → 84, 3 = 84 → 101. Same value applies in reverse.
-        const SEGMENT_DURATIONS = [
-          1.7, // 0   → 0.26  (start → frame 23)
-          1.7, // 0.26 → 0.59 (frame 23 → 60)
-          1.7, // 0.83 → 1.0  (frame 84 → 101)
-        ];
-        const FALLBACK_STEP_DURATION = 0.7;
-        // Slack at the pin boundary — `isActive` flips false the instant scroll
-        // reaches `end`, which would let scroll-up at the last milestone leak
-        // through. Buffer covers the boundary on both ends.
-        const PIN_SLACK = 4;
-
-        const inPinRange = () => {
-          const st = tl.scrollTrigger;
-          if (!st) return false;
-          const y = window.scrollY;
-          return y >= st.start - PIN_SLACK && y <= st.end + PIN_SLACK;
-        };
-
-        const stepTo = (progress: number, duration: number) => {
-          const st = tl.scrollTrigger;
-          if (!st) return;
-          const targetY = st.start + (st.end - st.start) * progress;
-          stepLock = true;
-          if (unlockTimer) clearTimeout(unlockTimer);
-          if (lenis) {
-            // `lock: true` is the key — Lenis ignores all wheel/touch input
-            // for the duration of this scroll. Without it, in-progress Lenis
-            // smooth-scroll inertia can override our programmatic target,
-            // which is what was letting the user "park" between milestones.
-            // `force: true` ensures it runs even if Lenis was stopped.
-            lenis.scrollTo(targetY, {
-              duration,
-              easing: (t: number) => 1 - Math.pow(1 - t, 3),
-              lock: true,
-              force: true,
-            });
-          } else {
-            window.scrollTo({ top: targetY, behavior: 'smooth' });
-          }
-          unlockTimer = window.setTimeout(() => { stepLock = false; }, duration * 1000 + 80);
-        };
-
-        const stepInDirection = (dir: 1 | -1): boolean => {
-          const st = tl.scrollTrigger;
-          if (!st) return false;
-          const progress = Math.max(0, Math.min(1, st.progress));
-          // Find target snap point and the segment index being traversed.
-          //   Forward step  → segment index = target index in snapPoints
-          //   Backward step → segment index = target index + 1
-          // (segment k covers the gap from snapPoints[k-1] to snapPoints[k],
-          // with snapPoints[-1] treated as the implicit start at progress 0).
-          let targetIdx = -1;
-          if (dir > 0) {
-            targetIdx = snapPoints.findIndex((p) => p > progress + STEP_EPS);
-          } else {
-            for (let i = snapPoints.length - 1; i >= 0; i--) {
-              if (snapPoints[i] < progress - STEP_EPS) { targetIdx = i; break; }
-            }
-          }
-          if (targetIdx === -1) return false;
-          const target = snapPoints[targetIdx];
-          const segIdx = dir > 0 ? targetIdx : targetIdx + 1;
-          const duration = SEGMENT_DURATIONS[segIdx] ?? FALLBACK_STEP_DURATION;
-          if (!stepLock) stepTo(target, duration);
-          return true;
-        };
-
-        const onWheelHijack = (e: WheelEvent) => {
-          if (!inPinRange()) return;
-          // No delta threshold — even tiny trackpad scroll-ups must engage.
-          if (e.deltaY === 0) return;
-          const dir: 1 | -1 = e.deltaY > 0 ? 1 : -1;
-          // Only consume the event if a milestone exists in that direction.
-          // Otherwise let it bubble so the user can exit the pin.
-          const st = tl.scrollTrigger;
-          if (!st) return;
-          const progress = Math.max(0, Math.min(1, st.progress));
-          const hasTarget = dir > 0
-            ? snapPoints.some((p) => p > progress + STEP_EPS)
-            : snapPoints.some((p) => p < progress - STEP_EPS);
-          if (!hasTarget) return;
-          e.preventDefault();
-          e.stopPropagation();
-          e.stopImmediatePropagation();
-          stepInDirection(dir);
-        };
-
-        let touchStartY = 0;
-        const onTouchStartHijack = (e: TouchEvent) => {
-          touchStartY = e.touches[0]?.clientY ?? 0;
-        };
-        const onTouchEndHijack = (e: TouchEvent) => {
-          if (!inPinRange()) return;
-          const endY = e.changedTouches[0]?.clientY ?? touchStartY;
-          const dy = touchStartY - endY;
-          if (Math.abs(dy) < 24) return;
-          const dir: 1 | -1 = dy > 0 ? 1 : -1;
-          stepInDirection(dir);
-        };
-
-        window.addEventListener('wheel', onWheelHijack, { passive: false, capture: true });
-        window.addEventListener('touchstart', onTouchStartHijack, { passive: true });
-        window.addEventListener('touchend', onTouchEndHijack, { passive: true });
-      }
-
-      // 0 → 1 : copy exits in three directions while frames scrub.
-      // Use fromTo with explicit start state so reverse-scroll always returns
-      // the title to its natural visible state — independent of any earlier
-      // entrance tween or ScrollTrigger.refresh() invalidation.
-      tl.fromTo(titleLines[0], { x: 0, opacity: 1 }, { x: '-60vw', opacity: 0, ease: 'power2.in' }, 0)
-        .fromTo(titleLines[1], { scale: 1, opacity: 1 }, { scale: 2.2, opacity: 0, ease: 'power2.in' }, 0)
-        .fromTo(titleLines[2], { x: 0, opacity: 1 }, { x: '60vw', opacity: 0, ease: 'power2.in' }, 0)
-        .fromTo(
-          heroLines.filter((el) => !titleLines.includes(el)),
-          { y: 0, opacity: 1 },
-          { y: -40, opacity: 0, ease: 'power2.in', stagger: 0.04 },
-          0,
-        )
-        // Frame scrub runs the full pinned distance with sub-frame interpolation
-        .to(
-          proxy,
-          {
-            f: Math.max(0, frameCount - 1),
-            ease: 'none',
-            duration: 3,
-            onUpdate: () => {
-              state.current = proxy.f;
-              drawAt(proxy.f);
-              if (frameNum) frameNum.textContent = String(Math.round(proxy.f) + 1).padStart(4, '0');
-            },
-          },
-          0,
-        )
-        // Side rails (you write / Forly returns) fade in shortly after copy exits
-        // and stay visible through the rest of the scroll.
-        .fromTo(sideLeft, { opacity: 0, x: -50, y: 10 }, { opacity: 1, x: 0, y: 0, ease: 'power3.out' }, 0.55)
-        .fromTo(sideRight, { opacity: 0, x: 50, y: 10 }, { opacity: 1, x: 0, y: 0, ease: 'power3.out' }, 0.7)
-        // WhatsApp message bubble — visible during frames 21-41.
-        // Frame N (1-indexed) → timeline position (N-1) * 0.03.
-        //   Frame 21 → 0.60 (fade-in starts)
-        //   Frame 41 → 1.20 (fade-out completes)
-        .fromTo(
-          heroMsg,
-          { opacity: 0, y: 16, scale: 0.96 },
-          { opacity: 1, y: 0, scale: 1, ease: 'power2.out', duration: 0.06 },
-          0.6,
-        )
-        .to(
-          heroMsg,
-          { opacity: 0, y: -10, scale: 0.98, ease: 'power2.in', duration: 0.06 },
-          1.14,
-        )
-        // Mid-scroll tagline — visible during frames 48-78.
-        //   Frame 48 → 1.41 (fade-in starts)
-        //   Frame 78 → 2.31 (fade-out completes)
-        .fromTo(
-          heroMid,
-          { opacity: 0, y: 30 },
-          { opacity: 1, y: 0, ease: 'power2.out', duration: 0.2 },
-          1.41,
-        )
-        .to(
-          heroMid,
-          { opacity: 0, y: -30, ease: 'power2.in', duration: 0.2 },
-          2.11,
-        )
-        // End-of-scroll product detail rails
-        .fromTo(heroLeft, { opacity: 0, y: 30 }, { opacity: 1, y: 0, ease: 'power3.out' }, 2.4)
-        .fromTo(heroRight, { opacity: 0, y: 30 }, { opacity: 1, y: 0, ease: 'power3.out' }, 2.4)
-        // WhatsApp confirmation bubble — visible from frame 81 to the end.
-        //   Frame 81 → 2.40 (fade-in starts). Stays visible through the end of the scrub.
-        .fromTo(
-          heroMsgOut,
-          { opacity: 0, y: 16, scale: 0.96 },
-          { opacity: 1, y: 0, scale: 1, ease: 'power2.out', duration: 0.06 },
-          2.4,
-        );
-    };
-
-    // Decode an image off-thread when supported, fall back to onload.
-    const decodeImage = (url: string): Promise<HTMLImageElement> =>
-      new Promise((resolve) => {
-        const img = new Image();
-        img.decoding = 'async';
-        img.src = url;
-        const done = () => resolve(img);
-        if ('decode' in img && typeof img.decode === 'function') {
-          img.decode().then(done).catch(done);
-        } else {
-          img.onload = done;
-          img.onerror = done;
-        }
-      });
-
-    // Decode N urls concurrently with a bounded queue.
-    const decodePool = async (
-      urls: string[],
-      indices: number[],
-      concurrency: number,
-      onProgress: (loaded: number) => void,
-    ) => {
-      let cursor = 0;
-      let loaded = 0;
-      const total = indices.length;
-      const worker = async () => {
-        while (cursor < total) {
-          const myCursor = cursor++;
-          const idx = indices[myCursor];
-          const img = await decodeImage(urls[idx]);
-          state.images[idx] = img;
-          loaded++;
-          onProgress(loaded);
-        }
-      };
-      await Promise.all(Array.from({ length: concurrency }, worker));
-    };
-
-    const setLoader = (loaded: number, total: number) => {
-      const pct = total > 0 ? Math.round((loaded / total) * 100) : 0;
-      if (loaderBar) loaderBar.style.transform = `scaleX(${loaded / Math.max(1, total)})`;
-      if (loaderPct) loaderPct.textContent = `${pct}%`;
-    };
-
-    const hideLoader = () => {
-      if (!loader) return;
-      loader.dataset.state = 'done';
-    };
-
-    const loadFrames = async () => {
-      try {
-        const res = await fetch('/frames/manifest.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error('manifest missing');
-        const manifest = (await res.json()) as Manifest;
-        state.manifest = manifest;
-        if (frameTotal) frameTotal.textContent = String(manifest.count).padStart(4, '0');
-
-        const urls: string[] = [];
-        for (let i = 0; i < manifest.count; i++) {
-          const num = String(i + 1).padStart(manifest.pad, '0');
-          urls.push(`/frames/${manifest.prefix}${num}.${manifest.ext}`);
-        }
-
-        // Phase 1: decode the first frame so the canvas isn't a placeholder.
-        const first = await decodeImage(urls[0]);
-        state.images[0] = first;
-        drawAt(0);
-
-        // Phase 2: decode a head batch (~25% or 60 frames, whichever is smaller)
-        // before we let scroll start scrubbing — this prevents black flashes.
-        const headSize = Math.min(60, Math.max(12, Math.floor(manifest.count * 0.25)));
-        const headIndices: number[] = [];
-        for (let i = 1; i < headSize; i++) headIndices.push(i);
-        let loadedCount = 1;
-        setLoader(loadedCount, manifest.count);
-        await decodePool(urls, headIndices, 8, (n) => {
-          loadedCount = 1 + n;
-          setLoader(loadedCount, manifest.count);
-        });
-
-        // Phase 3: build the scroll timeline now that we have a usable head.
-        buildHeroTimeline(manifest.count);
-        ScrollTrigger.refresh();
-
-        // Phase 4: decode the rest in the background, lower concurrency.
-        const tailIndices: number[] = [];
-        for (let i = headSize; i < manifest.count; i++) tailIndices.push(i);
-        decodePool(urls, tailIndices, 6, (n) => {
-          loadedCount = headSize + n;
-          setLoader(loadedCount, manifest.count);
-          if (loadedCount >= manifest.count) hideLoader();
-        }).then(() => hideLoader());
-
-        // If head completed everything (small video), still hide the loader.
-        if (manifest.count <= headSize) hideLoader();
-      } catch (err) {
-        console.warn('[hero] no frames manifest yet — running with placeholder.', err);
-        if (frameTotal) frameTotal.textContent = '----';
-        hideLoader();
-        // Still build the timeline so scroll behavior is testable.
-        buildHeroTimeline(1);
-      }
-    };
-
-    loadFrames();
-  }
-</script>
