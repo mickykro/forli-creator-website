@@ -2,6 +2,9 @@
 import Base from '../../layouts/Base.astro';
 import T from '../../components/T.astro';
 import { WHATSAPP_URL } from '../../brand';
+
+const url = new URL(Astro.request.url);
+const isFree = url.searchParams.get('free') === 'true';
 ---
 
 <Base
@@ -20,19 +23,34 @@ import { WHATSAPP_URL } from '../../brand';
         </div>
 
         <h1 class="title">
-          <span class="l-he">התשלום בוצע בהצלחה!</span>
-          <span class="l-en">Payment Successful!</span>
+          <span class="l-he">{isFree ? 'הקרדיטים שלך התווספו!' : 'התשלום בוצע בהצלחה!'}</span>
+          <span class="l-en">{isFree ? 'Credits Added!' : 'Payment Successful!'}</span>
         </h1>
 
         <p class="message">
-          <span class="l-he">
-            הקרדיטים שלך יתווספו תוך מספר דקות.<br />
-            תוכל להתחיל ליצור תוכן מיד בוואטסאפ.
-          </span>
-          <span class="l-en">
-            Your credits will be added within a few minutes.<br />
-            You can start creating content right away on WhatsApp.
-          </span>
+          {isFree ? (
+            <>
+              <span class="l-he">
+                הקרדיטים שלך התווספו בהצלחה!<br />
+                תוכל להתחיל ליצור תוכן מיד בוואטסאפ.
+              </span>
+              <span class="l-en">
+                Your credits have been added successfully!<br />
+                You can start creating content right away on WhatsApp.
+              </span>
+            </>
+          ) : (
+            <>
+              <span class="l-he">
+                הקרדיטים שלך יתווספו תוך מספר דקות.<br />
+                תוכל להתחיל ליצור תוכן מיד בוואטסאפ.
+              </span>
+              <span class="l-en">
+                Your credits will be added within a few minutes.<br />
+                You can start creating content right away on WhatsApp.
+              </span>
+            </>
+          )}
         </p>
 
         <div class="actions">

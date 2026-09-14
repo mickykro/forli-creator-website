@@ -96,13 +96,35 @@ const actualProductType = productType;
           <form id="otpForm">
             <div class="form-group">
               <div class="otp-inputs" dir="ltr">
-                <input type="text" maxlength="1" class="otp-digit" data-index="0" dir="ltr" inputmode="numeric" />
-                <input type="text" maxlength="1" class="otp-digit" data-index="1" dir="ltr" inputmode="numeric" />
-                <input type="text" maxlength="1" class="otp-digit" data-index="2" dir="ltr" inputmode="numeric" />
-                <input type="text" maxlength="1" class="otp-digit" data-index="3" dir="ltr" inputmode="numeric" />
-                <input type="text" maxlength="1" class="otp-digit" data-index="4" dir="ltr" inputmode="numeric" />
-                <input type="text" maxlength="1" class="otp-digit" data-index="5" dir="ltr" inputmode="numeric" />
+                <input type="text" maxlength="1" class="otp-digit" data-index="0" dir="ltr" inputmode="numeric" autocomplete="one-time-code" />
+                <input type="text" maxlength="1" class="otp-digit" data-index="1" dir="ltr" inputmode="numeric" autocomplete="off" />
+                <input type="text" maxlength="1" class="otp-digit" data-index="2" dir="ltr" inputmode="numeric" autocomplete="off" />
+                <input type="text" maxlength="1" class="otp-digit" data-index="3" dir="ltr" inputmode="numeric" autocomplete="off" />
+                <input type="text" maxlength="1" class="otp-digit" data-index="4" dir="ltr" inputmode="numeric" autocomplete="off" />
+                <input type="text" maxlength="1" class="otp-digit" data-index="5" dir="ltr" inputmode="numeric" autocomplete="off" />
               </div>
+            </div>
+
+            <div class="form-group">
+              <label for="promoCode">
+                <span class="l-he">קוד קופון (אופציונלי)</span>
+                <span class="l-en">Promo Code (Optional)</span>
+              </label>
+              <div class="promo-input-group">
+                <input
+                  type="text"
+                  id="promoCode"
+                  name="promoCode"
+                  placeholder="FREE100"
+                  dir="ltr"
+                  autocomplete="off"
+                />
+                <button type="button" class="btn-apply" id="applyPromoBtn">
+                  <span class="l-he">בדוק</span>
+                  <span class="l-en">Apply</span>
+                </button>
+              </div>
+              <div id="promoMessage" class="promo-message" role="status"></div>
             </div>
 
             <div id="otpError" class="error-message" role="alert"></div>
@@ -252,6 +274,73 @@ const actualProductType = productType;
     display: block;
   }
 
+  .promo-input-group {
+    display: flex;
+    gap: 8px;
+  }
+
+  .promo-input-group input {
+    flex: 1;
+    padding: 12px 14px;
+    border: 2px solid var(--line);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    text-transform: uppercase;
+    transition: border-color 0.2s;
+  }
+
+  .promo-input-group input:focus {
+    outline: none;
+    border-color: var(--forli-pink);
+  }
+
+  .btn-apply {
+    padding: 12px 20px;
+    background: var(--surface-soft);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-apply:hover {
+    background: var(--forli-pink);
+    border-color: var(--forli-pink);
+    color: white;
+  }
+
+  .btn-apply:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .promo-message {
+    display: none;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    margin-top: 8px;
+  }
+
+  .promo-message.visible {
+    display: block;
+  }
+
+  .promo-message.success {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    color: #166534;
+  }
+
+  .promo-message.error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+  }
+
   .btn-block {
     width: 100%;
     padding: 16px;
@@ -396,8 +485,8 @@ const actualProductType = productType;
             otpInputs[i].value = digit;
           }
         });
-        // Auto-submit
-        document.getElementById('otpForm').requestSubmit();
+        // Focus the verify button so user can easily submit
+        document.getElementById('verifyOtpBtn')?.focus();
       } else if (digits.length > 0) {
         // Fill from current input onwards
         digits.split('').forEach((digit, i) => {
@@ -414,9 +503,9 @@ const actualProductType = productType;
     input.addEventListener('input', (e) => {
       if (e.target.value.length === 1 && index < 5) {
         otpInputs[index + 1].focus();
-      }
-      if (Array.from(otpInputs).every(inp => inp.value.length === 1)) {
-        document.getElementById('otpForm').requestSubmit();
+      } else if (e.target.value.length === 1 && index === 5) {
+        // Last digit filled - focus verify button
+        document.getElementById('verifyOtpBtn')?.focus();
       }
     });
 
@@ -425,6 +514,105 @@ const actualProductType = productType;
         otpInputs[index - 1].focus();
       }
     });
+  });
+
+  // Promo code validation
+  let promoCodeData = null;
+
+  function showPromoMessage(message, type) {
+    const el = document.getElementById('promoMessage');
+    if (el) {
+      el.textContent = message;
+      el.className = `promo-message visible ${type}`;
+    }
+  }
+
+  function hidePromoMessage() {
+    const el = document.getElementById('promoMessage');
+    if (el) {
+      el.className = 'promo-message';
+    }
+  }
+
+  document.getElementById('applyPromoBtn')?.addEventListener('click', async () => {
+    const input = document.getElementById('promoCode');
+    const code = input.value.trim().toUpperCase();
+    const btn = document.getElementById('applyPromoBtn');
+
+    if (!code) {
+      showPromoMessage('Please enter a promo code', 'error');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '...';
+    hidePromoMessage();
+
+    try {
+      const response = await fetch('/api/promo/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code,
+          productType,
+          productId,
+          billingCycle: billingCycle || null,
+        }),
+      });
+
+      const result = await response.json();
+      console.log('Promo validation result:', result);
+
+      if (!result.valid) {
+        console.error('Promo code invalid:', result.error);
+        showPromoMessage(result.error || 'Invalid promo code', 'error');
+        promoCodeData = null;
+      } else {
+        promoCodeData = {
+          code,
+          originalPrice: result.originalPrice,
+          discountAmount: result.discountAmount,
+          finalPrice: result.finalPrice,
+        };
+
+        const lang = document.documentElement.lang;
+        const discountText = result.discountType === 'percentage'
+          ? `${result.discountValue}% ${lang === 'he' ? 'הנחה' : 'off'}`
+          : `₪${result.discountAmount} ${lang === 'he' ? 'הנחה' : 'off'}`;
+
+        if (result.finalPrice === 0) {
+          showPromoMessage(
+            lang === 'he' ? `✓ חינם! ${discountText}` : `✓ Free! ${discountText}`,
+            'success'
+          );
+        } else {
+          showPromoMessage(
+            lang === 'he'
+              ? `✓ ${discountText} - ₪${result.finalPrice} במקום ₪${result.originalPrice}`
+              : `✓ ${discountText} - ₪${result.finalPrice} instead of ₪${result.originalPrice}`,
+            'success'
+          );
+        }
+
+        input.disabled = true;
+        btn.style.display = 'none';
+      }
+    } catch (error) {
+      console.error('Promo validation error:', error);
+      showPromoMessage(error.message || 'Failed to validate promo code', 'error');
+      promoCodeData = null;
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<span class="l-he">בדוק</span><span class="l-en">Apply</span>';
+    }
+  });
+
+  // Allow Enter key to apply promo
+  document.getElementById('promoCode')?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.getElementById('applyPromoBtn').click();
+    }
   });
 
   // OTP form submission
@@ -454,14 +642,23 @@ const actualProductType = productType;
       // Success - show loading and redirect to payment
       showState('loadingState');
 
+      const paymentBody = {
+        productType: result.productType,
+        productId: result.productId,
+        billingCycle: result.billingCycle,
+      };
+
+      // Add promo code data if applied
+      if (promoCodeData) {
+        paymentBody.promoCode = promoCodeData.code;
+        paymentBody.discountAmount = promoCodeData.discountAmount;
+        paymentBody.finalPrice = promoCodeData.finalPrice;
+      }
+
       const paymentResponse = await fetch('/api/payment/create-link', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          productType: result.productType,
-          productId: result.productId,
-          billingCycle: result.billingCycle,
-        }),
+        body: JSON.stringify(paymentBody),
       });
 
       const paymentResult = await paymentResponse.json();

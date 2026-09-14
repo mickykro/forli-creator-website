@@ -1,9 +1,12 @@
 /**
  * POST /api/payment/create-link
  * Create Cardcom Low Profile payment URL for authenticated user
+ * If promo code gives 100% discount, grants credits immediately and skips payment
  */
 import type { APIRoute } from 'astro';
 import { CREDIT_PACKS, PRICING_TIERS, SITE_URL } from '../../../brand';
+import { getSupabaseServer } from '../../../lib/supabase';
+import { validatePromoCode } from '../../../lib/promo';
 
 const CARDCOM_TERMINAL = import.meta.env.CARDCOM_TERMINAL_NUMBER || '1000';
 const CARDCOM_API_NAME = import.meta.env.CARDCOM_API_NAME || 'kzFKfohEvL6AOF8aMEJz';
@@ -13,6 +16,7 @@ interface CreateLinkRequest {
   productType: 'credit_pack' | 'subscription';
   productId: string;
   billingCycle?: 'monthly' | 'annual';
+  promoCode?: string;
 }
 
 interface CardcomProduct {
@@ -102,13 +106,104 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     }
 
     const body: CreateLinkRequest = await request.json();
-    const { productType, productId, billingCycle } = body;
+    const { productType, productId, billingCycle, promoCode } = body;
 
     // Validate product exists
     const productInfo = getProductInfo(productType, productId, billingCycle);
     if (!productInfo) {
       return new Response(JSON.stringify({ error: 'Invalid product' }), {
         status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Re-validate promo server-side; never trust a client-sent price.
+    const promo = promoCode
+      ? await validatePromoCode(promoCode, productType, session.userId, productInfo.price)
+      : null;
+    if (promoCode && !promo?.valid) {
+      return new Response(JSON.stringify({ error: promo?.error || 'Invalid promo code' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    const amount = promo?.valid ? promo.finalPrice : productInfo.price;
+    const discountAmount = promo?.discountAmount ?? 0;
+
+    // Handle 100% discount (free purchase)
+    if (amount === 0 && promoCode) {
+      const supabase = getSupabaseServer();
+
+      // Get promo code ID
+      const { data: promoData, error: promoError } = await supabase
+        .from('promo_codes')
+        .select('id')
+        .eq('code', promoCode.toUpperCase())
+        .single();
+
+      if (promoError || !promoData) {
+        return new Response(JSON.stringify({ error: 'Invalid promo code' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Record promo usage
+      const { error: usageError } = await supabase.from('promo_code_usage').insert({
+        promo_code_id: promoData.id,
+        user_id: session.userId,
+        product_type: productType,
+        product_id: productId,
+        original_price: productInfo.price,
+        discount_amount: discountAmount,
+        final_price: 0,
+      });
+
+      if (usageError) {
+        console.error('Failed to record promo usage:', usageError);
+      }
+
+      // Increment usage count
+      await supabase.rpc('increment', {
+        row_id: promoData.id,
+        table_name: 'promo_codes',
+        column_name: 'current_uses',
+      }).catch(console.error);
+
+      // Grant credits/subscription immediately
+      if (productType === 'credit_pack') {
+        const pack = CREDIT_PACKS.find(p => p.id === productId);
+        if (pack) {
+          const { error: creditError } = await supabase.from('purchases').insert({
+            user_id: session.userId,
+            purchase_type: 'credit_pack',
+            credit_pack_id: productId,
+            amount_ils: 0,
+            status: 'completed',
+            fulfilled_at: new Date().toISOString(),
+            credits_granted: pack.credits * 100, // Store as credits * 100 per schema comment
+            payment_gateway: 'cardcom',
+            cardcom_transaction_id: `PROMO_${promoCode.toUpperCase()}_${Date.now()}`,
+            cardcom_response: { promo_code: promoCode.toUpperCase(), free_purchase: true },
+          });
+
+          if (creditError) {
+            console.error('Failed to grant credits:', creditError);
+            return new Response(JSON.stringify({ error: 'Failed to process free purchase' }), {
+              status: 500,
+              headers: { 'Content-Type': 'application/json' },
+            });
+          }
+        }
+      }
+
+      // Redirect directly to success (no payment needed)
+      return new Response(JSON.stringify({
+        success: true,
+        paymentUrl: `${SITE_URL}/checkout/success?free=true`,
+        free: true,
+      }), {
+        status: 200,
         headers: { 'Content-Type': 'application/json' },
       });
     }
@@ -120,6 +215,9 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       productId,
       billingCycle: billingCycle || null,
       phone: session.phone,
+      promoCode: promoCode || null,
+      originalPrice: productInfo.price,
+      discountAmount: discountAmount || 0,
     });
 
     const cardcomRequest: CardcomRequest = {
@@ -127,7 +225,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       ApiName: CARDCOM_API_NAME,
       Operation: 'ChargeAndCreateToken',
       ReturnValue: returnValue,
-      Amount: productInfo.price,
+      Amount: amount,
       SuccessRedirectUrl: `${SITE_URL}/checkout/success`,
       FailedRedirectUrl: `${SITE_URL}/checkout/failed`,
       WebHookUrl: CARDCOM_WEBHOOK_URL,
@@ -142,8 +240,10 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         ISOCoinID: 1,
         Products: [
           {
-            Description: productInfo.description,
-            UnitCost: productInfo.price,
+            Description: promoCode
+              ? `${productInfo.description} (${promoCode})`
+              : productInfo.description,
+            UnitCost: amount,
             Quantity: 1,
           },
         ],
