@@ -1,5 +1,6 @@
 ---
 import T from './T.astro';
+import { PLATFORM_URL } from '../brand';
 
 const links = [
   { href: '/#features', he: 'יכולות', en: 'Capabilities' },
@@ -22,6 +23,9 @@ const links = [
         <span class="l-he"><span class="lang-toggle-current">עב</span> · EN</span>
         <span class="l-en">HE · <span class="lang-toggle-current">EN</span></span>
       </button>
+      <a href={PLATFORM_URL} class="platform-link">
+        <T he="לפלטפורמה" en="Platform" />
+      </a>
       <a href="#cta" class="btn btn-pink nav-cta">
         <T he="נסו בחינם" en="Try free" />
       </a>
@@ -105,6 +109,12 @@ const links = [
     gap: 12px;
   }
   .nav-cta { padding: 10px 20px; font-size: 13px; }
+  .platform-link {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.72);
+    transition: color 0.2s ease;
+  }
+  .platform-link:hover { color: var(--white); }
 
   /* Dark-theme override for the lang toggle — the global .lang-toggle rule
      was designed for the light surface; on the dark Nav it needs inverted
@@ -126,6 +136,7 @@ const links = [
   @media (max-width: 720px) {
     .links { display: none; }
     .lang-toggle { font-size: 10px; padding: 6px 10px; }
+    .platform-link { font-size: 12px; }
   }
 </style>
 
